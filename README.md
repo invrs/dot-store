@@ -49,3 +49,5 @@ Expand or collapse the file structure while keeping your queries the same.
 | ------------------- | ---------------------------------- | ----------------------------------- | ------------------------------------------ |
 | `lorem.ipsum.dolor` | `loremIpsumDolor.json` -> `"sit"`  | `loremIpsum/dolor.json` -> `"sit"`  | `loremIpsum.json` -> `{ "dolor": "sit" }`  |
 | `lorem.ipsum.dolor` | `loremIpsum/dolor.json` -> `"sit"` | `lorem/ipsum/dolor.json` -> `"sit"` | `lorem/ipsum.json` -> `{ "dolor": "sit" }` |
+| `lorem.ipsum.dolor` | `loremIpsumDolor.json` -> `"sit"`  | `lorem/ipsumDolor.json` -> `"sit"`  | `lorem/ipsum.json` -> `{ "dolor": "sit" }` |
+| `lorem.ipsum.dolor` | `lorem/ipsumDolor.json` -> `"sit"` | `lorem/ipsum/dolor.json` -> `"sit"` | `lorem/ipsum.json` -> `{ "dolor": "sit" }` |
