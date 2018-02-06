@@ -9,11 +9,11 @@ Flexible filesystem accessor for text and JSON
 
 ## Example
 
-| File                     | Contents          |
-| ------------------------ | ----------------- |
-| `hello.txt`              | `world`           |
-| `lorem/ipsum/dolor.json` | `{ sit: "amet" }` |
-| `test.js`                | See below         |
+| File                   | Contents          |
+| ---------------------- | ----------------- |
+| hello.txt              | `world`           |
+| lorem/ipsum/dolor.json | `{ sit: "amet" }` |
+| test.js                | See below         |
 
 ```js
 import getSet from "dot-get-set"
@@ -40,14 +40,3 @@ import getSet from "dot-get-set"
   // "{}" > lorem.json
 })()
 ```
-
-## Static Queries
-
-Expand or collapse the file structure while keeping your queries the same.
-
-| Query               | JSON                               | Expand                              | Collapse                                   |
-| ------------------- | ---------------------------------- | ----------------------------------- | ------------------------------------------ |
-| `lorem.ipsum.dolor` | `loremIpsumDolor.json` -> `"sit"`  | `loremIpsum/dolor.json` -> `"sit"`  | `loremIpsum.json` -> `{ "dolor": "sit" }`  |
-| `lorem.ipsum.dolor` | `loremIpsum/dolor.json` -> `"sit"` | `lorem/ipsum/dolor.json` -> `"sit"` | `lorem/ipsum.json` -> `{ "dolor": "sit" }` |
-| `lorem.ipsum.dolor` | `loremIpsumDolor.json` -> `"sit"`  | `lorem/ipsumDolor.json` -> `"sit"`  | `lorem/ipsum.json` -> `{ "dolor": "sit" }` |
-| `lorem.ipsum.dolor` | `lorem/ipsumDolor.json` -> `"sit"` | `lorem/ipsum/dolor.json` -> `"sit"` | `lorem/ipsum.json` -> `{ "dolor": "sit" }` |
