@@ -27,10 +27,10 @@ import getSet from "dot-get-set"
   // "amet"
 
   set("hello", "universe")
-  // "universe" > config/hello.txt
+  // "universe" > hello.txt
 
   set.merge("lorem.ipsum", { sed: "do" })
-  // "do" > lorem/ipsum/sed.json
+  // "\"do\"" > lorem/ipsum/sed.json
 
   set.delete("lorem.ipsum")
   // rm -rf lorem/ipsum
