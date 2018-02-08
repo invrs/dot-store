@@ -2,10 +2,10 @@
 
 Flexible filesystem accessor for text and JSON
 
-| Feature                    | Built With                                                                           |
-| -------------------------- | ------------------------------------------------------------------------------------ |
-| Collapsible "dot" accessor | [camel-dot-prop-immutable](https://github.com/invrs/camel-dot-prop-immutable#readme) |
-| Concurrent file access     | [proper-lockfile](https://github.com/moxystudio/node-proper-lockfile#readme)         |
+| Feature                                | Built With                                                                           |
+| -------------------------------------- | ------------------------------------------------------------------------------------ |
+| Collapsible & immutable "dot" accessor | [camel-dot-prop-immutable](https://github.com/invrs/camel-dot-prop-immutable#readme) |
+| Concurrent file access                 | [proper-lockfile](https://github.com/moxystudio/node-proper-lockfile#readme)         |
 
 ## Example
 
@@ -18,25 +18,18 @@ Flexible filesystem accessor for text and JSON
 ```js
 import getSet from "dot-get-set"
 ;(async () => {
-  let { get, set } = await getSet(__dirname)
+  let config = await getSet(__dirname)
 
-  get("hello")
+  config.get("hello")
   // "world"
 
-  get("lorem.ipsum.dolor.sit")
+  config.get("lorem.ipsum.dolor.sit")
   // "amet"
 
-  set("hello", "universe")
+  config = op.set("hello", "universe")
   // "universe" > hello.txt
 
-  set.merge("lorem.ipsum", { sed: "do" })
-  // "\"do\"" > lorem/ipsum/sed.json
-
-  set.delete("lorem.ipsum")
-  // rm -rf lorem/ipsum
-
-  set("lorem", {})
-  // rm -rf lorem
-  // "{}" > lorem.json
+  config = op.set("lorem.ipsum.dolor", { sed: "do" })
+  // { sed: "do" } > lorem/ipsum/dolor.json
 })()
 ```
