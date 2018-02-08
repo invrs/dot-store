@@ -1,29 +1,8 @@
-import { fixtures } from "fxtr"
+import { pathExists } from "fs-extra"
 import { resolve } from "path"
-
-import { dirToObj } from "../lib/dir"
-import { tryLstat } from "../lib/try"
+import { fixtures } from "fxtr"
 
 import getSet from "../dist"
-
-test("dirToObj", async () => {
-  let { path } = await fixtures(__dirname, "fixtures")
-  let { map, obj } = await dirToObj(path)
-
-  expect(Object.keys(map)).toEqual([
-    "",
-    "bang",
-    "bang.buzz",
-    "fizz",
-    "text",
-  ])
-
-  expect(obj).toEqual({
-    bang: { buzz: { buzzValue: true } },
-    fizz: { fizzValue: true },
-    text: "Some text!\n",
-  })
-})
 
 test("set", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
@@ -50,8 +29,8 @@ test("set (undefined)", async () => {
   config = await config.set("text", undefined)
   expect(config.get("text")).toBe(undefined)
   expect(
-    await tryLstat(resolve(path, "text.txt"))
-  ).toBeUndefined()
+    await pathExists(resolve(path, "text.txt"))
+  ).not.toBeTruthy()
 })
 
 test("set (new prop)", async () => {
@@ -61,7 +40,13 @@ test("set (new prop)", async () => {
   config = await config.set("newProp", "hey")
   expect(config.get("newProp")).toBe("hey")
   expect(
-    await tryLstat(resolve(path, "newProp.json"))
+    await pathExists(resolve(path, "newProp.json"))
+  ).toBeTruthy()
+
+  config = await config.set("bang.boom", { whoah: true })
+  expect(config.get("bang.boom")).toEqual({ whoah: true })
+  expect(
+    await pathExists(resolve(path, "bang/boom.json"))
   ).toBeTruthy()
 })
 
