@@ -4,6 +4,13 @@ import { fixtures } from "fxtr"
 
 import getSet from "../dist"
 
+test("without dir", async () => {
+  let config = await getSet(
+    resolve(__dirname, "non-existent")
+  )
+  expect(config.get("hello")).toBeUndefined()
+})
+
 test("set", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
   let config = await getSet(path)
