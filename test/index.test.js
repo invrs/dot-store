@@ -6,14 +6,15 @@ import getSet from "../dist"
 
 test("without dir", async () => {
   let config = await getSet(
-    resolve(__dirname, "non-existent")
+    resolve(__dirname, "non-existent"),
+    "**/*"
   )
   expect(config.get("hello")).toBeUndefined()
 })
 
 test("set", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
-  let config = await getSet(path)
+  let config = await getSet(path, "**/*")
 
   config = await config.set("text", "Some more text!")
   expect(config.get("text")).toBe("Some more text!")
@@ -31,7 +32,7 @@ test("set", async () => {
 
 test("set (undefined)", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
-  let config = await getSet(path)
+  let config = await getSet(path, "**/*")
 
   config = await config.set("text", undefined)
   expect(config.get("text")).toBe(undefined)
@@ -42,7 +43,7 @@ test("set (undefined)", async () => {
 
 test("set (new prop)", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
-  let config = await getSet(path)
+  let config = await getSet(path, "**/*")
 
   config = await config.set("newProp", "hey")
   expect(config.get("newProp")).toBe("hey")
@@ -59,7 +60,7 @@ test("set (new prop)", async () => {
 
 test("merge", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
-  let config = await getSet(path)
+  let config = await getSet(path, "**/*")
 
   config = await config.merge("bang.buzz", { hello: {} })
   expect(config.get("bang.buzz")).toEqual({

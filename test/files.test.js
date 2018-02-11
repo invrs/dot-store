@@ -1,17 +1,12 @@
 import { fixtures } from "fxtr"
-import { dirToObj } from "../lib/dir"
+import { patternToObj } from "../lib/files"
 
-test("dirToObj", async () => {
+test("patternToObj", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
-  let { map, obj } = await dirToObj(path)
-
-  expect(Object.keys(map)).toEqual([
-    "",
-    "bang",
-    "bang.buzz",
-    "fizz",
-    "text",
-  ])
+  let { obj } = await patternToObj({
+    pattern: "**/*",
+    root: path,
+  })
 
   expect(obj).toEqual({
     bang: { buzz: { buzzValue: true } },
