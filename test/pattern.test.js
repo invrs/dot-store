@@ -1,5 +1,5 @@
 import { fixtures } from "fxtr"
-import { patternToObj } from "../lib/files"
+import { patternToObj } from "../lib/pattern"
 
 test("patternToObj", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
