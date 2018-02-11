@@ -5,8 +5,9 @@ import { fixtures } from "fxtr"
 import getSet from "../dist"
 
 test("without dir", async () => {
+  let { path } = await fixtures(__dirname, "fixtures")
   let config = await getSet(
-    resolve(__dirname, "non-existent"),
+    resolve(path, "non-existent"),
     "**/*"
   )
   expect(config.get("hello")).toBeUndefined()
@@ -27,6 +28,25 @@ test("set", async () => {
   })
   expect(config.get("bang.buzz.nested")).toEqual({
     hello: "world",
+  })
+})
+
+test("set (concurrent)", async () => {
+  let { path } = await fixtures(__dirname, "fixtures")
+  let config = await getSet(path, "**/*")
+
+  await Promise.all([
+    config.merge("fizz", { a: true }),
+    config.merge("fizz", { b: true }),
+    config.merge("fizz", { c: true }),
+  ])
+
+  config = await getSet(path, "**/*")
+  expect(config.get("fizz")).toEqual({
+    a: true,
+    b: true,
+    c: true,
+    fizzValue: true,
   })
 })
 
@@ -61,6 +81,14 @@ test("set (new prop)", async () => {
 test("merge", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
   let config = await getSet(path, "**/*")
+
+  config = await config.merge("bang", { boom: true })
+  expect(config.get("bang")).toEqual({
+    boom: true,
+    buzz: {
+      buzzValue: true,
+    },
+  })
 
   config = await config.merge("bang.buzz", { hello: {} })
   expect(config.get("bang.buzz")).toEqual({
