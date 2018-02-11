@@ -4,8 +4,9 @@ Flexible filesystem accessor for text and JSON
 
 | Feature                        | Built With                                                                           |
 | ------------------------------ | ------------------------------------------------------------------------------------ |
-| Fuzzy immutable "dot" accessor | [camel-dot-prop-immutable](https://github.com/invrs/camel-dot-prop-immutable#readme) |
 | Concurrent file access         | [proper-lockfile](https://github.com/moxystudio/node-proper-lockfile#readme)         |
+| File glob                      | [node-glob](https://github.com/isaacs/node-glob)                                     |
+| Fuzzy immutable "dot" accessor | [camel-dot-prop-immutable](https://github.com/invrs/camel-dot-prop-immutable#readme) |
 
 ## Example
 
@@ -18,7 +19,7 @@ Flexible filesystem accessor for text and JSON
 ```js
 import getSet from "dot-get-set"
 ;(async () => {
-  let config = await getSet(__dirname)
+  let config = await getSet(__dirname, "**/*")
 
   config.get("hello")
   // "world"
