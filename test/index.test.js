@@ -5,11 +5,11 @@ test("gets value", () => {
   expect(store.get("test")).toBe(true)
 })
 
-test("emits mutation", () => {
+test("emits mutation", async () => {
   let fn = jest.fn()
   let store = new GetSet({ test: true })
   store.subscribe(fn)
-  store.set("test", false)
+  await store.set("test", false)
   expect(fn).toHaveBeenCalledWith({ test: false }, "test")
   expect(store.get("test")).toBe(false)
 })
