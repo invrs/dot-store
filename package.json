@@ -44,7 +44,7 @@
     "prettier": "1"
   },
   "dependencies": {
-    "camel-dot-prop-immutable": "1",
+    "camel-dot-prop-immutable": "^1.4.1",
     "fs-extra": "5",
     "glob": "7",
     "proper-lockfile": "3"
