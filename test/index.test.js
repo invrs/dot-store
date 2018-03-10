@@ -1,4 +1,4 @@
-import GetSet from "../dist"
+import GetSet, { withFs } from "../dist"
 
 test("gets value", () => {
   let store = new GetSet({ test: true })
@@ -8,8 +8,15 @@ test("gets value", () => {
 test("emits mutation", async () => {
   let fn = jest.fn()
   let store = new GetSet({ test: true })
+
   store.subscribe(fn)
   await store.set("test", false)
+
   expect(fn).toHaveBeenCalledWith({ test: false }, "test")
   expect(store.get("test")).toBe(false)
+})
+
+test("withFs", async () => {
+  let store = new GetSet()
+  withFs(store)
 })
