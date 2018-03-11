@@ -58,17 +58,22 @@ test("set (undefined)", async () => {
 })
 
 test("set (new prop)", async () => {
-  await store.set("newProp", "hey")
+  let text = "hey"
+  let obj = { whoah: true }
 
-  expect(store.get("newProp")).toBe("hey")
+  await store.set("newProp", text)
+
+  expect(store.get("newProp")).toBe(text)
+  expect(await read("newProp.json")).toBe(text)
 
   expect(
     await pathExists(resolve(path, "newProp.json"))
   ).toBeTruthy()
 
-  await store.set("bang.boom", { whoah: true })
+  await store.set("bang.boom", obj)
 
-  expect(store.get("bang.boom")).toEqual({ whoah: true })
+  expect(store.get("bang.boom")).toEqual(obj)
+  expect(await read("bang/boom.json")).toEqual(obj)
 
   expect(
     await pathExists(resolve(path, "bang/boom.json"))
@@ -76,30 +81,41 @@ test("set (new prop)", async () => {
 })
 
 test("merge", async () => {
-  await store.merge("bang", { boom: true })
-
-  expect(store.get("bang")).toEqual({
+  let bang = {
     boom: true,
     buzz: {
       buzzValue: true,
     },
-  })
+  }
 
-  await store.merge("bang.buzz", { hello: {} })
+  await store.merge("bang", { boom: true })
 
-  expect(store.get("bang.buzz")).toEqual({
+  expect(store.get("bang")).toEqual(bang)
+  expect(await read("bang/boom.json")).toEqual(true)
+
+  let hello = { hello: {} }
+
+  await store.merge("bang.buzz", hello)
+
+  let buzz = {
     buzzValue: true,
     hello: {},
-  })
+  }
+
+  expect(store.get("bang.buzz")).toEqual(buzz)
+  expect(await read("bang/buzz.json")).toEqual(buzz)
 
   await store.merge("bang.buzz.hello", {
     helloAgain: true,
   })
 
-  expect(store.get("bang.buzz")).toEqual({
+  buzz = {
     buzzValue: true,
     hello: {
       helloAgain: true,
     },
-  })
+  }
+
+  expect(store.get("bang.buzz")).toEqual(buzz)
+  expect(await read("bang/buzz.json")).toEqual(buzz)
 })
