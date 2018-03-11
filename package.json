@@ -1,24 +1,24 @@
 {
-  "name": "dot-get-set",
+  "name": "dot-store",
   "version": "1.2.1",
-  "description":
-    "Flexible filesystem accessor for text and JSON",
+  "description": "A simple store for all applications",
   "keywords": [
     "accessor",
     "fs",
     "immutable",
     "json",
+    "redux",
     "store",
     "text"
   ],
   "author": "Inverse Labs <labs@inverse.com>",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/invrs/dot-get-set.git"
+    "url": "git+ssh://git@github.com/invrs/dot-store.git"
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage": "https://github.com/invrs/dot-get-set#readme",
+  "homepage": "https://github.com/invrs/dot-store#readme",
   "scripts": {
     "build": "babel lib --out-dir dist",
     "fix": "npm run lint -- --fix",

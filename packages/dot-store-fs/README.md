@@ -1,24 +1,19 @@
-# Node Starter
+# dot-store-fs
 
-Inverse best practices for new Node projects.
+Adds filesystem read/write to [dot-store](/invrs/dot-store)
 
-![clone->kill](http://i.imgur.com/tW19j.gif)
+| Feature                        | Built With                                                                           |
+| ------------------------------ | ------------------------------------------------------------------------------------ |
+| Concurrent file access         | [proper-lockfile](https://github.com/moxystudio/node-proper-lockfile#readme)         |
+| File glob                      | [node-glob](https://github.com/isaacs/node-glob)                                     |
+| Fuzzy immutable "dot" accessor | [camel-dot-prop-immutable](https://github.com/invrs/camel-dot-prop-immutable#readme) |
 
-| Feature                                                                                                                                                                             | Usage                                                                                               |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Babel build with [async/await](https://babeljs.io/docs/plugins/transform-async-to-generator) and [object rest/spread](https://babeljs.io/docs/plugins/transform-object-rest-spread) | `npm run build`                                                                                     |
-| ESLint on JS with prettier                                                                                                                                                          | `npm run lint` and `npm run fix`                                                                    |
-| Prettier on css, json, md                                                                                                                                                           | `npm run pretty`                                                                                    |
-| Jest testing                                                                                                                                                                        | `npm test`                                                                                          |
-| Pre-commit pretty, fix, and test                                                                                                                                                    | [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged) |
+```js
+import DotStore from "dot-store"
+import withFs from "dot-store-fs"
 
-## Start a project
-
-```bash
-git clone git@github.com:invrs/node-starter.git [PROJECT]
-cd [PROJECT]
-rm -rf .git && git init .
-git remote add origin git@github.com:invrs/[PROJECT].git
+const store = new DotStore()
+await withFs(store, { pattern: "**/*", root: __dirname })
 ```
 
-Edit `package.json` and `README.md`.
+Then use the store [as normal](/invrs/dot-store).
