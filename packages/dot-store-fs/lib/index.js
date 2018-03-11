@@ -1,7 +1,7 @@
 import { lockedFsRead } from "./fsRead"
 import { lockedFsWrite } from "./fsWrite"
 
-export async function withFs(store, options) {
+export default async function(store, options) {
   let { pattern, root } = options
 
   await lockedFsRead({ pattern, root, store })
