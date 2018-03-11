@@ -1,9 +1,10 @@
 import { fixtures } from "fxtr"
-import { patternToObj } from "../lib/pattern"
+import { fsRead } from "../lib/fsRead"
 
-test("patternToObj", async () => {
+test("fsRead", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
-  let { obj } = await patternToObj({
+
+  let { obj } = await fsRead({
     pattern: "**/*",
     root: path,
   })
