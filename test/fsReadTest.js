@@ -1,5 +1,5 @@
 import { fixtures } from "fxtr"
-import { fsRead } from "../lib/fs.read"
+import { fsRead } from "../lib/fsRead"
 
 test("fsRead", async () => {
   let { path } = await fixtures(__dirname, "fixtures")
