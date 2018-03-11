@@ -32,7 +32,7 @@
     "pretest": "npm run build",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
-    "test": "jest"
+    "test": "jest && npm run lerna-test"
   },
   "devDependencies": {
     "babel-cli": "6",
@@ -64,13 +64,16 @@
   },
   "eslintConfig": {
     "env": {
+      "browser": true,
       "es6": true,
       "node": true
     },
     "extends": [
       "eslint:recommended",
-      "plugin:prettier/recommended"
+      "plugin:prettier/recommended",
+      "plugin:react/recommended"
     ],
+    "parser": "babel-eslint",
     "parserOptions": {
       "ecmaFeatures": {
         "experimentalObjectRestSpread": true
@@ -82,6 +85,14 @@
       "curly": "error",
       "indent": ["error", 2],
       "linebreak-style": ["error", "unix"],
+      "max-len": [
+        "error",
+        {
+          "code": 60,
+          "ignoreRegExpLiterals": true,
+          "ignoreStrings": true
+        }
+      ],
       "no-console": [
         "error",
         {
@@ -89,6 +100,10 @@
         }
       ],
       "quotes": ["error", "double"],
+      "react/display-name": "off",
+      "react/no-find-dom-node": "off",
+      "react/prop-types": "off",
+      "react/react-in-jsx-scope": "off",
       "semi": ["error", "never"],
       "sort-keys": [
         "error",
@@ -103,7 +118,8 @@
         {
           "ignoreCase": true
         }
-      ]
+      ],
+      "strict": 0
     }
   },
   "husky": {
@@ -113,6 +129,7 @@
   },
   "jest": {
     "roots": ["<rootDir>/test/"],
+    "setupFiles": ["./test/setup.js"],
     "testMatch": ["**/*Test.js"],
     "verbose": true
   },
