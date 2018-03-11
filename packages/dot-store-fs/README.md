@@ -1,6 +1,6 @@
 # dot-store-fs
 
-Adds filesystem read/write to [dot-store](/invrs/dot-store)
+Adds filesystem read/write to [dot-store](https://github.com/invrs/dot-store)
 
 | Feature                        | Built With                                                                           |
 | ------------------------------ | ------------------------------------------------------------------------------------ |
@@ -16,4 +16,4 @@ const store = new DotStore()
 await withFs(store, { pattern: "**/*", root: __dirname })
 ```
 
-Then use the store [as normal](/invrs/dot-store).
+Then use the store [as normal](https://github.com/invrs/dot-store).
