@@ -25,8 +25,20 @@ test("props", async () => {
   expect(props.changes).toBeInstanceOf(Array)
   expect(props.store).toBeInstanceOf(Store)
 
+  expect(props.changes).toEqual([])
+  expect(props.store.state).toEqual({})
+
   await props.store.set("test", {})
 
   expect(props.changes).toEqual(["test"])
   expect(props.store.state).toEqual({ test: {} })
+
+  mount(
+    <StoreProvider>
+      <Component />
+    </StoreProvider>
+  )
+
+  expect(props.changes).toEqual([])
+  expect(props.store.state).toEqual({})
 })
