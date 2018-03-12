@@ -1,6 +1,6 @@
 # dot-store-fs
 
-Adds filesystem read/write to [dot-store](https://github.com/invrs/dot-store)
+Adds filesystem read/write to [dot-store](https://github.com/invrs/dot-store).
 
 | Feature                        | Built With                                                                           |
 | ------------------------------ | ------------------------------------------------------------------------------------ |
