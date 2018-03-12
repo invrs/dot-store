@@ -1,7 +1,7 @@
 {
   "name": "dot-store",
-  "version": "1.2.1",
-  "description": "A simple store for all applications",
+  "version": "1.0.0",
+  "description": "Like Redux, but easy",
   "keywords": [
     "accessor",
     "fs",
