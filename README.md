@@ -56,7 +56,7 @@ npm install --save dot-store-react
 Add `StoreProvider` to your component tree:
 
 ```js
-import { Store } from "dot-store"
+import Store from "dot-store"
 import { StoreProvider } from "dot-store-react"
 
 export default class Layout extends React.Component {
@@ -77,7 +77,7 @@ export default class Layout extends React.Component {
 Read and write to the store:
 
 ```js
-import { withState } from "dot-store-react"
+import { withStore } from "dot-store-react"
 
 class Page extends React.Component {
   render() {
