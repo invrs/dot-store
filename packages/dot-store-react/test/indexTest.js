@@ -4,6 +4,20 @@ import { mount } from "enzyme"
 import { StoreProvider, withStore } from "../dist"
 import Store from "../../../dist"
 
+const Layout = class extends React.Component {
+  constructor(props) {
+    super(props)
+    this.store = new Store({ counter: 0 })
+  }
+  render() {
+    return (
+      <StoreProvider store={this.store}>
+        {this.props.children}
+      </StoreProvider>
+    )
+  }
+}
+
 test("props", async () => {
   let props
 
@@ -17,28 +31,28 @@ test("props", async () => {
   )
 
   mount(
-    <StoreProvider>
+    <Layout>
       <Component />
-    </StoreProvider>
+    </Layout>
   )
 
   expect(props.changes).toBeInstanceOf(Array)
   expect(props.store).toBeInstanceOf(Store)
 
   expect(props.changes).toEqual([])
-  expect(props.store.state).toEqual({})
+  expect(props.store.state).toEqual({ counter: 0 })
 
-  await props.store.set("test", {})
+  await props.store.set("counter", 1)
 
-  expect(props.changes).toEqual(["test"])
-  expect(props.store.state).toEqual({ test: {} })
+  expect(props.changes).toEqual(["counter"])
+  expect(props.store.state).toEqual({ counter: 1 })
 
   mount(
-    <StoreProvider>
+    <Layout>
       <Component />
-    </StoreProvider>
+    </Layout>
   )
 
   expect(props.changes).toEqual([])
-  expect(props.store.state).toEqual({})
+  expect(props.store.state).toEqual({ counter: 0 })
 })

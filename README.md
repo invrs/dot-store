@@ -6,11 +6,11 @@ Like Redux, but easy.
 
 ## Install
 
-```js
-npm install dot-store
+```bash
+npm install --save dot-store
 ```
 
-## Usage
+## Basics
 
 Create an in-memory store:
 
@@ -19,7 +19,7 @@ import Store from "dot-store"
 const store = new Store()
 ```
 
-Mutate state using a [`dot-prop-immutable` interface](https://github.com/debitoor/dot-prop-immutable#readme):
+Mutate state with ["dot props"](https://github.com/debitoor/dot-prop-immutable#readme):
 
 ```js
 store.set("users", { employees: {} })
@@ -43,4 +43,50 @@ store.subscribe((props, state) => {
     // do something if users.* is mutated
   }
 })
+```
+
+## Using with React
+
+Install `dot-store-react`:
+
+```bash
+npm install --save dot-store-react
+```
+
+Add `StoreProvider` to your component tree:
+
+```js
+import { Store } from "dot-store"
+import { StoreProvider } from "dot-store-react"
+
+export default class Layout extends React.Component {
+  constructor(props) {
+    super(props)
+    this.store = new Store({ counter: 0 })
+  }
+  render() {
+    return (
+      <StoreProvider store={this.store}>
+        {this.props.children}
+      </StoreProvider>
+    )
+  }
+)
+```
+
+Read and write to the store:
+
+```js
+import { withState } from "dot-store-react"
+
+class Page extends React.Component {
+  render() {
+    let { store } = this.props
+    let { get, set } = store
+
+    set("counter", get("counter") + 1)
+  }
+}
+
+export default withStore(Page)
 ```

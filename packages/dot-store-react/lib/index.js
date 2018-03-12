@@ -1,8 +1,6 @@
 import React from "react"
 import reactContext from "create-react-context"
 
-import Store from "../../../dist"
-
 const StoreContext = reactContext()
 
 export const withStore = Component =>
@@ -22,7 +20,7 @@ export class StoreProvider extends React.Component {
   constructor(props) {
     super(props)
     this.changes = []
-    this.store = props.store || new Store()
+    this.store = props.store
     this.subscribe()
   }
 
