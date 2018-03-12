@@ -1,10 +1,10 @@
 import React from "react"
-import renderer from "react-test-renderer"
+import { mount } from "enzyme"
 
 import { StoreProvider, withStore } from "../dist"
 import Store from "../../../dist"
 
-test("props", () => {
+test("props", async () => {
   let props
 
   const Component = withStore(
@@ -16,7 +16,7 @@ test("props", () => {
     }
   )
 
-  renderer.create(
+  mount(
     <StoreProvider>
       <Component />
     </StoreProvider>
@@ -24,4 +24,9 @@ test("props", () => {
 
   expect(props.changes).toBeInstanceOf(Array)
   expect(props.store).toBeInstanceOf(Store)
+
+  await props.store.set("test", {})
+
+  expect(props.changes).toEqual(["test"])
+  expect(props.store.state).toEqual({ test: {} })
 })

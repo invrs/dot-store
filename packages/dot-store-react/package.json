@@ -1,17 +1,23 @@
 {
-  "name": "dot-start-react",
+  "name": "dot-store-react",
   "version": "0.0.1",
-  "description": "Node.js starter project",
-  "keywords": ["boilerplate", "nodejs", "starter"],
+  "description": "React integration for dot-store",
+  "keywords": [
+    "accessor",
+    "immutable",
+    "react",
+    "redux",
+    "store"
+  ],
   "author": "Inverse Labs <labs@inverse.com>",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/invrs/node-starter.git"
+    "url": "git+ssh://git@github.com/invrs/dot-store.git"
   },
   "license": "MIT",
   "main": "dist/index.js",
   "homepage":
-    "https://github.com/invrs/node-starter#readme",
+    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme",
   "scripts": {
     "build": "babel lib --out-dir dist",
     "fix": "npm run lint -- --fix",
@@ -31,9 +37,10 @@
     "babel-preset-env": "1",
     "babel-preset-node6": "11",
     "babel-preset-react": "6",
+    "enzyme": "3",
+    "enzyme-adapter-react-16": "^1.1.1",
     "fxtr": "1",
-    "jest": "22",
-    "react-test-renderer": "16"
+    "jest": "22"
   },
   "dependencies": {
     "create-react-context": "^0.2.1",
@@ -49,6 +56,7 @@
   },
   "jest": {
     "setupFiles": ["./test/setup.js"],
-    "testMatch": ["**/*Test.js"]
+    "testMatch": ["**/*Test.js"],
+    "verbose": true
   }
 }

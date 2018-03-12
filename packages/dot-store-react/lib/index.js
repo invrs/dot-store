@@ -27,9 +27,8 @@ export class StoreProvider extends React.Component {
   }
 
   subscribe() {
-    this.store.subscribe((store, change) => {
+    this.store.subscribe(change => {
       this.changes = this.changes.concat([change])
-      this.store = store
       this.forceUpdate()
     })
   }
