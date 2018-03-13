@@ -5,6 +5,12 @@ const StoreContext = reactContext()
 
 export const withStore = Component =>
   class extends React.Component {
+    static async getInitialProps(context) {
+      if (Component.getInitialProps) {
+        return await Component.getInitialProps(context)
+      }
+    }
+
     render() {
       return (
         <StoreContext.Consumer>
