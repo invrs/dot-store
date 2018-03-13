@@ -16,8 +16,7 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage":
-    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
+  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
   "scripts": {
     "build": "babel lib --out-dir dist",
     "fix": "npm run lint -- --fix",
@@ -44,15 +43,21 @@
     "proper-lockfile": "3"
   },
   "babel": {
-    "presets": ["node6"],
+    "presets": [
+      "node6"
+    ],
     "plugins": [
       "transform-async-to-generator",
       "transform-object-rest-spread"
     ]
   },
   "jest": {
-    "setupFiles": ["./test/setup.js"],
-    "testMatch": ["**/*Test.js"],
+    "setupFiles": [
+      "./test/setup.js"
+    ],
+    "testMatch": [
+      "**/*Test.js"
+    ],
     "verbose": true
   }
 }
