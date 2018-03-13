@@ -8,8 +8,7 @@
     "immutable",
     "json",
     "redux",
-    "store",
-    "text"
+    "store"
   ],
   "author": "Inverse Labs <labs@inverse.com>",
   "repository": {
