@@ -15,7 +15,11 @@ export const withStore = Component =>
       return (
         <StoreContext.Consumer>
           {([changes, store]) => (
-            <Component changes={changes} store={store} />
+            <Component
+              changes={changes}
+              state={store.state}
+              store={store}
+            />
           )}
         </StoreContext.Consumer>
       )
