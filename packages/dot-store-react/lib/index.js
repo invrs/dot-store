@@ -16,6 +16,7 @@ export const withStore = Component =>
         <StoreContext.Consumer>
           {([changes, store]) => (
             <Component
+              {...this.props}
               changes={changes}
               state={store.state}
               store={store}
