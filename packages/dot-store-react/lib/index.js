@@ -32,10 +32,9 @@ export class StoreProvider extends React.Component {
     super(props)
     this.changes = []
     this.store = props.store
-    this.subscribe()
   }
 
-  subscribe() {
+  componentDidMount() {
     this.store.subscribe(change => {
       this.changes = this.changes.concat([change])
       this.forceUpdate()
