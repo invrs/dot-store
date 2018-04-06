@@ -47,8 +47,11 @@ export function pathFromProp({ paths, prop, root }) {
 
   do {
     path = nearestPath({ path: join(root, prop), paths })
+    if (!prop.match(regex)) {
+      break
+    }
     prop = prop.replace(regex, "")
-  } while (!path && prop.match(regex))
+  } while (!path)
 
   if (path) {
     pathProp = pathToQuery({ path, root })
