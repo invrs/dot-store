@@ -43,7 +43,7 @@ store.state.users.employees.bob
 Callbacks may be asynchronous and execute sequentially before and after each operation.
 
 | Operation | Events                                                       |
-| --------- | ------------------------------------------------------------ |
+| :-------- | :----------------------------------------------------------- |
 | `get`     | `beforeGet`, `afterGet`                                      |
 | `delete`  | `beforeUpdate`, `afterUpdate`, `beforeDelete`, `afterDelete` |
 | `merge`   | `beforeUpdate`, `afterUpdate`, `beforeMerge`, `afterMerge`   |
@@ -62,7 +62,7 @@ store.subscribe(
 ```
 
 | Callback argument | Description                                                               |
-| ----------------- | ------------------------------------------------------------------------- |
+| :---------------- | :------------------------------------------------------------------------ |
 | `op`              | Operation (`get`, `delete`, etc)                                          |
 | `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) locator |
 | `state`           | State snapshot                                                            |
@@ -71,6 +71,6 @@ store.subscribe(
 ## Extensions
 
 | Package                                                                                             | Description           |
-| --------------------------------------------------------------------------------------------------- | --------------------- |
+| :-------------------------------------------------------------------------------------------------- | :-------------------- |
 | [`dot-store-fs`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)       | Filesystem read/write |
 | [`dot-store-react`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme) | React integration     |
