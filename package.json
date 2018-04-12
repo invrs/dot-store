@@ -1,6 +1,7 @@
 {
-  "name": "dot-store",
-  "version": "1.1.7",
+  "name": "dot-store-lerna",
+  "private": true,
+  "version": "0.0.1",
   "description": "Like Redux, but easy",
   "keywords": [
     "accessor",
@@ -19,43 +20,24 @@
   "main": "dist/index.js",
   "homepage": "https://github.com/invrs/dot-store#readme",
   "scripts": {
-    "build":
-      "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build": "lerna run build",
+    "bootstrap": "lerna bootstrap",
     "fix": "npm run lint -- --fix",
-    "lerna-bootstrap": "lerna bootstrap",
-    "lerna-build": "lerna run build",
-    "lerna-fix": "lerna run fix",
-    "lerna-pretty": "lerna run pretty",
-    "lerna-publish": "lerna publish",
-    "lerna-lint": "lerna run lint",
-    "lerna-test": "lerna run test",
-    "prepublishOnly": "npm run build",
-    "pretest": "npm run build",
-    "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
-    "test": "jest && npm run lerna-test"
+    "pretty": "prettier --write **/*.css **/*.json **/*.md",
+    "publish": "lerna publish",
+    "test": "lerna run test"
   },
   "devDependencies": {
-    "babel-cli": "6",
-    "babel-core": "6",
     "babel-eslint": "8",
-    "babel-plugin-transform-async-to-generator": "6",
-    "babel-plugin-transform-object-rest-spread": "6",
-    "babel-preset-node6": "11",
     "eslint": "4",
     "eslint-config-prettier": "2",
     "eslint-plugin-prettier": "2",
     "eslint-plugin-react": "7",
-    "fxtr": "1",
     "husky": "^0.15.0-rc.3",
-    "jest": "22",
     "lerna": "2",
     "lint-staged": "6",
-    "prettier": "1",
-    "rimraf": "^2.6.2"
-  },
-  "dependencies": {
-    "camel-dot-prop-immutable": "1"
+    "prettier": "1"
   },
   "babel": {
     "presets": ["node6"],

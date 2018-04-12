@@ -2,7 +2,7 @@ import React from "react"
 import { mount } from "enzyme"
 
 import { StoreProvider, withStore } from "../dist"
-import Store from "../../../dist"
+import Store from "../../dot-store-core/dist"
 
 const Layout = class extends React.Component {
   constructor(props) {

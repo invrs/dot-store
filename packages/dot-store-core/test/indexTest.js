@@ -16,6 +16,11 @@ test("emits mutation", async () => {
   store.subscribe(fn)
   await store.set("test", false)
 
-  expect(fn).toHaveBeenCalledWith("test", { test: false })
+  expect(fn).toHaveBeenCalledWith({
+    op: "set",
+    prop: "test",
+    state: { test: false },
+    value: false,
+  })
   expect(store.get("test")).toBe(false)
 })

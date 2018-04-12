@@ -15,11 +15,11 @@ export default class DotStore {
 
     for (let op of mutations) {
       this[op] = async (prop, value) =>
-        await this.mutate(op, prop, value)
+        await this.mutate({ op, prop, value })
     }
   }
 
-  defaultEvent(event, fn) {
+  defaultEvent({ event, fn }) {
     if (typeof event !== "string") {
       fn = event
       event = "afterMutate"
@@ -30,11 +30,11 @@ export default class DotStore {
     return { event, fn }
   }
 
-  async dispatch(event, prop, state) {
+  async dispatch(event, { op, prop, state, value }) {
     this.ensureListener(event)
 
     for (let fn of this.listeners[event]) {
-      await fn(prop, state)
+      await fn({ op, prop, state, value })
     }
 
     return this.state
@@ -50,32 +50,37 @@ export default class DotStore {
     return camelDot.get(this.state, props)
   }
 
-  async mutate(op, prop, value) {
+  async mutate({ op, prop, value }) {
     let { prop: resolvedProp } = camelDot.camelDotMatch({
       obj: this.state,
       prop,
     })
 
-    await this.dispatch("beforeMutate", resolvedProp)
+    let event = {
+      op,
+      prop: resolvedProp,
+      state: this.state,
+      value,
+    }
+
+    await this.dispatch("beforeMutate", event)
 
     let state = dot[op](this.state, resolvedProp, value)
     this.state = state
 
-    return await this.dispatch(
-      "afterMutate",
-      resolvedProp,
-      state
-    )
+    event = { ...event, state }
+
+    return await this.dispatch("afterMutate", event)
   }
 
   subscribe(event, fn) {
-    ;({ event, fn } = this.defaultEvent(event, fn))
+    ;({ event, fn } = this.defaultEvent({ event, fn }))
 
     this.listeners[event].push(fn)
   }
 
   unsubscribe(event, fn) {
-    ;({ event, fn } = this.defaultEvent(event, fn))
+    ;({ event, fn } = this.defaultEvent({ event, fn }))
 
     this.listeners[event] = this.listeners[event].filter(
       f => f !== fn

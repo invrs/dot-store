@@ -1,11 +1,12 @@
 {
-  "name": "dot-store-react",
-  "version": "0.1.7",
-  "description": "React integration for dot-store",
+  "name": "dot-store",
+  "version": "1.1.7",
+  "description": "Like Redux, but easy",
   "keywords": [
     "accessor",
+    "fs",
     "immutable",
-    "react",
+    "json",
     "redux",
     "store"
   ],
@@ -16,8 +17,7 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage":
-    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme",
+  "homepage": "https://github.com/invrs/dot-store#readme",
   "scripts": {
     "build":
       "rimraf dist; babel lib --out-dir dist --source-maps",
@@ -26,47 +26,31 @@
     "pretest": "npm run build",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
-    "test": "jest test"
+    "test": "jest"
   },
   "devDependencies": {
     "babel-cli": "6",
     "babel-core": "6",
     "babel-eslint": "8",
-    "babel-jest": "22",
     "babel-plugin-transform-async-to-generator": "6",
     "babel-plugin-transform-object-rest-spread": "6",
-    "babel-preset-env": "1",
     "babel-preset-node6": "11",
-    "babel-preset-react": "6",
-    "enzyme": "3",
-    "enzyme-adapter-react-16": "1",
     "fxtr": "1",
     "jest": "22",
     "rimraf": "2"
   },
   "peerDependencies": {
-    "create-react-context": "0.2",
-    "react": "16",
-    "react-dom": "16"
+    "camel-dot-prop-immutable": "1"
   },
   "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "react"
-    ],
+    "presets": ["node6"],
     "plugins": [
       "transform-async-to-generator",
       "transform-object-rest-spread"
     ]
   },
   "jest": {
+    "roots": ["<rootDir>/test/"],
     "setupFiles": ["./test/setup.js"],
     "testMatch": ["**/*Test.js"],
     "verbose": true

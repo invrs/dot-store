@@ -2,7 +2,7 @@ import { pathExists } from "fs-extra"
 import { resolve } from "path"
 import { fixtures } from "fxtr"
 
-import GetSet from "../../../dist"
+import GetSet from "../../dot-store-core/dist"
 import withFs from "../dist"
 
 let path, read, store
