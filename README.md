@@ -19,31 +19,54 @@ import Store from "dot-store"
 const store = new Store()
 ```
 
-Mutate state with ["dot props"](https://github.com/debitoor/dot-prop-immutable#readme):
+Operate on state with ["dot props"](https://github.com/debitoor/dot-prop-immutable#readme):
 
 ```js
-store.set("users", { employees: {} })
-store.merge("users.employees", { john: {} })
-store.toggle("users.employees.john.admin")
+await store.set("users.employees", { bob: {} })
+await store.merge("users.employees.bob", { name: "Bob" })
+await store.toggle("users.employees.bob.admin")
+await store.delete("users.employees.bob")
 ```
 
 Read state:
 
 ```js
-store.get("users.employees.john")
+await store.get("users.employees.bob")
 // or
-store.state.users.employees.john
+store.getSync("users.employees.bob")
+// or
+store.state.users.employees.bob
 ```
 
-And subscribe to changes:
+## Callbacks
+
+Callbacks may be asynchronous and execute sequentially before and after each operation.
+
+| Operation | Callbacks                                                    |
+| --------- | ------------------------------------------------------------ |
+| `get`     | `beforeGet`, `afterGet`                                      |
+| `delete`  | `beforeUpdate`, `afterUpdate`, `beforeDelete`, `afterDelete` |
+| `merge`   | `beforeUpdate`, `afterUpdate`, `beforeMerge`, `afterMerge`   |
+| `set`     | `beforeUpdate`, `afterUpdate`, `beforeSet`, `afterSet`       |
+| `toggle`  | `beforeUpdate`, `afterUpdate`, `beforeToggle`, `afterToggle` |
 
 ```js
-store.subscribe((props, state) => {
-  if (props.match(/^users\./)) {
-    // do something if users.* is mutated
-  }
-})
+// Subscribe to all updates
+store.subscribe(async ({ op, prop, state, value }) => {})
+
+// Subscribe to specific operations
+store.subscribe(
+  "beforeGet",
+  async ({ op, prop, state }) => {}
+)
 ```
+
+| Callback argument | Description                              |
+| ----------------- | ---------------------------------------- |
+| `op`              | The operation (`get`, `delete`, etc)     |
+| `prop`            | The dot-prop locator                     |
+| `state`           | State snapshot                           |
+| `value`           | Third argument to operation (if present) |
 
 ## Using with React
 
@@ -81,10 +104,8 @@ import { withStore } from "dot-store-react"
 
 class Page extends React.Component {
   render() {
-    let { store } = this.props
-    let { set, state } = store
-
-    set("counter", state.counter + 1)
+    let { state, store } = this.props
+    store.set("counter", state.counter + 1)
   }
 }
 
