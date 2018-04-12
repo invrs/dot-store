@@ -1,8 +1,11 @@
 import camelDot from "camel-dot-prop-immutable"
 import dot from "dot-prop-immutable"
 
-export const mutations = [
+import { capitalize } from "./string"
+
+export const ops = [
   "delete",
+  "get",
   "merge",
   "set",
   "toggle",
@@ -13,9 +16,9 @@ export default class DotStore {
     this.listeners = {}
     this.state = state
 
-    for (let op of mutations) {
+    for (let op of ops) {
       this[op] = async (prop, value) =>
-        await this.update({ op, prop, value })
+        await this.store({ op, prop, value })
     }
   }
 
@@ -30,11 +33,13 @@ export default class DotStore {
     return { event, fn }
   }
 
-  async dispatch(event, { op, prop, state, value }) {
-    this.ensureListener(event)
+  async dispatch(event, payload) {
+    for (let e of this.events(event, payload)) {
+      this.ensureListener(e)
 
-    for (let fn of this.listeners[event]) {
-      await fn({ op, prop, state, value })
+      for (let fn of this.listeners[e]) {
+        await fn(payload)
+      }
     }
 
     return this.state
@@ -46,31 +51,49 @@ export default class DotStore {
     }
   }
 
-  get(props) {
-    return camelDot.get(this.state, props)
+  events(event, { op }) {
+    let opEvent = `${event}${capitalize(op)}`
+
+    if (op == "get") {
+      return [opEvent]
+    } else {
+      return [opEvent, `${event}Update`]
+    }
   }
 
-  async update({ op, prop, value }) {
-    let { prop: resolvedProp } = camelDot.camelDotMatch({
+  async store({ op, prop: ogProp, value }) {
+    let { prop } = camelDot.camelDotMatch({
       obj: this.state,
-      prop,
+      prop: ogProp,
     })
 
-    let event = {
+    let payload = {
       op,
-      prop: resolvedProp,
+      prop,
       state: this.state,
       value,
     }
 
-    await this.dispatch("beforeUpdate", event)
+    await this.dispatch("before", payload)
 
-    let state = dot[op](this.state, resolvedProp, value)
-    this.state = state
+    let result = dot[op](this.state, prop, value)
+    let state
 
-    event = { ...event, state }
+    if (op == "get") {
+      state = this.state
+    } else {
+      this.state = state = result
+    }
 
-    return await this.dispatch("afterUpdate", event)
+    payload = { ...payload, state }
+
+    await this.dispatch("after", payload)
+
+    if (op == "get") {
+      return result
+    } else {
+      return this.state
+    }
   }
 
   subscribe(event, fn) {
