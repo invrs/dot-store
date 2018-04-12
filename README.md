@@ -42,7 +42,7 @@ store.state.users.employees.bob
 
 Callbacks may be asynchronous and execute sequentially before and after each operation.
 
-| Operation | Callbacks                                                    |
+| Operation | Events                                                       |
 | --------- | ------------------------------------------------------------ |
 | `get`     | `beforeGet`, `afterGet`                                      |
 | `delete`  | `beforeUpdate`, `afterUpdate`, `beforeDelete`, `afterDelete` |
@@ -54,23 +54,23 @@ Callbacks may be asynchronous and execute sequentially before and after each ope
 // Subscribe to all updates
 store.subscribe(async ({ op, prop, state, value }) => {})
 
-// Subscribe to specific operations
+// Subscribe to a specific event
 store.subscribe(
   "beforeGet",
-  async ({ op, prop, state }) => {}
+  async ({ op, prop, state, value }) => {}
 )
 ```
 
-| Callback argument | Description                              |
-| ----------------- | ---------------------------------------- |
-| `op`              | The operation (`get`, `delete`, etc)     |
-| `prop`            | The dot-prop locator                     |
-| `state`           | State snapshot                           |
-| `value`           | Third argument to operation (if present) |
+| Callback argument | Description                                                                              |
+| ----------------- | ---------------------------------------------------------------------------------------- |
+| `op`              | Operation (`get`, `delete`, etc)                                                         |
+| `prop`            | [Dot-prop](["dot props"](https://github.com/debitoor/dot-prop-immutable#readme)) locator |
+| `state`           | State snapshot                                                                           |
+| `value`           | Third argument to operation (if present)                                                 |
 
 ## Extensions
 
-| Package                                                                                             | Description                             |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| [`dot-store-fs`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)       | Adds filesystem read/write to dot-store |
-| [`dot-store-react`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme) | React integration                       |
+| Package                                                                                             | Description           |
+| --------------------------------------------------------------------------------------------------- | --------------------- |
+| [`dot-store-fs`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)       | Filesystem read/write |
+| [`dot-store-react`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme) | React integration     |
