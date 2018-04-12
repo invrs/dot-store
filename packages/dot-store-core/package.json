@@ -1,6 +1,6 @@
 {
   "name": "dot-store",
-  "version": "1.1.7",
+  "version": "0.2.0",
   "description": "Like Redux, but easy",
   "keywords": [
     "accessor",
@@ -19,8 +19,7 @@
   "main": "dist/index.js",
   "homepage": "https://github.com/invrs/dot-store#readme",
   "scripts": {
-    "build":
-      "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
@@ -43,16 +42,24 @@
     "camel-dot-prop-immutable": "1"
   },
   "babel": {
-    "presets": ["node6"],
+    "presets": [
+      "node6"
+    ],
     "plugins": [
       "transform-async-to-generator",
       "transform-object-rest-spread"
     ]
   },
   "jest": {
-    "roots": ["<rootDir>/test/"],
-    "setupFiles": ["./test/setup.js"],
-    "testMatch": ["**/*Test.js"],
+    "roots": [
+      "<rootDir>/test/"
+    ],
+    "setupFiles": [
+      "./test/setup.js"
+    ],
+    "testMatch": [
+      "**/*Test.js"
+    ],
     "verbose": true
   }
 }
