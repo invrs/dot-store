@@ -61,12 +61,12 @@ store.subscribe(
 )
 ```
 
-| Callback argument | Description                                                                              |
-| ----------------- | ---------------------------------------------------------------------------------------- |
-| `op`              | Operation (`get`, `delete`, etc)                                                         |
-| `prop`            | [Dot-prop](["dot props"](https://github.com/debitoor/dot-prop-immutable#readme)) locator |
-| `state`           | State snapshot                                                                           |
-| `value`           | Third argument to operation (if present)                                                 |
+| Callback argument | Description                                                               |
+| ----------------- | ------------------------------------------------------------------------- |
+| `op`              | Operation (`get`, `delete`, etc)                                          |
+| `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) locator |
+| `state`           | State snapshot                                                            |
+| `value`           | Third argument to operation (if present)                                  |
 
 ## Extensions
 
