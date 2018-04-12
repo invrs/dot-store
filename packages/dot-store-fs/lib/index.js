@@ -6,11 +6,11 @@ export default async function(store, options) {
 
   await lockedFsRead({ pattern, root, store })
 
-  store.subscribe("beforeMutate", async () => {
+  store.subscribe("beforeUpdate", async () => {
     await lockedFsRead({ pattern, root, store })
   })
 
-  store.subscribe("afterMutate", async ({ prop }) => {
+  store.subscribe("afterUpdate", async ({ prop }) => {
     await lockedFsWrite({ prop, root, store })
   })
 

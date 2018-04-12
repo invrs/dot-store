@@ -15,14 +15,14 @@ export default class DotStore {
 
     for (let op of mutations) {
       this[op] = async (prop, value) =>
-        await this.mutate({ op, prop, value })
+        await this.update({ op, prop, value })
     }
   }
 
   defaultEvent({ event, fn }) {
     if (typeof event !== "string") {
       fn = event
-      event = "afterMutate"
+      event = "afterUpdate"
     }
 
     this.ensureListener(event)
@@ -50,7 +50,7 @@ export default class DotStore {
     return camelDot.get(this.state, props)
   }
 
-  async mutate({ op, prop, value }) {
+  async update({ op, prop, value }) {
     let { prop: resolvedProp } = camelDot.camelDotMatch({
       obj: this.state,
       prop,
@@ -63,14 +63,14 @@ export default class DotStore {
       value,
     }
 
-    await this.dispatch("beforeMutate", event)
+    await this.dispatch("beforeUpdate", event)
 
     let state = dot[op](this.state, resolvedProp, value)
     this.state = state
 
     event = { ...event, state }
 
-    return await this.dispatch("afterMutate", event)
+    return await this.dispatch("afterUpdate", event)
   }
 
   subscribe(event, fn) {
