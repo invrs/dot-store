@@ -82,9 +82,9 @@ import { withStore } from "dot-store-react"
 class Page extends React.Component {
   render() {
     let { store } = this.props
-    let { get, set } = store
+    let { set, state } = store
 
-    set("counter", get("counter") + 1)
+    set("counter", state.counter + 1)
   }
 }
 

@@ -61,6 +61,10 @@ export default class DotStore {
     }
   }
 
+  getSync(props) {
+    return camelDot.get(this.state, props)
+  }
+
   async store({ op, prop: ogProp, value }) {
     let { prop } = camelDot.camelDotMatch({
       obj: this.state,

@@ -7,6 +7,7 @@ beforeEach(() => {
 })
 
 test("gets value", async () => {
+  expect(store.getSync("test")).toBe(true)
   expect(await store.get("test")).toBe(true)
 })
 
