@@ -68,46 +68,9 @@ store.subscribe(
 | `state`           | State snapshot                           |
 | `value`           | Third argument to operation (if present) |
 
-## Using with React
+## Extensions
 
-Install `dot-store-react`:
-
-```bash
-npm install --save dot-store-react
-```
-
-Add `StoreProvider` to your component tree:
-
-```js
-import Store from "dot-store"
-import { StoreProvider } from "dot-store-react"
-
-export default class Layout extends React.Component {
-  constructor(props) {
-    super(props)
-    this.store = new Store({ counter: 0 })
-  }
-  render() {
-    return (
-      <StoreProvider store={this.store}>
-        {this.props.children}
-      </StoreProvider>
-    )
-  }
-)
-```
-
-Read and write to the store:
-
-```js
-import { withStore } from "dot-store-react"
-
-class Page extends React.Component {
-  render() {
-    let { state, store } = this.props
-    store.set("counter", state.counter + 1)
-  }
-}
-
-export default withStore(Page)
-```
+| Package                                                                                             | Description                             |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| [`dot-store-fs`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)       | Adds filesystem read/write to dot-store |
+| [`dot-store-react`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme) | React integration                       |
