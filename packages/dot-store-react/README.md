@@ -46,6 +46,7 @@ class Page extends React.Component {
   render() {
     let { state, store } = this.props
     store.set("counter", state.counter + 1)
+    return state.counter
   }
 }
 
