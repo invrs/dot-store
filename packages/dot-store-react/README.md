@@ -39,6 +39,10 @@ Read and write to the store:
 import { withStore } from "dot-store-react"
 
 class Page extends React.Component {
+  shouldComponentUpdate({ changes }) {
+    return changes.some(c => c == "counter")
+  }
+
   render() {
     let { state, store } = this.props
     store.set("counter", state.counter + 1)
