@@ -31,24 +31,36 @@ export default class Layout extends React.Component {
 )
 ```
 
-## Component
-
-Read and write to the store:
+## Consumer
 
 ```js
 import { withStore } from "dot-store-react"
 
 class Page extends React.Component {
-  shouldComponentUpdate({ changes }) {
-    return changes.some(c => c == "counter")
+  componentDidMount() {
+    let { state, store } = this.props
+    store.set("counter", state.counter + 1)
+  }
+
+  shouldComponentUpdate({ detectChanges }) {
+    return detectChanges("counter")
   }
 
   render() {
-    let { state, store } = this.props
-    store.set("counter", state.counter + 1)
-    return state.counter
+    return this.props.state.counter
   }
 }
 
 export default withStore(Page)
 ```
+
+## Props
+
+| Prop            | Type                  | Description                            |
+| --------------- | --------------------- | -------------------------------------- |
+| `changes`       | `Array[String]`       | Changed dot-props                      |
+| `detectChanges` | `Function<...String>` | Change match helper                    |
+| `state`         | `Object`              | The `store.state` value at render time |
+| `store`         | `DotStore`            | The store                              |
+
+**Tip:** The `detectChange` helper can match the prop **and** its children by adding `.*` to the end of the match string.

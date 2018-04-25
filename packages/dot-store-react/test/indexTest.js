@@ -56,3 +56,39 @@ test("props", async () => {
   expect(props.changes).toEqual([])
   expect(props.store.state).toEqual({ counter: 0 })
 })
+
+test("detectChanges", async () => {
+  let props
+  let rendered = 0
+
+  const Component = withStore(
+    class extends React.Component {
+      shouldComponentUpdate({ detectChanges }) {
+        return detectChanges("counter.*", "counter2")
+      }
+
+      render() {
+        props = this.props
+        rendered += 1
+        return null
+      }
+    }
+  )
+
+  mount(
+    <Layout>
+      <Component />
+    </Layout>
+  )
+
+  expect(rendered).toBe(1)
+
+  await props.store.set("counter", 1)
+  await props.store.set("counterx", 1)
+  await props.store.set("xcounter", 1)
+  expect(rendered).toBe(2)
+
+  await props.store.set("counter2", 1)
+  await props.store.set("counter3", 1)
+  expect(rendered).toBe(3)
+})

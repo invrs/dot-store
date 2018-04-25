@@ -11,6 +11,22 @@ export const withStore = Component =>
       }
     }
 
+    detectChanges(changes) {
+      return (...props) =>
+        changes.some(change =>
+          props.some(prop => {
+            if (prop.slice(-2) == ".*") {
+              let regex = new RegExp(
+                `^${prop.slice(0, -2)}(\\..*)?$`
+              )
+              return change.match(regex)
+            } else {
+              return change == prop
+            }
+          })
+        )
+    }
+
     render() {
       return (
         <StoreContext.Consumer>
@@ -18,6 +34,7 @@ export const withStore = Component =>
             <Component
               {...this.props}
               changes={changes}
+              detectChanges={this.detectChanges(changes)}
               state={store.state}
               store={store}
             />
