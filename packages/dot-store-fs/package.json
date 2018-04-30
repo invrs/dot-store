@@ -16,9 +16,11 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
+  "homepage":
+    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
   "scripts": {
-    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build":
+      "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
@@ -28,13 +30,13 @@
   },
   "devDependencies": {
     "babel-cli": "6",
-    "babel-core": "6",
-    "babel-eslint": "8",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.3",
     "babel-plugin-transform-async-to-generator": "6",
     "babel-plugin-transform-object-rest-spread": "6",
     "babel-preset-node6": "11",
     "fxtr": "1",
-    "jest": "22",
+    "jest": "^22.4.3",
     "rimraf": "2"
   },
   "peerDependencies": {
@@ -44,21 +46,15 @@
     "proper-lockfile": "3"
   },
   "babel": {
-    "presets": [
-      "node6"
-    ],
+    "presets": ["node6"],
     "plugins": [
       "transform-async-to-generator",
       "transform-object-rest-spread"
     ]
   },
   "jest": {
-    "setupFiles": [
-      "./test/setup.js"
-    ],
-    "testMatch": [
-      "**/*Test.js"
-    ],
+    "setupFiles": ["./test/setup.js"],
+    "testMatch": ["**/*Test.js"],
     "verbose": true
   }
 }

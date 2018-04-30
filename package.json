@@ -29,19 +29,19 @@
     "test": "lerna run test"
   },
   "devDependencies": {
-    "babel-eslint": "8",
+    "babel-eslint": "^8.2.3",
     "babel-plugin-transform-async-to-generator": "6",
     "babel-plugin-transform-object-rest-spread": "6",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "6",
-    "eslint": "4",
+    "eslint": "^4.19.1",
     "eslint-config-prettier": "2",
     "eslint-plugin-prettier": "2",
     "eslint-plugin-react": "7",
-    "husky": "^0.15.0-rc.3",
-    "lerna": "2",
-    "lint-staged": "6",
-    "prettier": "1"
+    "husky": "^0.15.0-rc.13",
+    "lerna": "^2.11.0",
+    "lint-staged": "^6.1.1",
+    "prettier": "^1.12.1"
   },
   "babel": {
     "presets": [

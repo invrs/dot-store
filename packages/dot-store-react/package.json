@@ -16,9 +16,11 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme",
+  "homepage":
+    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme",
   "scripts": {
-    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build":
+      "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
@@ -28,9 +30,9 @@
   },
   "devDependencies": {
     "babel-cli": "6",
-    "babel-core": "6",
-    "babel-eslint": "8",
-    "babel-jest": "22",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.3",
+    "babel-jest": "^22.4.3",
     "babel-plugin-transform-async-to-generator": "6",
     "babel-plugin-transform-object-rest-spread": "6",
     "babel-preset-env": "^1.6.1",
@@ -38,7 +40,7 @@
     "enzyme": "3",
     "enzyme-adapter-react-16": "1",
     "fxtr": "1",
-    "jest": "22",
+    "jest": "^22.4.3",
     "rimraf": "2"
   },
   "peerDependencies": {
@@ -52,9 +54,7 @@
         "env",
         {
           "targets": {
-            "browsers": [
-              "last 2 versions"
-            ],
+            "browsers": ["last 2 versions"],
             "useBuiltIns": true
           }
         }
@@ -63,12 +63,8 @@
     ]
   },
   "jest": {
-    "setupFiles": [
-      "./test/setup.js"
-    ],
-    "testMatch": [
-      "**/*Test.js"
-    ],
+    "setupFiles": ["./test/setup.js"],
+    "testMatch": ["**/*Test.js"],
     "verbose": true
   }
 }
