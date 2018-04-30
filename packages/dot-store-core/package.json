@@ -19,7 +19,8 @@
   "main": "dist/index.js",
   "homepage": "https://github.com/invrs/dot-store#readme",
   "scripts": {
-    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build":
+      "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
@@ -27,30 +28,25 @@
     "lint": "eslint --ignore-path .gitignore --ext=js .",
     "test": "jest"
   },
+  "dependencies": {
+    "babel-runtime": "^6.26.0",
+    "camel-dot-prop-immutable": "1"
+  },
   "devDependencies": {
     "babel-cli": "6",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
-    "babel-plugin-transform-async-to-generator": "6",
-    "babel-plugin-transform-object-rest-spread": "6",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
     "fxtr": "1",
     "jest": "22",
     "rimraf": "2"
   },
-  "peerDependencies": {
-    "camel-dot-prop-immutable": "1"
-  },
   "jest": {
-    "roots": [
-      "<rootDir>/test/"
-    ],
-    "setupFiles": [
-      "./test/setup.js"
-    ],
-    "testMatch": [
-      "**/*Test.js"
-    ],
+    "roots": ["<rootDir>/test/"],
+    "setupFiles": ["./test/setup.js"],
+    "testMatch": ["**/*Test.js"],
     "verbose": true
   }
 }
