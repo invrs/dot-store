@@ -1,6 +1,6 @@
 {
   "name": "dot-store-react",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "React integration for dot-store",
   "keywords": [
     "accessor",
@@ -16,11 +16,9 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage":
-    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme",
+  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme",
   "scripts": {
-    "build":
-      "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
@@ -54,7 +52,9 @@
         "env",
         {
           "targets": {
-            "browsers": ["last 2 versions"],
+            "browsers": [
+              "last 2 versions"
+            ],
             "useBuiltIns": true
           }
         }
@@ -63,8 +63,12 @@
     ]
   },
   "jest": {
-    "setupFiles": ["./test/setup.js"],
-    "testMatch": ["**/*Test.js"],
+    "setupFiles": [
+      "./test/setup.js"
+    ],
+    "testMatch": [
+      "**/*Test.js"
+    ],
     "verbose": true
   }
 }
