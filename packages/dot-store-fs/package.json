@@ -1,6 +1,6 @@
 {
   "name": "dot-store-fs",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Adds filesystem read/write to dot-store",
   "keywords": [
     "accessor",
@@ -16,11 +16,9 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage":
-    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
+  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
   "scripts": {
-    "build":
-      "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
@@ -60,11 +58,17 @@
       ],
       "stage-0"
     ],
-    "plugins": ["transform-runtime"]
+    "plugins": [
+      "transform-runtime"
+    ]
   },
   "jest": {
-    "setupFiles": ["./test/setup.js"],
-    "testMatch": ["**/*Test.js"],
+    "setupFiles": [
+      "./test/setup.js"
+    ],
+    "testMatch": [
+      "**/*Test.js"
+    ],
     "verbose": true
   }
 }
