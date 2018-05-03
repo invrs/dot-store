@@ -21,6 +21,7 @@ test("dispatches events", async () => {
   await store.set("test", false)
 
   let payload = {
+    detectChange: expect.any(Function),
     op: "set",
     prop: "test",
     state: { test: false },

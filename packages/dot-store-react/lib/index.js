@@ -11,30 +11,18 @@ export const withStore = Component =>
       }
     }
 
-    detectChanges(changes) {
-      return (...props) =>
-        changes.some(change =>
-          props.some(prop => {
-            if (prop.slice(-2) == ".*") {
-              let regex = new RegExp(
-                `^${prop.slice(0, -2)}(\\..*)?$`
-              )
-              return change.match(regex)
-            } else {
-              return change == prop
-            }
-          })
-        )
+    detectChanges(fns) {
+      return (...props) => fns.some(fn => fn(...props))
     }
 
     render() {
       return (
         <StoreContext.Consumer>
-          {([changes, store]) => (
+          {([changes, changeFns, store]) => (
             <Component
               {...this.props}
               changes={changes}
-              detectChanges={this.detectChanges(changes)}
+              detectChanges={this.detectChanges(changeFns)}
               state={store.state}
               store={store}
             />
@@ -48,12 +36,14 @@ export class StoreProvider extends React.Component {
   constructor(props) {
     super(props)
     this.changes = []
+    this.changeFns = []
     this.store = props.store
     this.onUpdate = this.onUpdate.bind(this)
   }
 
-  onUpdate({ prop }) {
+  onUpdate({ detectChange, prop }) {
     this.changes = this.changes.concat([prop])
+    this.changeFns = this.changeFns.concat([detectChange])
     this.forceUpdate()
   }
 
@@ -66,11 +56,16 @@ export class StoreProvider extends React.Component {
   }
 
   render() {
-    let changes = this.changes.concat([])
+    const changes = this.changes.concat([])
+    const changeFns = this.changeFns.concat([])
+
     this.changes = []
+    this.changeFns = []
 
     return (
-      <StoreContext.Provider value={[changes, this.store]}>
+      <StoreContext.Provider
+        value={[changes, changeFns, this.store]}
+      >
         {this.props.children}
       </StoreContext.Provider>
     )

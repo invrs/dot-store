@@ -33,6 +33,20 @@ export default class DotStore {
     return { event, fn }
   }
 
+  detectChangeFn(change) {
+    return (...props) =>
+      props.some(prop => {
+        if (prop.slice(-2) == ".*") {
+          let regex = new RegExp(
+            `^${prop.slice(0, -2)}(\\..*)?$`
+          )
+          return change.match(regex)
+        } else {
+          return change == prop
+        }
+      })
+  }
+
   async dispatch(event, payload) {
     for (let e of this.events(event, payload)) {
       this.ensureListener(e)
@@ -66,12 +80,15 @@ export default class DotStore {
   }
 
   async store({ op, prop: ogProp, value }) {
-    let { prop } = camelDot.camelDotMatch({
+    const { prop } = camelDot.camelDotMatch({
       obj: this.state,
       prop: ogProp,
     })
 
+    const detectChange = this.detectChangeFn(prop)
+
     let payload = {
+      detectChange,
       op,
       prop,
       state: this.state,
@@ -80,7 +97,7 @@ export default class DotStore {
 
     await this.dispatch("before", payload)
 
-    let result = dot[op](this.state, prop, value)
+    const result = dot[op](this.state, prop, value)
     let state
 
     if (op == "get") {
