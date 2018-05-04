@@ -38,9 +38,9 @@ store.getSync("users.employees.bob")
 store.state.users.employees.bob
 ```
 
-## Callbacks
+## Subscribe
 
-Callbacks may be asynchronous and execute sequentially before and after each operation.
+Subscription callbacks may be asynchronous and execute sequentially before and after each operation.
 
 | Operation | Events                                                       |
 | :-------- | :----------------------------------------------------------- |
@@ -52,21 +52,44 @@ Callbacks may be asynchronous and execute sequentially before and after each ope
 
 ```js
 // Subscribe to all updates
-store.subscribe(async ({ op, prop, state, value }) => {})
+store.subscribe(
+  async ({ detectChange, op, prop, state, value }) => {}
+)
 
 // Subscribe to a specific event
 store.subscribe(
   "beforeGet",
-  async ({ op, prop, state, value }) => {}
+  async ({ detectChange, op, prop, state, value }) => {}
 )
 ```
 
 | Callback argument | Description                                                               |
 | :---------------- | :------------------------------------------------------------------------ |
+| `detectChange`    | Check if a specific prop changed                                          |
 | `op`              | Operation (`get`, `delete`, etc)                                          |
 | `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) locator |
 | `state`           | State snapshot                                                            |
 | `value`           | Third argument to operation (if present)                                  |
+
+The `detectChange` helper supports wildcards (`.*`) at the end of the prop you pass it.
+
+## Prop subscriptions
+
+Use `on`, `once`, and `off` to subscribe to specific prop changes.
+
+```js
+// Subscribe to all updates for the `test` prop
+store.on("test.*", async ({ op, prop, state, value }) => {})
+
+// Subscribe to the first for the `test` prop
+store.once(
+  "test.*",
+  async ({ op, prop, state, value }) => {}
+)
+
+// Remove all `on` and `once` listeners for the `test` prop
+store.off("test.*")
+```
 
 ## Extensions
 
