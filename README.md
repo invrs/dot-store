@@ -81,7 +81,7 @@ Use `on`, `once`, and `off` to subscribe to specific prop changes.
 // Subscribe to all updates for the `test` prop
 store.on("test.*", async ({ op, prop, state, value }) => {})
 
-// Subscribe to the first for the `test` prop
+// Subscribe to the first update for the `test` prop
 store.once(
   "test.*",
   async ({ op, prop, state, value }) => {}
