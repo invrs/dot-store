@@ -23,18 +23,27 @@ export default class DotStore {
     }
   }
 
-  detectChangeFn(change) {
-    return (...props) =>
-      props.some(prop => {
-        if (prop.slice(-2) == ".*") {
-          let regex = new RegExp(
-            `^${prop.slice(0, -2)}(\\..*)?$`
-          )
-          return change.match(regex)
-        } else {
-          return change == prop
-        }
-      })
+  detectChangeFn(change, prevState) {
+    return (...props) => {
+      let match = this.detectPropChange({ change, props })
+
+      if (match) {
+        return prevState[change] != this.state[change]
+      }
+    }
+  }
+
+  detectPropChange({ change, props }) {
+    return props.some(prop => {
+      if (prop.slice(-2) == ".*") {
+        let regex = new RegExp(
+          `^${prop.slice(0, -2)}(\\..*)?$`
+        )
+        return change.match(regex)
+      } else {
+        return change == prop
+      }
+    })
   }
 
   getSync(props) {
@@ -60,15 +69,21 @@ export default class DotStore {
     await this.dispatch("before", payload)
 
     const result = dot[op](this.state, prop, value)
-    let state
+    let prevState, state
 
     if (op == "get") {
-      state = this.state
+      prevState = state = this.state
     } else {
+      prevState = this.state
       this.state = state = result
     }
 
-    payload = { ...payload, state }
+    payload = {
+      ...payload,
+      detectChange: this.detectChangeFn(prop, prevState),
+      prevState,
+      state,
+    }
 
     await this.dispatch("after", payload)
 

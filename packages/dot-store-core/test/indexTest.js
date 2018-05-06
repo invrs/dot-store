@@ -23,6 +23,7 @@ test("dispatches subscribe events", async () => {
   let payload = {
     detectChange: expect.any(Function),
     op: "set",
+    prevState: { test: true },
     prop: "test",
     state: { test: false },
     value: false,
@@ -44,6 +45,7 @@ test("dispatches on events", async () => {
   let payload = {
     detectChange: expect.any(Function),
     op: "set",
+    prevState: { test: true },
     prop: "test",
     state: { test: false },
     value: false,
@@ -55,6 +57,9 @@ test("dispatches on events", async () => {
   await store.set("test", true)
   expect(fn1).toHaveBeenCalledWith(payload)
   expect(await store.get("test")).toBe(true)
+
+  await store.set("test", true)
+  expect(fn1.mock.calls.length).toBe(2)
 })
 
 test("dispatches once events", async () => {
@@ -67,6 +72,7 @@ test("dispatches once events", async () => {
   let payload = {
     detectChange: expect.any(Function),
     op: "set",
+    prevState: { test: true },
     prop: "test",
     state: { test: false },
     value: false,
@@ -94,6 +100,7 @@ test("doesn't dispatch offed events", async () => {
   let payload = {
     detectChange: expect.any(Function),
     op: "set",
+    prevState: { test: true },
     prop: "test",
     state: { test: false },
     value: false,
