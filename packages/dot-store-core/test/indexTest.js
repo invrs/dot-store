@@ -25,6 +25,7 @@ test("dispatches subscribe events", async () => {
     op: "set",
     prevState: { test: true },
     prop: "test",
+    props: ["test"],
     state: { test: false },
     value: false,
   }
@@ -47,6 +48,7 @@ test("dispatches on events", async () => {
     op: "set",
     prevState: { test: true },
     prop: "test",
+    props: ["test"],
     state: { test: false },
     value: false,
   }
@@ -74,6 +76,7 @@ test("dispatches once events", async () => {
     op: "set",
     prevState: { test: true },
     prop: "test",
+    props: ["test"],
     state: { test: false },
     value: false,
   }
@@ -102,6 +105,7 @@ test("doesn't dispatch offed events", async () => {
     op: "set",
     prevState: { test: true },
     prop: "test",
+    props: ["test"],
     state: { test: false },
     value: false,
   }

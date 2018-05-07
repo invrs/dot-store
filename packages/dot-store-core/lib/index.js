@@ -2,7 +2,7 @@ import camelDot from "camel-dot-prop-immutable"
 import dot from "dot-prop-immutable"
 
 import { changeFn } from "./change"
-import { capitalize } from "./string"
+import { capitalize, propSplit } from "./string"
 
 export const ops = [
   "delete",
@@ -34,12 +34,14 @@ export default class DotStore {
       prop: ogProp,
     })
 
+    const props = propSplit(prop)
     let detectChange = changeFn({ prop })
 
     let payload = {
       detectChange,
       op,
       prop,
+      props,
       state: this.state,
       value,
     }

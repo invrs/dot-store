@@ -69,6 +69,7 @@ store.subscribe(
 | `op`              | Operation (`get`, `delete`, etc)                                          |
 | `prevState`       | Previous state snapshot                                                   |
 | `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) locator |
+| `props`           | Array of prop keys                                                        |
 | `state`           | State snapshot                                                            |
 | `value`           | Third argument to operation (if present)                                  |
 
