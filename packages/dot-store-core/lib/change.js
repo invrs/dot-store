@@ -1,9 +1,13 @@
+import dot from "dot-prop-immutable"
+
 export function changeFn({ prop, prevState, state }) {
   return (...props) => {
     let match = detectPropChange({ prop, props })
 
     if (match && prevState) {
-      return prevState[prop] != state[prop]
+      return (
+        dot.get(prevState, prop) != dot.get(state, prop)
+      )
     }
 
     return match
