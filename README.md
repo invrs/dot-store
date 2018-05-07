@@ -71,6 +71,7 @@ store.subscribe(
 | `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) locator |
 | `props`           | Array of prop keys                                                        |
 | `state`           | State snapshot                                                            |
+| `store`           | Store instance                                                            |
 | `value`           | Third argument to operation (if present)                                  |
 
 The `detectChange` helper supports wildcards (`.*`) at the end of the prop you pass it.
