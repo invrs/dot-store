@@ -92,6 +92,12 @@ store.once(
 
 // Remove all `on` and `once` listeners for the `test` prop
 store.off("test.*")
+
+// Trigger callback if value already present or when first updated
+store.oncePresent(
+  "test",
+  async ({ op, prop, state, value }) => {}
+)
 ```
 
 ## Extensions

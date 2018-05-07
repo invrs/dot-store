@@ -15,7 +15,7 @@ export const ops = [
 export default class DotStore {
   constructor(state = {}) {
     this.listeners = {}
-    this.listenersByProps = {}
+    this.listenersByProp = {}
     this.state = state
 
     for (let op of ops) {
@@ -24,8 +24,8 @@ export default class DotStore {
     }
   }
 
-  getSync(props) {
-    return camelDot.get(this.state, props)
+  getSync(prop) {
+    return camelDot.get(this.state, prop)
   }
 
   async store({ op, prop: ogProp, value }) {
@@ -83,12 +83,12 @@ export default class DotStore {
 
   // Events
 
-  addListenerByProps(props, listener) {
-    this.listenersByProps[props] =
-      this.listenersByProps[props] || []
+  addListenerByProp(prop, listener) {
+    this.listenersByProp[prop] =
+      this.listenersByProp[prop] || []
 
-    this.listenersByProps[props] = this.listenersByProps[
-      props
+    this.listenersByProp[prop] = this.listenersByProp[
+      prop
     ].concat([listener])
   }
 
@@ -145,24 +145,24 @@ export default class DotStore {
     )
   }
 
-  on(props, fn) {
+  on(prop, fn) {
     const listener = options => {
       const { detectChange } = options
-      if (detectChange(props)) {
+      if (detectChange(prop)) {
         fn(options)
       }
     }
 
-    this.addListenerByProps(props, listener)
+    this.addListenerByProps(prop, listener)
     this.subscribe(listener)
 
     return listener
   }
 
-  off(props) {
-    const listeners = this.listenersByProps[props]
+  off(prop) {
+    const listeners = this.listenersByProp[prop]
 
-    this.listenersByProps[props] = []
+    this.listenersByProp[prop] = []
 
     for (let listener of listeners) {
       this.unsubscribe(listener)
@@ -171,7 +171,7 @@ export default class DotStore {
     return listeners
   }
 
-  once(props, fn) {
+  once(prop, fn) {
     let ran = false
 
     const listener = options => {
@@ -181,15 +181,31 @@ export default class DotStore {
 
       const { detectChange } = options
 
-      if (detectChange(props)) {
+      if (detectChange(prop)) {
         ran = true
         fn(options)
       }
     }
 
-    this.addListenerByProps(props, listener)
+    this.addListenerByProps(prop, listener)
     this.subscribe(listener)
 
     return listener
+  }
+
+  oncePresent(prop, fn) {
+    const value = this.getSync(prop)
+
+    if (value) {
+      fn({
+        prop,
+        props: propSplit(prop),
+        state: this.state,
+        store: this,
+        value,
+      })
+    } else {
+      this.once(prop, fn)
+    }
   }
 }

@@ -122,6 +122,21 @@ test("dispatches once events", async () => {
   expect(await store.get("test")).toBe(true)
 })
 
+test.only("dispatches oncePresent events", async () => {
+  let fn1 = jest.fn()
+  store.oncePresent("test", fn1)
+
+  let payload = {
+    prop: "test",
+    props: ["test"],
+    state: { test: true },
+    store: expect.any(Object),
+    value: true,
+  }
+
+  expect(fn1).toHaveBeenCalledWith(payload)
+})
+
 test("doesn't dispatch offed events", async () => {
   let fn1 = jest.fn()
   let fn2 = jest.fn()
