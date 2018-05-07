@@ -42,7 +42,6 @@ export default class DotStore {
       op,
       prop,
       props,
-      state: this.state,
       store: this,
       value,
     }
@@ -50,13 +49,10 @@ export default class DotStore {
     await this.dispatch("before", payload)
 
     const result = dot[op](this.state, prop, value)
-    let prevState, state
+    let prevState = this.state
 
-    if (op == "get") {
-      prevState = state = this.state
-    } else {
-      prevState = this.state
-      this.state = state = result
+    if (op != "get") {
+      this.state = result
     }
 
     detectChange = changeFn({
@@ -69,7 +65,6 @@ export default class DotStore {
       ...payload,
       detectChange,
       prevState,
-      state,
     }
 
     await this.dispatch("after", payload)
@@ -108,7 +103,7 @@ export default class DotStore {
       this.ensureListener(e)
 
       for (let fn of this.listeners[e]) {
-        await fn(payload)
+        await fn({ ...payload, state: this.state })
       }
     }
 
