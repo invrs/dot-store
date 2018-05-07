@@ -27,6 +27,7 @@ test("dispatches subscribe events", async () => {
     prop: "test",
     props: ["test"],
     state: { test: false },
+    store: expect.any(Object),
     value: false,
   }
 
@@ -50,6 +51,7 @@ test("dispatches on events", async () => {
     prop: "test",
     props: ["test"],
     state: { test: false },
+    store: expect.any(Object),
     value: false,
   }
 
@@ -78,6 +80,7 @@ test("dispatches once events", async () => {
     prop: "test",
     props: ["test"],
     state: { test: false },
+    store: expect.any(Object),
     value: false,
   }
 
@@ -107,6 +110,7 @@ test("doesn't dispatch offed events", async () => {
     prop: "test",
     props: ["test"],
     state: { test: false },
+    store: expect.any(Object),
     value: false,
   }
 

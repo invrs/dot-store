@@ -43,6 +43,7 @@ export default class DotStore {
       prop,
       props,
       state: this.state,
+      store: this,
       value,
     }
 
