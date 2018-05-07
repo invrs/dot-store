@@ -22,7 +22,10 @@ export function detectPropChange({ prop: change, props }) {
       )
       return change.match(regex)
     } else {
-      return change == prop
+      return (
+        change + "." ==
+        (prop + ".").slice(0, change.length + 1)
+      )
     }
   })
 }

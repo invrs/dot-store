@@ -11,6 +11,36 @@ test("gets value", async () => {
   expect(await store.get("test")).toBe(true)
 })
 
+test("detectChange", async () => {
+  expect.assertions(4)
+
+  store.subscribe(({ detectChange }) => {
+    expect(detectChange("nested")).toBe(false)
+    expect(detectChange("nested.*")).toBe(true)
+    expect(detectChange("nested.value.test")).toBe(true)
+    expect(detectChange("nested.value.test.test2")).toBe(
+      true
+    )
+  })
+
+  await store.set("nested.value", true)
+})
+
+test.only("detectChange equality", async () => {
+  await store.set("nested.value", true)
+
+  expect.assertions(4)
+
+  store.subscribe(({ detectChange }) => {
+    expect(detectChange("nested")).toBe(false)
+    expect(detectChange("nested.*")).toBe(false)
+    expect(detectChange("nested.value")).toBe(false)
+    expect(detectChange("nested.value.test")).toBe(false)
+  })
+
+  await store.set("nested.value", true)
+})
+
 test("dispatches subscribe events", async () => {
   let fn1 = jest.fn()
   let fn2 = jest.fn()
