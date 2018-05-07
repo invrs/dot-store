@@ -1,6 +1,7 @@
 import camelDot from "camel-dot-prop-immutable"
 import dot from "dot-prop-immutable"
 
+import { changeFn } from "./change"
 import { capitalize } from "./string"
 
 export const ops = [
@@ -23,29 +24,6 @@ export default class DotStore {
     }
   }
 
-  detectChangeFn(change, prevState) {
-    return (...props) => {
-      let match = this.detectPropChange({ change, props })
-
-      if (match) {
-        return prevState[change] != this.state[change]
-      }
-    }
-  }
-
-  detectPropChange({ change, props }) {
-    return props.some(prop => {
-      if (prop.slice(-2) == ".*") {
-        let regex = new RegExp(
-          `^${prop.slice(0, -2)}(\\..*)?$`
-        )
-        return change.match(regex)
-      } else {
-        return change == prop
-      }
-    })
-  }
-
   getSync(props) {
     return camelDot.get(this.state, props)
   }
@@ -56,7 +34,7 @@ export default class DotStore {
       prop: ogProp,
     })
 
-    const detectChange = this.detectChangeFn(prop)
+    let detectChange = changeFn({ prop })
 
     let payload = {
       detectChange,
@@ -78,9 +56,15 @@ export default class DotStore {
       this.state = state = result
     }
 
+    detectChange = changeFn({
+      prevState,
+      prop,
+      state: this.state,
+    })
+
     payload = {
       ...payload,
-      detectChange: this.detectChangeFn(prop, prevState),
+      detectChange,
       prevState,
       state,
     }
