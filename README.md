@@ -67,6 +67,7 @@ store.subscribe(
 | :---------------- | :------------------------------------------------------------------------ |
 | `detectChange`    | Check if a prop changed                                                   |
 | `op`              | Operation (`get`, `delete`, etc)                                          |
+| `prevState`       | Previous state snapshot                                                   |
 | `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) locator |
 | `state`           | State snapshot                                                            |
 | `value`           | Third argument to operation (if present)                                  |
