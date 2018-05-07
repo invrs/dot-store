@@ -26,7 +26,7 @@ test("detectChange", async () => {
   await store.set("nested.value", true)
 })
 
-test.only("detectChange equality", async () => {
+test("detectChange equality", async () => {
   await store.set("nested.value", true)
 
   expect.assertions(4)
@@ -122,7 +122,7 @@ test("dispatches once events", async () => {
   expect(await store.get("test")).toBe(true)
 })
 
-test.only("dispatches oncePresent events", async () => {
+test("dispatches oncePresent events", async () => {
   let fn1 = jest.fn()
   store.oncePresent("test", fn1)
 

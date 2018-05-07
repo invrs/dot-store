@@ -153,7 +153,7 @@ export default class DotStore {
       }
     }
 
-    this.addListenerByProps(prop, listener)
+    this.addListenerByProp(prop, listener)
     this.subscribe(listener)
 
     return listener
@@ -187,7 +187,7 @@ export default class DotStore {
       }
     }
 
-    this.addListenerByProps(prop, listener)
+    this.addListenerByProp(prop, listener)
     this.subscribe(listener)
 
     return listener
