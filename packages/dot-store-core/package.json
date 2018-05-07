@@ -1,6 +1,6 @@
 {
   "name": "dot-store",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Like Redux, but easy",
   "keywords": [
     "accessor",
