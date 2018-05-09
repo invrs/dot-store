@@ -190,14 +190,14 @@ export default class DotStore {
 
   on(prop, fn, once = false) {
     const listener = options => {
-      if (once) {
-        this.removeListenerByIntersection(prop, fn)
-      }
-
       const { detectChange } = options
       const vars = detectChange(prop)
 
       if (vars) {
+        if (once) {
+          this.removeListenerByIntersection(prop, fn)
+        }
+
         fn({ ...options, ...vars })
       }
     }
