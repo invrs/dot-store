@@ -106,6 +106,29 @@ test("dispatches on events", async () => {
   expect(fn1.mock.calls.length).toBe(2)
 })
 
+test("dispatches on events with vars", async () => {
+  let fn1 = jest.fn()
+
+  store.on("{key}", fn1)
+
+  await store.set("test", false)
+
+  let payload = {
+    detectChange: expect.any(Function),
+    key: "test",
+    op: "set",
+    prevState: { test: true },
+    prop: "test",
+    props: ["test"],
+    state: { test: false },
+    store: expect.any(Object),
+    value: false,
+  }
+
+  expect(fn1).toHaveBeenCalledWith(payload)
+  expect(await store.get("test")).toBe(false)
+})
+
 test("dispatches once events", async () => {
   let fn1 = jest.fn()
 

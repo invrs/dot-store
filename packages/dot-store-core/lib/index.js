@@ -195,9 +195,10 @@ export default class DotStore {
       }
 
       const { detectChange } = options
+      const vars = detectChange(prop)
 
-      if (detectChange(prop)) {
-        fn(options)
+      if (vars) {
+        fn({ ...options, ...vars })
       }
     }
 
