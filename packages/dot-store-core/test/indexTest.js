@@ -12,33 +12,43 @@ test("gets value", async () => {
 })
 
 test("detectChange", async () => {
-  expect.assertions(4)
+  expect.assertions(5)
 
   store.subscribe(({ detectChange }) => {
-    expect(detectChange("nested")).toBe(false)
-    expect(detectChange("nested.*")).toBe(true)
-    expect(detectChange("nested.value.test")).toBe(true)
+    expect(detectChange("nested")).toEqual({})
+    expect(detectChange("nested.{key}")).toEqual({
+      key: "value",
+    })
+    expect(detectChange("nested.value.test")).toEqual({})
+    expect(detectChange("nested.{key1}.{key2}")).toEqual({
+      key1: "value",
+      key2: "test",
+    })
     expect(detectChange("nested.value.test.test2")).toBe(
-      true
+      false
     )
   })
 
-  await store.set("nested.value", true)
+  await store.set("nested.value.test", true)
 })
 
 test("detectChange equality", async () => {
-  await store.set("nested.value", true)
+  await store.set("nested.value.test", true)
 
   expect.assertions(4)
 
   store.subscribe(({ detectChange }) => {
-    expect(detectChange("nested")).toBe(false)
-    expect(detectChange("nested.*")).toBe(false)
-    expect(detectChange("nested.value")).toBe(false)
+    expect(detectChange("nested")).toEqual({})
+    expect(detectChange("nested.{key}")).toEqual({
+      key: "value",
+    })
     expect(detectChange("nested.value.test")).toBe(false)
+    expect(detectChange("nested.value.test.test2")).toBe(
+      false
+    )
   })
 
-  await store.set("nested.value", true)
+  await store.set("nested.value.test", true)
 })
 
 test("dispatches subscribe events", async () => {
@@ -70,7 +80,7 @@ test("dispatches subscribe events", async () => {
 test("dispatches on events", async () => {
   let fn1 = jest.fn()
 
-  store.on("test.*", fn1)
+  store.on("test", fn1)
 
   await store.set("test", false)
 
@@ -99,7 +109,7 @@ test("dispatches on events", async () => {
 test("dispatches once events", async () => {
   let fn1 = jest.fn()
 
-  store.once("test.*", fn1)
+  store.once("test", fn1)
 
   await store.set("test", false)
 
@@ -118,6 +128,7 @@ test("dispatches once events", async () => {
   expect(await store.get("test")).toBe(false)
 
   await store.set("test", true)
+
   expect(fn1.mock.calls.length).toBe(1)
   expect(await store.get("test")).toBe(true)
 })
@@ -141,26 +152,12 @@ test("doesn't dispatch offed events", async () => {
   let fn1 = jest.fn()
   let fn2 = jest.fn()
 
-  store.on("test.*", fn1)
+  store.on("test", fn1)
   store.on("test", fn2)
-
-  store.off("test.*")
+  store.off("test")
 
   await store.set("test", false)
 
-  let payload = {
-    detectChange: expect.any(Function),
-    op: "set",
-    prevState: { test: true },
-    prop: "test",
-    props: ["test"],
-    state: { test: false },
-    store: expect.any(Object),
-    value: false,
-  }
-
-  expect(fn1).not.toHaveBeenCalledWith(payload)
-  expect(fn2).toHaveBeenCalledWith(payload)
-
-  expect(await store.get("test")).toBe(false)
+  expect(fn1).not.toHaveBeenCalled()
+  expect(fn2).not.toHaveBeenCalled()
 })

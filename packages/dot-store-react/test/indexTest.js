@@ -64,7 +64,7 @@ test("detectChanges", async () => {
   const Component = withStore(
     class extends React.Component {
       shouldComponentUpdate({ detectChanges }) {
-        return detectChanges("counter.*", "counter2")
+        return detectChanges("counter", "counter2")
       }
 
       render() {

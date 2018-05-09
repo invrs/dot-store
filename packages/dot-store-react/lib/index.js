@@ -12,7 +12,16 @@ export const withStore = Component =>
     }
 
     detectChanges(fns) {
-      return (...props) => fns.some(fn => fn(...props))
+      return (...matchers) =>
+        fns.reduce((memo, detectChange) => {
+          let out = detectChange(...matchers)
+
+          if (out) {
+            return { ...(memo || {}), ...out }
+          } else {
+            return memo
+          }
+        }, false)
     }
 
     render() {

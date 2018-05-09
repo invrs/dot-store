@@ -1,8 +1,7 @@
-import camelDot from "camel-dot-prop-immutable"
 import dot from "dot-prop-immutable"
 
 import { changeFn } from "./change"
-import { capitalize, propSplit } from "./string"
+import { capitalize, propToArray } from "./string"
 
 export const ops = [
   "delete",
@@ -14,9 +13,13 @@ export const ops = [
 
 export default class DotStore {
   constructor(state = {}) {
-    this.listeners = {}
-    this.listenersByProp = {}
     this.state = state
+
+    this.listeners = {}
+    this.listenersBy = {
+      fn: {},
+      prop: {},
+    }
 
     for (let op of ops) {
       this[op] = async (prop, value) =>
@@ -25,17 +28,12 @@ export default class DotStore {
   }
 
   getSync(prop) {
-    return camelDot.get(this.state, prop)
+    return dot.get(this.state, prop)
   }
 
-  async store({ op, prop: ogProp, value }) {
-    const { prop } = camelDot.camelDotMatch({
-      obj: this.state,
-      prop: ogProp,
-    })
-
-    const props = propSplit(prop)
-    let detectChange = changeFn({ prop })
+  async store({ op, prop, value }) {
+    const props = propToArray(prop)
+    let detectChange = changeFn({ props })
 
     let payload = {
       detectChange,
@@ -57,7 +55,7 @@ export default class DotStore {
 
     detectChange = changeFn({
       prevState,
-      prop,
+      props,
       state: this.state,
     })
 
@@ -78,13 +76,59 @@ export default class DotStore {
 
   // Events
 
-  addListenerByProp(prop, listener) {
-    this.listenersByProp[prop] =
-      this.listenersByProp[prop] || []
+  addListener({ prop, fn, listener }) {
+    this.addListenerBy("fn", fn, listener)
+    this.addListenerBy("prop", prop, listener)
+  }
 
-    this.listenersByProp[prop] = this.listenersByProp[
-      prop
-    ].concat([listener])
+  addListenerBy(kind, key, listener) {
+    if (!key || !listener) {
+      return
+    }
+
+    const map = this.listenersBy[kind]
+
+    map[key] = map[key] || []
+    map[key] = map[key].concat([listener])
+  }
+
+  removeListener(options) {
+    const { listener } = options
+    let listeners = []
+
+    for (let kind of ["fn", "prop"]) {
+      const map = this.listenersBy[kind]
+      const key = options[kind]
+
+      map[key] = map[key] || []
+
+      if (listener) {
+        listeners = listeners.concat(
+          map[key].filter(fn => fn == listener)
+        )
+        map[key] = map[key].filter(fn => fn != listener)
+      } else {
+        listeners = listeners.concat(map[key])
+        map[key] = []
+      }
+    }
+
+    for (let listener of new Set(listeners)) {
+      this.unsubscribe(listener)
+    }
+  }
+
+  removeListenerByIntersection(prop, fn) {
+    const propListeners = this.listenersBy.prop[prop]
+    const fnListeners = this.listenersBy.fn[fn]
+
+    const listeners = fnListeners.filter(f =>
+      propListeners.includes(f)
+    )
+
+    for (let listener of listeners) {
+      this.removeListener({ fn, listener, prop })
+    }
   }
 
   defaultEvent({ event, fn }) {
@@ -135,57 +179,46 @@ export default class DotStore {
   unsubscribe(event, fn) {
     ;({ event, fn } = this.defaultEvent({ event, fn }))
 
-    this.listeners[event] = this.listeners[event].filter(
-      f => f !== fn
-    )
+    if (fn) {
+      this.listeners[event] = this.listeners[event].filter(
+        f => f !== fn
+      )
+    } else {
+      this.listeners[event] = []
+    }
   }
 
-  on(prop, fn) {
+  on(prop, fn, once = false) {
     const listener = options => {
+      if (once) {
+        this.removeListenerByIntersection(prop, fn)
+      }
+
       const { detectChange } = options
+
       if (detectChange(prop)) {
         fn(options)
       }
     }
 
-    this.addListenerByProp(prop, listener)
+    this.addListener({ fn, listener, prop })
     this.subscribe(listener)
 
     return listener
   }
 
-  off(prop) {
-    const listeners = this.listenersByProp[prop]
-
-    this.listenersByProp[prop] = []
-
-    for (let listener of listeners) {
-      this.unsubscribe(listener)
+  off(prop, fn) {
+    if (prop && !fn) {
+      this.removeListener({ prop })
     }
 
-    return listeners
+    if (prop && fn) {
+      this.removeListenerByIntersection(prop, fn)
+    }
   }
 
   once(prop, fn) {
-    let ran = false
-
-    const listener = options => {
-      if (ran) {
-        return
-      }
-
-      const { detectChange } = options
-
-      if (detectChange(prop)) {
-        ran = true
-        fn(options)
-      }
-    }
-
-    this.addListenerByProp(prop, listener)
-    this.subscribe(listener)
-
-    return listener
+    return this.on(prop, fn, true)
   }
 
   oncePresent(prop, fn) {
@@ -194,7 +227,7 @@ export default class DotStore {
     if (value) {
       fn({
         prop,
-        props: propSplit(prop),
+        props: propToArray(prop),
         state: this.state,
         store: this,
         value,

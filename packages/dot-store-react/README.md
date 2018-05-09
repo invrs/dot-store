@@ -37,11 +37,6 @@ export default class Layout extends React.Component {
 import { withStore } from "dot-store-react"
 
 class Page extends React.Component {
-  componentDidMount() {
-    let { state, store } = this.props
-    store.set("counter", state.counter + 1)
-  }
-
   shouldComponentUpdate({ detectChanges }) {
     return detectChanges("counter")
   }

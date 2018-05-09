@@ -38,9 +38,9 @@ store.getSync("users.employees.bob")
 store.state.users.employees.bob
 ```
 
-## Subscribe
+## Operation subscriptions
 
-Subscription callbacks may be asynchronous and execute sequentially before and after each operation.
+Subscription listeners may be asynchronous and execute sequentially before and after each operation.
 
 | Operation | Events                                                       |
 | :-------- | :----------------------------------------------------------- |
@@ -51,53 +51,76 @@ Subscription callbacks may be asynchronous and execute sequentially before and a
 | `toggle`  | `beforeUpdate`, `afterUpdate`, `beforeToggle`, `afterToggle` |
 
 ```js
-// Subscribe to all updates
-store.subscribe(
-  async ({ detectChange, op, prop, state, value }) => {}
-)
+const listener = async ({
+  detectChange,
+  op,
+  prop,
+  state,
+  value,
+}) => {}
 
-// Subscribe to a specific event
-store.subscribe(
-  "beforeGet",
-  async ({ detectChange, op, prop, state, value }) => {}
-)
+// Add `afterUpdate` listener
+store.subscribe(listener)
+
+// Remove all `afterUpdate` listeners
+store.unsubscribe()
+
+// Add `beforeGet` listener
+store.subscribe("beforeGet", listener)
+
+// Remove `beforeGet` listener
+store.unsubscribe("beforeGet", listener)
+
+// Remove all `beforeGet` listeners
+store.unsubscribe("beforeGet")
 ```
 
-| Callback argument | Description                                                               |
-| :---------------- | :------------------------------------------------------------------------ |
-| `detectChange`    | Check if a prop changed                                                   |
-| `op`              | Operation (`get`, `delete`, etc)                                          |
-| `prevState`       | Previous state snapshot                                                   |
-| `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) locator |
-| `props`           | Array of prop keys                                                        |
-| `state`           | State snapshot                                                            |
-| `store`           | Store instance                                                            |
-| `value`           | Third argument to operation (if present)                                  |
-
-The `detectChange` helper supports wildcards (`.*`) at the end of the prop you pass it.
+| Callback argument | Description                                                              |
+| :---------------- | :----------------------------------------------------------------------- |
+| `detectChange`    | Check if a prop changed                                                  |
+| `op`              | Operation (`get`, `delete`, etc)                                         |
+| `prevState`       | Previous state snapshot                                                  |
+| `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
+| `props`           | Array of prop keys                                                       |
+| `state`           | State snapshot                                                           |
+| `store`           | Store instance                                                           |
+| `value`           | Third argument to operation (if present)                                 |
 
 ## Prop subscriptions
 
-Use `on`, `once`, and `off` to subscribe to specific prop changes.
+Use `on`, `once`, `oncePresent`, and `off` to subscribe to specific prop changes:
 
 ```js
-// Subscribe to all updates for the `test` prop
-store.on("test.*", async ({ op, prop, state, value }) => {})
+const listener = async ({
+  op,
+  prevState,
+  prop,
+  props,
+  state,
+  store,
+  value,
+}) => {}
 
-// Subscribe to the first update for the `test` prop
-store.once(
-  "test.*",
-  async ({ op, prop, state, value }) => {}
-)
+// Add `afterUpdate` listener for `test` prop
+store.on("test", listener)
 
-// Remove all `on` and `once` listeners for the `test` prop
-store.off("test.*")
+// Add `afterUpdate` listener for first `test` prop update
+store.once("test", listener)
 
-// Trigger callback if value already present or when first updated
-store.oncePresent(
-  "test",
-  async ({ op, prop, state, value }) => {}
-)
+// Like `once`, but fires listener immediately if value present
+store.oncePresent("test", listener)
+
+// Remove listener
+store.off("test", listener)
+
+// Remove all `test` listeners
+store.off("test")
+```
+
+You can also create wildcard listeners that capture specific props:
+
+```js
+store.on("test.{id}.{attr}", async ({ id, attr }) => {})
 ```
 
 ## Extensions

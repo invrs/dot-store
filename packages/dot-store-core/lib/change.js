@@ -1,31 +1,47 @@
+// Packages
 import dot from "dot-prop-immutable"
 
-export function changeFn({ prop, prevState, state }) {
-  return (...props) => {
-    let match = detectPropChange({ prop, props })
+// Strings
+import { propToArray } from "./string"
 
-    if (match && prevState) {
-      return (
-        dot.get(prevState, prop) != dot.get(state, prop)
-      )
-    }
+export function changeFn(options) {
+  return (...matchers) =>
+    matchers.reduce((memo, matcher) => {
+      let out = detectChange(matcher, options)
 
-    return match
-  }
+      if (out) {
+        return { ...(memo || {}), ...out }
+      } else {
+        return memo
+      }
+    }, false)
 }
 
-export function detectPropChange({ prop: change, props }) {
-  return props.some(prop => {
-    if (prop.slice(-2) == ".*") {
-      let regex = new RegExp(
-        `^${prop.slice(0, -2)}(\\..*)?$`
-      )
-      return change.match(regex)
-    } else {
-      return (
-        change + "." ==
-        (prop + ".").slice(0, change.length + 1)
-      )
+export function detectChange(
+  matcher,
+  { props, prevState, state }
+) {
+  const matchProps = propToArray(matcher)
+  const options = {}
+
+  for (const [index, value] of matchProps.entries()) {
+    const prop = props[index]
+    const match = value.match(/\{([^}]+)\}/)
+
+    if (match && !prop) {
+      return false
+    } else if (match) {
+      options[match[1]] = prop
+      matchProps[index] = prop
     }
-  })
+  }
+
+  const current = dot.get(state, matchProps)
+  const previous = dot.get(prevState, matchProps)
+
+  if (current != previous) {
+    return options
+  }
+
+  return false
 }
