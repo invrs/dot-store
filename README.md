@@ -52,33 +52,38 @@ Subscription listeners may be asynchronous and execute sequentially before and a
 
 ```js
 const listener = async ({
-  detectChange,
+  changed,
   op,
+  prev,
+  prevState,
   prop,
+  props,
   state,
+  store,
   value,
 }) => {}
 
 // Add `afterUpdate` listener
-store.subscribe(listener)
+store.on(listener)
 
-// Remove all `afterUpdate` listeners
-store.unsubscribe()
+// Remove `afterUpdate` listener
+store.off(listener)
 
 // Add `beforeGet` listener
-store.subscribe("beforeGet", listener)
+store.on("beforeGet", listener)
 
 // Remove `beforeGet` listener
-store.unsubscribe("beforeGet", listener)
+store.off("beforeGet", listener)
 
 // Remove all `beforeGet` listeners
-store.unsubscribe("beforeGet")
+store.off("beforeGet")
 ```
 
 | Callback argument | Description                                                              |
 | :---------------- | :----------------------------------------------------------------------- |
-| `detectChange`    | Check if a prop changed                                                  |
+| `changed`         | Check if props changed                                                   |
 | `op`              | Operation (`get`, `delete`, etc)                                         |
+| `prev`            | Previous value                                                           |
 | `prevState`       | Previous state snapshot                                                  |
 | `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
 | `props`           | Array of prop keys                                                       |
@@ -88,11 +93,13 @@ store.unsubscribe("beforeGet")
 
 ## Prop subscriptions
 
-Use `on`, `once`, `oncePresent`, and `off` to subscribe to specific prop changes:
+Subscribe to specific prop changes:
 
 ```js
 const listener = async ({
+  changed,
   op,
+  prev,
   prevState,
   prop,
   props,
@@ -101,23 +108,21 @@ const listener = async ({
   value,
 }) => {}
 
-// Add `afterUpdate` listener for `test` prop
+// Prop subscription (afterUpdate)
 store.on("test", listener)
 
-// Add `afterUpdate` listener for first `test` prop update
-store.once("test", listener)
+// Remove prop listener
+let off = store.on("test", listener)
+off()
 
-// Like `once`, but fires listener immediately if value present
-store.oncePresent("test", listener)
+// Once prop subscription
+await store.once("test")
 
-// Remove listener
-store.off("test", listener)
-
-// Remove all `test` listeners
-store.off("test")
+// Resolve when or if prop exists
+await store.oncePresent("test")
 ```
 
-You can also create wildcard listeners that capture specific props:
+### Prop wildcards
 
 ```js
 store.on("test.{id}.{attr}", async ({ id, attr }) => {})
