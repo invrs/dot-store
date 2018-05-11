@@ -168,7 +168,9 @@ export default class DotStore extends Emitter {
   }
 
   off(event, listener) {
-    if (!event.match(opEventRegex)) {
+    if (!listener) {
+      ;[event, listener] = ["afterUpdate", event]
+    } else if (!event.match(opEventRegex)) {
       throw new TypeError(
         `off event must be ${opEventRegex}`
       )

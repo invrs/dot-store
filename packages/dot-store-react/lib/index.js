@@ -57,11 +57,11 @@ export class StoreProvider extends React.Component {
   }
 
   componentDidMount() {
-    this.store.subscribe(this.onUpdate)
+    this.store.on(this.onUpdate)
   }
 
   componentWillUnmount() {
-    this.store.unsubscribe(this.onUpdate)
+    this.store.off(this.onUpdate)
   }
 
   render() {
