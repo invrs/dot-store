@@ -20,7 +20,9 @@
   "homepage": "https://github.com/invrs/dot-store#readme",
   "scripts": {
     "build":
-      "rimraf dist; cp node_modules/emittery/index.js lib/emitter.js; babel lib --out-dir dist --source-maps",
+      "rimraf dist; babel lib --out-dir dist --source-maps",
+    "emitter":
+      "cp node_modules/emittery/index.js lib/emitter.js",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
