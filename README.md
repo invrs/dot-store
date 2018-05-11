@@ -40,32 +40,27 @@ store.state.users.employees.bob
 
 ## Prop subscriptions
 
-Easily subscribe to store changes:
+Subscribe and unsubscribe to store changes:
 
 ```js
 // Async listener
 const listener = async () => {}
 
 // Subscribe to prop (afterUpdate)
-store.on("test", listener)
+store.on("hello.world", listener)
 
 // Remove prop listener
-let off = store.on("test", listener)
+let off = store.on("hello.world", listener)
 off()
 
 // Resolve once prop changes
-await store.once("test")
+await store.once("hello.world")
 
 // Resolve once prop exists
-await store.onceExists("test")
-```
+await store.onceExists("hello.world")
 
-### Prop variables
-
-Capture variables from props:
-
-```js
-store.on("test.{id}.{attr}", async ({ id, attr }) => {})
+// Capture prop keys as variables
+store.on("{hello}.{world}", async ({ hello, world }) => {})
 ```
 
 ### Listener arguments
