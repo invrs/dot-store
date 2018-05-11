@@ -67,8 +67,8 @@ Subscription listeners receive a lot of useful arguments:
 
 | Listener argument | Description                                                              |
 | :---------------- | :----------------------------------------------------------------------- |
-| `changed`         | Check if props changed                                                   |
-| `op`              | Operation (`get`, `delete`, etc)                                         |
+| `changed`         | Function to check if props changed                                       |
+| `op`              | Operation string (`get`, `delete`, etc)                                  |
 | `prev`            | Previous value                                                           |
 | `prevState`       | Previous state snapshot                                                  |
 | `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
