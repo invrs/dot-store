@@ -63,8 +63,6 @@ await store.onceExists("hello.world")
 store.on("{hello}.{world}", async ({ hello, world }) => {})
 ```
 
-### Listener arguments
-
 Subscription listeners receive a lot of useful arguments:
 
 | Listener argument | Description                                                              |
