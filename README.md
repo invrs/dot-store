@@ -50,6 +50,18 @@ Subscription listeners may be asynchronous and execute sequentially before and a
 | `set`     | `beforeUpdate`, `afterUpdate`, `beforeSet`, `afterSet`       |
 | `toggle`  | `beforeUpdate`, `afterUpdate`, `beforeToggle`, `afterToggle` |
 
+| Callback argument | Description                                                              |
+| :---------------- | :----------------------------------------------------------------------- |
+| `changed`         | Check if props changed                                                   |
+| `op`              | Operation (`get`, `delete`, etc)                                         |
+| `prev`            | Previous value                                                           |
+| `prevState`       | Previous state snapshot                                                  |
+| `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
+| `props`           | Array of prop keys                                                       |
+| `state`           | State snapshot                                                           |
+| `store`           | Store instance                                                           |
+| `value`           | Third argument to operation (if present)                                 |
+
 ```js
 const listener = async ({
   changed,
@@ -78,18 +90,6 @@ store.off("beforeGet", listener)
 // Remove all `beforeGet` listeners
 store.off("beforeGet")
 ```
-
-| Callback argument | Description                                                              |
-| :---------------- | :----------------------------------------------------------------------- |
-| `changed`         | Check if props changed                                                   |
-| `op`              | Operation (`get`, `delete`, etc)                                         |
-| `prev`            | Previous value                                                           |
-| `prevState`       | Previous state snapshot                                                  |
-| `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
-| `props`           | Array of prop keys                                                       |
-| `state`           | State snapshot                                                           |
-| `store`           | Store instance                                                           |
-| `value`           | Third argument to operation (if present)                                 |
 
 ## Prop subscriptions
 
