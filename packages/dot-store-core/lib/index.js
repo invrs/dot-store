@@ -139,9 +139,9 @@ export default class DotStore extends Emitter {
       if (vars) {
         return { ...options, ...vars }
       }
-    } else {
-      return await super.once(event)
     }
+
+    return await super.once(event)
   }
 
   async onceExists(event, prop) {
@@ -155,6 +155,7 @@ export default class DotStore extends Emitter {
       if (value) {
         return {
           prev: value,
+          prevState: this.state,
           prop,
           props: propToArray(prop),
           state: this.state,

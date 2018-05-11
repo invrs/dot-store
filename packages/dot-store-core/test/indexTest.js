@@ -122,13 +122,39 @@ test("once", async () => {
 })
 
 test("onceExists", async () => {
-  let payload = await store.onceExists("test")
+  let payload
+
+  const promise = store
+    .onceExists("test2")
+    .then(options => {
+      payload = options
+    })
+
+  expect(payload).not.toBeDefined()
+
+  await store.set("test2", true)
+  await promise
+
+  expect(payload).toEqual({
+    changed: expect.any(Function),
+    op: "set",
+    prev: undefined,
+    prevState: { test: true },
+    prop: "test2",
+    props: ["test2"],
+    state: { test: true, test2: true },
+    store: expect.any(Object),
+    value: true,
+  })
+
+  payload = await store.onceExists("test2")
 
   expect(payload).toEqual({
     prev: true,
-    prop: "test",
-    props: ["test"],
-    state: { test: true },
+    prevState: { test: true, test2: true },
+    prop: "test2",
+    props: ["test2"],
+    state: { test: true, test2: true },
     store: expect.any(Object),
     value: true,
   })
