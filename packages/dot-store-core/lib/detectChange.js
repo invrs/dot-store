@@ -4,7 +4,7 @@ import dot from "dot-prop-immutable"
 // Strings
 import { propToArray } from "./string"
 
-export function changeFn(options) {
+export function buildDetectChange(options) {
   return (...matchers) =>
     matchers.reduce((memo, matcher) => {
       let out = detectChange(matcher, options)
@@ -17,12 +17,10 @@ export function changeFn(options) {
     }, false)
 }
 
-export function detectChange(
-  matcher,
-  { props, prevState, state }
-) {
+export function detectChange(matcher, options) {
+  const { props, prevState, state } = options
   const matchProps = propToArray(matcher)
-  const options = {}
+  const vars = {}
 
   for (const [index, value] of matchProps.entries()) {
     const prop = props[index]
@@ -31,7 +29,7 @@ export function detectChange(
     if (match && !prop) {
       return false
     } else if (match) {
-      options[match[1]] = prop
+      vars[match[1]] = prop
       matchProps[index] = prop
     }
   }
@@ -40,7 +38,7 @@ export function detectChange(
   const previous = dot.get(prevState, matchProps)
 
   if (current != previous) {
-    return options
+    return vars
   }
 
   return false

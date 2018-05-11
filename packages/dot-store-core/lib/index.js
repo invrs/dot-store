@@ -1,6 +1,7 @@
 import dot from "dot-prop-immutable"
+import Emitter from "./emitter"
 
-import { changeFn } from "./change"
+import { buildDetectChange } from "./detectChange"
 import { capitalize, propToArray } from "./string"
 
 export const ops = [
@@ -11,15 +12,13 @@ export const ops = [
   "toggle",
 ]
 
-export default class DotStore {
-  constructor(state = {}) {
-    this.state = state
+export const opEventRegex = /(before|after)(Create|Delete|Get|Merge|Set|Toggle|Update)/
 
-    this.listeners = {}
-    this.listenersBy = {
-      fn: {},
-      prop: {},
-    }
+export default class DotStore extends Emitter {
+  constructor(state = {}) {
+    super()
+
+    this.state = state
 
     for (let op of ops) {
       this[op] = async (prop, value) =>
@@ -33,7 +32,7 @@ export default class DotStore {
 
   async store({ op, prop, value }) {
     const props = propToArray(prop)
-    let detectChange = changeFn({ props })
+    let detectChange = buildDetectChange({ props })
 
     let payload = {
       detectChange,
@@ -44,7 +43,7 @@ export default class DotStore {
       value,
     }
 
-    await this.dispatch("before", payload)
+    await this.emitOp("before", payload)
 
     const result = dot[op](this.state, prop, value)
     let prevState = this.state
@@ -53,7 +52,7 @@ export default class DotStore {
       this.state = result
     }
 
-    detectChange = changeFn({
+    detectChange = buildDetectChange({
       prevState,
       props,
       state: this.state,
@@ -65,7 +64,7 @@ export default class DotStore {
       prevState,
     }
 
-    await this.dispatch("after", payload)
+    await this.emitOp("after", payload)
 
     if (op == "get") {
       return result
@@ -74,89 +73,14 @@ export default class DotStore {
     }
   }
 
-  // Events
+  async emitOp(event, data) {
+    const events = this.events(event, data)
 
-  addListener({ prop, fn, listener }) {
-    this.addListenerBy("fn", fn, listener)
-    this.addListenerBy("prop", prop, listener)
-  }
-
-  addListenerBy(kind, key, listener) {
-    if (!key || !listener) {
-      return
-    }
-
-    const map = this.listenersBy[kind]
-
-    map[key] = map[key] || []
-    map[key] = map[key].concat([listener])
-  }
-
-  removeListener(options) {
-    const { listener } = options
-    let listeners = []
-
-    for (let kind of ["fn", "prop"]) {
-      const map = this.listenersBy[kind]
-      const key = options[kind]
-
-      map[key] = map[key] || []
-
-      if (listener) {
-        listeners = listeners.concat(
-          map[key].filter(fn => fn == listener)
-        )
-        map[key] = map[key].filter(fn => fn != listener)
-      } else {
-        listeners = listeners.concat(map[key])
-        map[key] = []
-      }
-    }
-
-    for (let listener of new Set(listeners)) {
-      this.unsubscribe(listener)
-    }
-  }
-
-  removeListenerByIntersection(prop, fn) {
-    const propListeners = this.listenersBy.prop[prop]
-    const fnListeners = this.listenersBy.fn[fn]
-
-    const listeners = fnListeners.filter(f =>
-      propListeners.includes(f)
-    )
-
-    for (let listener of listeners) {
-      this.removeListener({ fn, listener, prop })
-    }
-  }
-
-  defaultEvent({ event, fn }) {
-    if (typeof event !== "string") {
-      fn = event
-      event = "afterUpdate"
-    }
-
-    this.ensureListener(event)
-
-    return { event, fn }
-  }
-
-  async dispatch(event, payload) {
-    for (let e of this.events(event, payload)) {
-      this.ensureListener(e)
-
-      for (let fn of this.listeners[e]) {
-        await fn({ ...payload, state: this.state })
-      }
-    }
-
-    return this.state
-  }
-
-  ensureListener(event) {
-    if (!this.listeners[event]) {
-      this.listeners[event] = []
+    for (const e of events) {
+      await this.emitSerial(e, {
+        ...data,
+        state: this.state,
+      })
     }
   }
 
@@ -170,71 +94,68 @@ export default class DotStore {
     }
   }
 
-  subscribe(event, fn) {
-    ;({ event, fn } = this.defaultEvent({ event, fn }))
+  on(event, prop, listener) {
+    if (!prop && !listener) {
+      ;[event, prop, listener] = [
+        "afterUpdate",
+        undefined,
+        event,
+      ]
+    } else if (!listener) {
+      if (event.match(opEventRegex)) {
+        ;[prop, listener] = [undefined, prop]
+      } else {
+        ;[event, prop, listener] = [
+          "afterUpdate",
+          event,
+          prop,
+        ]
+      }
+    }
 
-    this.listeners[event].push(fn)
-  }
+    if (prop) {
+      const customListener = options => {
+        const { detectChange } = options
+        const vars = detectChange(prop)
 
-  unsubscribe(event, fn) {
-    ;({ event, fn } = this.defaultEvent({ event, fn }))
+        if (vars) {
+          return listener({ ...options, ...vars })
+        }
+      }
 
-    if (fn) {
-      this.listeners[event] = this.listeners[event].filter(
-        f => f !== fn
-      )
+      return super.on(event, customListener)
     } else {
-      this.listeners[event] = []
+      return super.on(event, listener)
     }
   }
 
-  on(prop, fn, once = false) {
-    const listener = options => {
+  async once(event, prop) {
+    if (!prop) {
+      if (!event.match(opEventRegex)) {
+        ;[event, prop] = ["afterUpdate", event]
+      }
+    }
+
+    if (prop) {
+      const options = await super.once(event)
       const { detectChange } = options
       const vars = detectChange(prop)
 
       if (vars) {
-        if (once) {
-          this.removeListenerByIntersection(prop, fn)
-        }
-
-        fn({ ...options, ...vars })
+        return { ...options, ...vars }
       }
-    }
-
-    this.addListener({ fn, listener, prop })
-    this.subscribe(listener)
-
-    return listener
-  }
-
-  off(prop, fn) {
-    if (prop && !fn) {
-      this.removeListener({ prop })
-    }
-
-    if (prop && fn) {
-      this.removeListenerByIntersection(prop, fn)
-    }
-  }
-
-  once(prop, fn) {
-    return this.on(prop, fn, true)
-  }
-
-  oncePresent(prop, fn) {
-    const value = this.getSync(prop)
-
-    if (value) {
-      fn({
-        prop,
-        props: propToArray(prop),
-        state: this.state,
-        store: this,
-        value,
-      })
     } else {
-      this.once(prop, fn)
+      return await super.once(event)
     }
+  }
+
+  off(event, listener) {
+    if (!event.match(opEventRegex)) {
+      throw new TypeError(
+        `off event must be ${opEventRegex}`
+      )
+    }
+
+    super.off(event, listener)
   }
 }
