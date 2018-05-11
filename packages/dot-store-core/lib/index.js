@@ -144,7 +144,7 @@ export default class DotStore extends Emitter {
     }
   }
 
-  async oncePresent(event, prop) {
+  async onceExists(event, prop) {
     if (!prop && !event.match(opEventRegex)) {
       ;[event, prop] = ["afterUpdate", event]
     }

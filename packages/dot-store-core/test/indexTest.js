@@ -121,8 +121,8 @@ test("once", async () => {
   })
 })
 
-test("oncePresent", async () => {
-  let payload = await store.oncePresent("test")
+test("onceExists", async () => {
+  let payload = await store.onceExists("test")
 
   expect(payload).toEqual({
     prev: true,

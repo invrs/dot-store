@@ -75,19 +75,19 @@ const listener = async ({
   value,
 }) => {}
 
-// Add `afterUpdate` listener
+// Subscribe to `afterUpdate`
 store.on(listener)
 
-// Remove `afterUpdate` listener
+// Remove `afterUpdate` subscription
 store.off(listener)
 
-// Add `beforeGet` listener
+// Subscribe to `beforeGet`
 store.on("beforeGet", listener)
 
-// Remove `beforeGet` listener
+// Unsubscribe from `beforeGet`
 store.off("beforeGet", listener)
 
-// Remove all `beforeGet` listeners
+// Unsubscribe all from `beforeGet`
 store.off("beforeGet")
 ```
 
@@ -108,18 +108,18 @@ const listener = async ({
   value,
 }) => {}
 
-// Prop subscription (afterUpdate)
+// Subscribe to prop (afterUpdate)
 store.on("test", listener)
 
 // Remove prop listener
 let off = store.on("test", listener)
 off()
 
-// Once prop subscription
+// Resolve once prop changes
 await store.once("test")
 
-// Resolve when or if prop exists
-await store.oncePresent("test")
+// Resolve once prop exists
+await store.onceExists("test")
 ```
 
 ### Prop wildcards
