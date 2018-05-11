@@ -38,75 +38,13 @@ store.getSync("users.employees.bob")
 store.state.users.employees.bob
 ```
 
-## Operation subscriptions
-
-Subscription listeners may be asynchronous and execute sequentially before and after each operation.
-
-| Operation | Events                                                       |
-| :-------- | :----------------------------------------------------------- |
-| `get`     | `beforeGet`, `afterGet`                                      |
-| `delete`  | `beforeUpdate`, `afterUpdate`, `beforeDelete`, `afterDelete` |
-| `merge`   | `beforeUpdate`, `afterUpdate`, `beforeMerge`, `afterMerge`   |
-| `set`     | `beforeUpdate`, `afterUpdate`, `beforeSet`, `afterSet`       |
-| `toggle`  | `beforeUpdate`, `afterUpdate`, `beforeToggle`, `afterToggle` |
-
-| Callback argument | Description                                                              |
-| :---------------- | :----------------------------------------------------------------------- |
-| `changed`         | Check if props changed                                                   |
-| `op`              | Operation (`get`, `delete`, etc)                                         |
-| `prev`            | Previous value                                                           |
-| `prevState`       | Previous state snapshot                                                  |
-| `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
-| `props`           | Array of prop keys                                                       |
-| `state`           | State snapshot                                                           |
-| `store`           | Store instance                                                           |
-| `value`           | Third argument to operation (if present)                                 |
-
-```js
-const listener = async ({
-  changed,
-  op,
-  prev,
-  prevState,
-  prop,
-  props,
-  state,
-  store,
-  value,
-}) => {}
-
-// Subscribe to `afterUpdate`
-store.on(listener)
-
-// Remove `afterUpdate` subscription
-store.off(listener)
-
-// Subscribe to `beforeGet`
-store.on("beforeGet", listener)
-
-// Unsubscribe from `beforeGet`
-store.off("beforeGet", listener)
-
-// Unsubscribe all from `beforeGet`
-store.off("beforeGet")
-```
-
 ## Prop subscriptions
 
-Subscribe to specific prop changes:
+Easily subscribe to store changes:
 
 ```js
-const listener = async ({
-  changed,
-  op,
-  prev,
-  prevState,
-  prop,
-  props,
-  state,
-  store,
-  value,
-}) => {}
+// Async listener
+const listener = async () => {}
 
 // Subscribe to prop (afterUpdate)
 store.on("test", listener)
@@ -122,10 +60,60 @@ await store.once("test")
 await store.onceExists("test")
 ```
 
-### Prop wildcards
+### Prop variables
+
+Capture variables from props:
 
 ```js
 store.on("test.{id}.{attr}", async ({ id, attr }) => {})
+```
+
+### Listener arguments
+
+Subscription listeners receive a lot of useful arguments:
+
+| Listener argument | Description                                                              |
+| :---------------- | :----------------------------------------------------------------------- |
+| `changed`         | Check if props changed                                                   |
+| `op`              | Operation (`get`, `delete`, etc)                                         |
+| `prev`            | Previous value                                                           |
+| `prevState`       | Previous state snapshot                                                  |
+| `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
+| `props`           | Array of prop keys                                                       |
+| `state`           | State snapshot                                                           |
+| `store`           | Store instance                                                           |
+| `value`           | Third argument to operation (if present)                                 |
+
+## Operation subscriptions
+
+Subscription listeners may be asynchronous and execute sequentially before and after each operation.
+
+| Operation | Events                                                       |
+| :-------- | :----------------------------------------------------------- |
+| `get`     | `beforeGet`, `afterGet`                                      |
+| `delete`  | `beforeUpdate`, `afterUpdate`, `beforeDelete`, `afterDelete` |
+| `merge`   | `beforeUpdate`, `afterUpdate`, `beforeMerge`, `afterMerge`   |
+| `set`     | `beforeUpdate`, `afterUpdate`, `beforeSet`, `afterSet`       |
+| `toggle`  | `beforeUpdate`, `afterUpdate`, `beforeToggle`, `afterToggle` |
+
+```js
+// Async listener
+const listener = async () => {}
+
+// Subscribe to `afterUpdate`
+store.on(listener)
+
+// Remove `afterUpdate` subscription
+store.off(listener)
+
+// Subscribe to `beforeGet`
+store.on("beforeGet", listener)
+
+// Unsubscribe from `beforeGet`
+store.off("beforeGet", listener)
+
+// Unsubscribe all from `beforeGet`
+store.off("beforeGet")
 ```
 
 ## Extensions
