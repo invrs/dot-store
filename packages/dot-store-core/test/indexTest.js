@@ -6,52 +6,48 @@ beforeEach(() => {
   store = new GetSet({ test: true })
 })
 
-test("gets value", async () => {
+test("get", async () => {
   expect(store.getSync("test")).toBe(true)
   expect(await store.get("test")).toBe(true)
 })
 
-test("detectChange", async () => {
+test("changed", async () => {
   expect.assertions(5)
 
-  store.on(({ detectChange }) => {
-    expect(detectChange("nested")).toEqual({})
-    expect(detectChange("nested.{key}")).toEqual({
+  store.on(({ changed }) => {
+    expect(changed("nested")).toEqual({})
+    expect(changed("nested.{key}")).toEqual({
       key: "value",
     })
-    expect(detectChange("nested.value.test")).toEqual({})
-    expect(detectChange("nested.{key1}.{key2}")).toEqual({
+    expect(changed("nested.value.test")).toEqual({})
+    expect(changed("nested.{key1}.{key2}")).toEqual({
       key1: "value",
       key2: "test",
     })
-    expect(detectChange("nested.value.test.test2")).toBe(
-      false
-    )
+    expect(changed("nested.value.test.test2")).toBe(false)
   })
 
   await store.set("nested.value.test", true)
 })
 
-test("detectChange equality", async () => {
+test("changed equality", async () => {
   await store.set("nested.value.test", true)
 
   expect.assertions(4)
 
-  store.on(({ detectChange }) => {
-    expect(detectChange("nested")).toEqual({})
-    expect(detectChange("nested.{key}")).toEqual({
+  store.on(({ changed }) => {
+    expect(changed("nested")).toEqual({})
+    expect(changed("nested.{key}")).toEqual({
       key: "value",
     })
-    expect(detectChange("nested.value.test")).toBe(false)
-    expect(detectChange("nested.value.test.test2")).toBe(
-      false
-    )
+    expect(changed("nested.value.test")).toBe(false)
+    expect(changed("nested.value.test.test2")).toBe(false)
   })
 
   await store.set("nested.value.test", true)
 })
 
-test("dispatches on events", async () => {
+test("on", async () => {
   let fn1 = jest.fn()
   let fn2 = jest.fn()
 
@@ -61,8 +57,9 @@ test("dispatches on events", async () => {
   await store.set("test", false)
 
   let payload = {
-    detectChange: expect.any(Function),
+    changed: expect.any(Function),
     op: "set",
+    prev: true,
     prevState: { test: true },
     prop: "test",
     props: ["test"],
@@ -77,7 +74,7 @@ test("dispatches on events", async () => {
   expect(await store.get("test")).toBe(false)
 })
 
-test("dispatches on events with vars", async () => {
+test("on with prop var", async () => {
   let fn1 = jest.fn()
 
   store.on("{key}", fn1)
@@ -85,9 +82,10 @@ test("dispatches on events with vars", async () => {
   await store.set("test", false)
 
   let payload = {
-    detectChange: expect.any(Function),
+    changed: expect.any(Function),
     key: "test",
     op: "set",
+    prev: true,
     prevState: { test: true },
     prop: "test",
     props: ["test"],
@@ -100,7 +98,7 @@ test("dispatches on events with vars", async () => {
   expect(await store.get("test")).toBe(false)
 })
 
-test("dispatches once events", async () => {
+test("once", async () => {
   let payload
 
   const promise = store.once("test").then(options => {
@@ -111,8 +109,9 @@ test("dispatches once events", async () => {
   await promise
 
   expect(payload).toEqual({
-    detectChange: expect.any(Function),
+    changed: expect.any(Function),
     op: "set",
+    prev: true,
     prevState: { test: true },
     prop: "test",
     props: ["test"],
@@ -122,10 +121,11 @@ test("dispatches once events", async () => {
   })
 })
 
-test("dispatches oncePresent events", async () => {
+test("oncePresent", async () => {
   let payload = await store.oncePresent("test")
 
   expect(payload).toEqual({
+    prev: true,
     prop: "test",
     props: ["test"],
     state: { test: true },
@@ -134,7 +134,7 @@ test("dispatches oncePresent events", async () => {
   })
 })
 
-test("doesn't dispatch offed events", async () => {
+test("off", async () => {
   let fn1 = jest.fn()
   let fn2 = jest.fn()
 
@@ -149,7 +149,7 @@ test("doesn't dispatch offed events", async () => {
   expect(fn2).toHaveBeenCalled()
 })
 
-test("doesn't dispatch offed events (return value)", async () => {
+test("off (return value)", async () => {
   let fn1 = jest.fn()
   let fn2 = jest.fn()
 

@@ -57,14 +57,14 @@ test("props", async () => {
   expect(props.store.state).toEqual({ counter: 0 })
 })
 
-test("detectChanges", async () => {
+test("changed", async () => {
   let props
   let rendered = 0
 
   const Component = withStore(
     class extends React.Component {
-      shouldComponentUpdate({ detectChanges }) {
-        return detectChanges("counter", "counter2")
+      shouldComponentUpdate({ changed }) {
+        return changed("counter", "counter2")
       }
 
       render() {

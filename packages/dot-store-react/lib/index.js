@@ -11,10 +11,10 @@ export const withStore = Component =>
       }
     }
 
-    detectChanges(fns) {
+    changed(fns) {
       return (...matchers) =>
-        fns.reduce((memo, detectChange) => {
-          let out = detectChange(...matchers)
+        fns.reduce((memo, changed) => {
+          let out = changed(...matchers)
 
           if (out) {
             return { ...(memo || {}), ...out }
@@ -31,7 +31,7 @@ export const withStore = Component =>
             <Component
               {...this.props}
               changes={changes}
-              detectChanges={this.detectChanges(changeFns)}
+              changed={this.changed(changeFns)}
               state={store.state}
               store={store}
             />
@@ -50,9 +50,9 @@ export class StoreProvider extends React.Component {
     this.onUpdate = this.onUpdate.bind(this)
   }
 
-  onUpdate({ detectChange, prop }) {
+  onUpdate({ changed, prop }) {
     this.changes = this.changes.concat([prop])
-    this.changeFns = this.changeFns.concat([detectChange])
+    this.changeFns = this.changeFns.concat([changed])
     this.forceUpdate()
   }
 

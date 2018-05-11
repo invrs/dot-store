@@ -4,10 +4,10 @@ import dot from "dot-prop-immutable"
 // Strings
 import { propToArray } from "./string"
 
-export function buildDetectChange(options) {
+export function buildChanged(options) {
   return (...matchers) =>
     matchers.reduce((memo, matcher) => {
-      let out = detectChange(matcher, options)
+      let out = changed(matcher, options)
 
       if (out) {
         return { ...(memo || {}), ...out }
@@ -17,7 +17,7 @@ export function buildDetectChange(options) {
     }, false)
 }
 
-export function detectChange(matcher, options) {
+export function changed(matcher, options) {
   const { props, prevState, state } = options
   const matchProps = propToArray(matcher)
   const vars = {}

@@ -1,7 +1,7 @@
 import dot from "dot-prop-immutable"
 import Emitter from "./emitter"
 
-import { buildDetectChange } from "./detectChange"
+import { buildChanged } from "./changed"
 import { capitalize, propToArray } from "./string"
 
 export const ops = [
@@ -12,7 +12,7 @@ export const ops = [
   "toggle",
 ]
 
-export const opEventRegex = /(before|after)(Create|Delete|Get|Merge|Set|Toggle|Update)/
+export const opEventRegex = /(before|after)(Delete|Get|Merge|Set|Toggle|Update)/
 
 export default class DotStore extends Emitter {
   constructor(state = {}) {
@@ -32,11 +32,12 @@ export default class DotStore extends Emitter {
 
   async store({ op, prop, value }) {
     const props = propToArray(prop)
-    let detectChange = buildDetectChange({ props })
+    const prev = this.getSync(prop)
 
     let payload = {
-      detectChange,
+      changed: buildChanged({ props }),
       op,
+      prev,
       prop,
       props,
       store: this,
@@ -52,15 +53,13 @@ export default class DotStore extends Emitter {
       this.state = result
     }
 
-    detectChange = buildDetectChange({
-      prevState,
-      props,
-      state: this.state,
-    })
-
     payload = {
       ...payload,
-      detectChange,
+      changed: buildChanged({
+        prevState,
+        props,
+        state: this.state,
+      }),
       prevState,
     }
 
@@ -113,8 +112,8 @@ export default class DotStore extends Emitter {
 
     if (prop) {
       const customListener = options => {
-        const { detectChange } = options
-        const vars = detectChange(prop)
+        const { changed } = options
+        const vars = changed(prop)
 
         if (vars) {
           return listener({ ...options, ...vars })
@@ -134,8 +133,8 @@ export default class DotStore extends Emitter {
 
     if (prop) {
       const options = await super.once(event)
-      const { detectChange } = options
-      const vars = detectChange(prop)
+      const { changed } = options
+      const vars = changed(prop)
 
       if (vars) {
         return { ...options, ...vars }
@@ -155,6 +154,7 @@ export default class DotStore extends Emitter {
 
       if (value) {
         return {
+          prev: value,
           prop,
           props: propToArray(prop),
           state: this.state,
