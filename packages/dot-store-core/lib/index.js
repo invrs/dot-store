@@ -101,16 +101,14 @@ export default class DotStore extends Emitter {
         undefined,
         event,
       ]
+    } else if (!listener && event.match(opEventRegex)) {
+      ;[prop, listener] = [undefined, prop]
     } else if (!listener) {
-      if (event.match(opEventRegex)) {
-        ;[prop, listener] = [undefined, prop]
-      } else {
-        ;[event, prop, listener] = [
-          "afterUpdate",
-          event,
-          prop,
-        ]
-      }
+      ;[event, prop, listener] = [
+        "afterUpdate",
+        event,
+        prop,
+      ]
     }
 
     if (prop) {
@@ -130,10 +128,8 @@ export default class DotStore extends Emitter {
   }
 
   async once(event, prop) {
-    if (!prop) {
-      if (!event.match(opEventRegex)) {
-        ;[event, prop] = ["afterUpdate", event]
-      }
+    if (!prop && !event.match(opEventRegex)) {
+      ;[event, prop] = ["afterUpdate", event]
     }
 
     if (prop) {
@@ -147,6 +143,28 @@ export default class DotStore extends Emitter {
     } else {
       return await super.once(event)
     }
+  }
+
+  async oncePresent(event, prop) {
+    if (!prop && !event.match(opEventRegex)) {
+      ;[event, prop] = ["afterUpdate", event]
+    }
+
+    if (prop) {
+      const value = this.getSync(prop)
+
+      if (value) {
+        return {
+          prop,
+          props: propToArray(prop),
+          state: this.state,
+          store: this,
+          value,
+        }
+      }
+    }
+
+    return await this.once(event, prop)
   }
 
   off(event, listener) {
