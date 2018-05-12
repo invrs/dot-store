@@ -1,12 +1,12 @@
 {
-  "name": "dot-store-fs",
-  "version": "2.1.0",
-  "description": "Adds filesystem read/write to dot-store",
+  "name": "dot-store-message",
+  "version": "0.0.1",
+  "description": "Store sync using window.postMessage",
   "keywords": [
     "accessor",
-    "fs",
     "immutable",
     "json",
+    "postMessage",
     "store"
   ],
   "author": "Inverse Labs <labs@inverse.com>",
@@ -17,7 +17,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "homepage":
-    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
+    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-message#readme",
   "scripts": {
     "build":
       "rimraf dist; babel lib --out-dir dist --source-maps",
@@ -29,10 +29,7 @@
     "test": "jest test"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "fs-extra": "5",
-    "glob": "7",
-    "proper-lockfile": "3"
+    "babel-runtime": "^6.26.0"
   },
   "devDependencies": {
     "babel-cli": "6",
