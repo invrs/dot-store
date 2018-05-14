@@ -21,8 +21,8 @@ export default class DotStore extends Emitter {
     this.state = state
 
     for (let op of ops) {
-      this[op] = async (prop, value) =>
-        await this.store({ op, prop, value })
+      this[op] = async (prop, value, meta = {}) =>
+        await this.store({ meta, op, prop, value })
     }
   }
 
@@ -30,12 +30,13 @@ export default class DotStore extends Emitter {
     return dot.get(this.state, prop)
   }
 
-  async store({ op, prop, value }) {
+  async store({ meta, op, prop, value }) {
     const props = propToArray(prop)
     const prev = this.getSync(prop)
 
     let payload = {
       changed: buildChanged({ props }),
+      meta,
       op,
       prev,
       prop,
