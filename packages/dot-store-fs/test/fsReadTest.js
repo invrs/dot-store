@@ -12,6 +12,7 @@ test("fsRead", async () => {
   expect(obj).toEqual({
     bang: { buzz: { buzzValue: true } },
     fizz: { fizzValue: true },
+    someKey: "blah\n",
     text: "Some text!\n",
   })
 })

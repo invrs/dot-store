@@ -3,6 +3,8 @@ import { promisify } from "util"
 
 import glob from "glob"
 
+const matchEndings = [".", "/", ""]
+
 export async function globToPaths({ pattern, root }) {
   let fullPattern = join(root, pattern)
   return await promisify(glob)(fullPattern, { mark: true })
@@ -10,7 +12,11 @@ export async function globToPaths({ pattern, root }) {
 
 export function nearestPath({ path, paths }) {
   paths = paths.sort((a, b) => a.length - b.length)
-  return paths.find(p => p.slice(0, path.length) == path)
+  return paths.find(
+    p =>
+      p.slice(0, path.length) == path &&
+      matchEndings.includes(p.charAt(path.length))
+  )
 }
 
 export function pathFromKey({ key, path, paths }) {

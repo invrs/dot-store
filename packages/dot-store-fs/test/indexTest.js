@@ -50,6 +50,12 @@ test("set (concurrent)", async () => {
   })
 })
 
+test("set (similar)", async () => {
+  await store.set("some", { test: true })
+  expect(await store.get("some")).toEqual({ test: true })
+  expect(await read("some.json")).toEqual({ test: true })
+})
+
 test("set (undefined)", async () => {
   await store.set("text", undefined)
   expect(await store.get("text")).toBe(undefined)
