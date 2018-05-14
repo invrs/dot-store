@@ -58,6 +58,7 @@ test("on", async () => {
 
   let payload = {
     changed: expect.any(Function),
+    meta: expect.any(Object),
     op: "set",
     prev: true,
     prevState: { test: true },
@@ -84,6 +85,7 @@ test("on with prop var", async () => {
   let payload = {
     changed: expect.any(Function),
     key: "test",
+    meta: expect.any(Object),
     op: "set",
     prev: true,
     prevState: { test: true },
@@ -110,6 +112,7 @@ test("once", async () => {
 
   expect(payload).toEqual({
     changed: expect.any(Function),
+    meta: expect.any(Object),
     op: "set",
     prev: true,
     prevState: { test: true },
@@ -137,6 +140,7 @@ test("onceExists", async () => {
 
   expect(payload).toEqual({
     changed: expect.any(Function),
+    meta: expect.any(Object),
     op: "set",
     prev: undefined,
     prevState: { test: true },

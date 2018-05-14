@@ -1,20 +1,37 @@
-export default async function(
-  store,
-  { channel = "dotStore", iframe }
-) {
+export default function(store, { key = "iframes" } = {}) {
   if (typeof window === "undefined") {
     return store
   }
 
-  store.on("afterUpdate", async options => {
-    const { op, prop, value } = options
-    const message = JSON.stringify({ op, prop, value })
-    const target = iframe
-      ? iframe.contentWindow
+  store.on(`${key}.{divId}`, async options => {
+    const { divId, meta, op, prop, value } = options
+
+    if (meta.fromWindow) {
+      return
+    }
+
+    const message = { dotStore: true, op, prop, value }
+    const el = document.getElementById(divId)
+
+    const target = el
+      ? el.firstChild.contentWindow
       : window.parent
 
-    target.postMessage(channel, message)
+    if (target) {
+      target.postMessage(message, "*")
+    }
   })
+
+  window.addEventListener(
+    "message",
+    ({ data }) => {
+      const { dotStore, op, prop, value } = data
+      if (dotStore) {
+        store[op](prop, value, { fromWindow: true })
+      }
+    },
+    false
+  )
 
   return store
 }

@@ -26,7 +26,9 @@
     "pretest": "npm run build",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
-    "test": "jest test"
+    "test": "jest test",
+    "watch":
+      "rimraf dist; babel lib --watch --out-dir dist --source-maps"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0"
