@@ -8,19 +8,6 @@ const sizeMaps = {}
 const slots = {}
 
 // Dfp
-export function activateDfpSlot({ iframeId, state }) {
-  const { iframes } = state
-  const { divId } = iframes[iframeId]
-
-  if (!hasGpt || !slots[divId]) {
-    return
-  }
-
-  window.googletag
-    .pubads()
-    .refresh([slots[divId]], { changeCorrelator: false })
-}
-
 export function attachDfp(store) {
   if (!hasGpt) {
     return
@@ -45,6 +32,20 @@ export function attachDfp(store) {
   })
 }
 
+export function buildSizeMap({ dfp, unit }) {
+  if (sizeMaps[unit.id]) {
+    return sizeMaps[unit.id]
+  }
+
+  const map = window.googletag.sizeMapping()
+
+  for (let [i, value] of dfp.viewportMaps.entries()) {
+    map.addSize([value[0], 0], unit.viewportSizes[i])
+  }
+
+  return (sizeMaps[unit.id] = map.build())
+}
+
 export async function createDfpSlot(options) {
   if (!hasGpt) {
     return
@@ -59,7 +60,7 @@ export async function createDfpSlot(options) {
   }
 
   const { divId } = iframe
-  const { oop, path, unitId } = iframe.dfp
+  const { oop, path, targets, unitId } = iframe.dfp
   const unit = dfp.units[unitId]
 
   let slot
@@ -78,6 +79,12 @@ export async function createDfpSlot(options) {
     if (slot) {
       slot.defineSizeMapping(sizeMap)
     }
+
+    if (slot && targets) {
+      for (const key in targets) {
+        slot.setTargeting(key, targets[key])
+      }
+    }
   }
 
   if (slot) {
@@ -87,16 +94,38 @@ export async function createDfpSlot(options) {
   }
 }
 
-export function buildSizeMap({ dfp, unit }) {
-  if (sizeMaps[unit.id]) {
-    return sizeMaps[unit.id]
+export async function destroyDfpSlot({ iframeId }) {
+  if (!hasGpt) {
+    return
   }
 
-  const map = window.googletag.sizeMapping()
+  window.googletag.destroySlots([slots[iframeId]])
+  slots[iframeId] = undefined
+}
 
-  for (let [i, value] of dfp.viewportMaps.entries()) {
-    map.addSize([value[0], 0], unit.viewportSizes[i])
+export function refreshDfpSlot({ iframeId, state }) {
+  const { iframes } = state
+  const { divId } = iframes[iframeId]
+
+  if (!hasGpt || !slots[divId]) {
+    return
   }
 
-  return (sizeMaps[unit.id] = map.build())
+  window.googletag
+    .pubads()
+    .refresh([slots[divId]], { changeCorrelator: false })
+}
+
+export function updateDfpTargets({ store }) {
+  if (!hasGpt) {
+    return
+  }
+
+  const targets = store.getSync("dfp.targets") || {}
+
+  for (const key in targets) {
+    window.googletag
+      .pubads()
+      .setTargeting(key, targets[key] || "")
+  }
 }
