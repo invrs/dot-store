@@ -1,6 +1,6 @@
 {
   "name": "dot-store-fs",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "Adds filesystem read/write to dot-store",
   "keywords": [
     "accessor",

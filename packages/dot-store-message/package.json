@@ -1,6 +1,6 @@
 {
   "name": "dot-store-message",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "Store sync using window.postMessage",
   "keywords": [
     "accessor",
