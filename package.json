@@ -61,8 +61,14 @@
     },
     "rules": {
       "curly": "error",
-      "indent": ["error", 2],
-      "linebreak-style": ["error", "unix"],
+      "indent": [
+        "error",
+        2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
       "max-len": [
         "error",
         {
@@ -74,15 +80,24 @@
       "no-console": [
         "error",
         {
-          "allow": ["warn", "error"]
+          "allow": [
+            "warn",
+            "error"
+          ]
         }
       ],
-      "quotes": ["error", "double"],
+      "quotes": [
+        "error",
+        "double"
+      ],
       "react/display-name": "off",
       "react/no-find-dom-node": "off",
       "react/prop-types": "off",
       "react/react-in-jsx-scope": "off",
-      "semi": ["error", "never"],
+      "semi": [
+        "error",
+        "never"
+      ],
       "sort-keys": [
         "error",
         "asc",
@@ -106,7 +121,10 @@
     }
   },
   "lint-staged": {
-    "*.{css,json,md}": ["prettier --write", "git add"],
+    "*.{css,json,md}": [
+      "prettier --write",
+      "git add"
+    ],
     "*.js": [
       "eslint --ignore-path .gitignore --fix",
       "git add"
