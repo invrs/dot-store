@@ -1,6 +1,6 @@
 {
   "name": "dot-store-react",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "React integration for dot-store",
   "keywords": [
     "accessor",
@@ -16,11 +16,9 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage":
-    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme",
+  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme",
   "scripts": {
-    "build":
-      "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
@@ -34,8 +32,7 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.47",
     "@babel/core": "^7.0.0-beta.47",
-    "@babel/plugin-proposal-object-rest-spread":
-      "^7.0.0-beta.47",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.47",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.47",
     "@babel/preset-env": "^7.0.0-beta.47",
     "@babel/preset-react": "^7.0.0-beta.47",
@@ -71,8 +68,12 @@
     ]
   },
   "jest": {
-    "setupFiles": ["./test/setup.js"],
-    "testMatch": ["**/*Test.js"],
+    "setupFiles": [
+      "./test/setup.js"
+    ],
+    "testMatch": [
+      "**/*Test.js"
+    ],
     "verbose": true
   }
 }
