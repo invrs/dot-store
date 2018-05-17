@@ -47,15 +47,15 @@ export function buildSizeMap({ dfp, unit }) {
 }
 
 export async function createDfpSlot(options) {
-  if (!hasGpt) {
-    return
-  }
-
-  const { iframeId, prev, props, state } = options
+  const { iframeId, prev, props, state, store } = options
   const { dfp, iframes } = state
-  const iframe = iframes[iframeId]
 
-  if (!iframe.dfp || props.length != 2 || prev) {
+  await store.onceExists("dfp.loaded")
+
+  const iframe = iframes[iframeId]
+  const valid = iframe && iframe.dfp
+
+  if (!valid || props.length != 2 || prev) {
     return
   }
 
@@ -94,20 +94,24 @@ export async function createDfpSlot(options) {
   }
 }
 
-export async function destroyDfpSlot({ iframeId }) {
-  if (!hasGpt) {
-    return
-  }
+export async function destroyDfpSlot({ iframeId, store }) {
+  await store.onceExists("dfp.loaded")
 
   window.googletag.destroySlots([slots[iframeId]])
   slots[iframeId] = undefined
 }
 
-export function refreshDfpSlot({ iframeId, state }) {
+export async function refreshDfpSlot({
+  iframeId,
+  state,
+  store,
+}) {
+  await store.onceExists("dfp.loaded")
+
   const { iframes } = state
   const { divId } = iframes[iframeId]
 
-  if (!hasGpt || !slots[divId]) {
+  if (!slots[divId]) {
     return
   }
 
@@ -116,10 +120,8 @@ export function refreshDfpSlot({ iframeId, state }) {
     .refresh([slots[divId]], { changeCorrelator: false })
 }
 
-export function updateDfpTargets({ store }) {
-  if (!hasGpt) {
-    return
-  }
+export async function updateDfpTargets({ store }) {
+  await store.onceExists("dfp.loaded")
 
   const targets = store.getSync("dfp.targets") || {}
 
