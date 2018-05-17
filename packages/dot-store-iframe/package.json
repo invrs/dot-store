@@ -1,9 +1,12 @@
 {
   "name": "dot-store-iframe",
-  "version": "2.3.0",
-  "description":
-    "Iframe controller integration for dot-store",
-  "keywords": ["iframe", "dot-store", "dfp"],
+  "version": "2.4.1",
+  "description": "Iframe controller integration for dot-store",
+  "keywords": [
+    "iframe",
+    "dot-store",
+    "dfp"
+  ],
   "author": "Inverse Labs <labs@inverse.com>",
   "repository": {
     "type": "git",
@@ -11,19 +14,16 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage":
-    "https://github.com/invrs/arch/tree/master/packages/dot-store-iframe#readme",
+  "homepage": "https://github.com/invrs/arch/tree/master/packages/dot-store-iframe#readme",
   "scripts": {
-    "build":
-      "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
     "test": "jest test",
-    "watch":
-      "rimraf dist; babel lib --watch --out-dir dist --source-maps"
+    "watch": "rimraf dist; babel lib --watch --out-dir dist --source-maps"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.47"
@@ -31,12 +31,11 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.47",
     "@babel/core": "^7.0.0-beta.47",
-    "@babel/plugin-proposal-object-rest-spread":
-      "^7.0.0-beta.47",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.47",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.47",
     "@babel/preset-env": "^7.0.0-beta.47",
     "babel-core": "^7.0.0-bridge.0",
-    "dot-store": "^2.3.0",
+    "dot-store": "^2.4.1",
     "fxtr": "1",
     "jest": "^22.4.3",
     "rimraf": "2"
@@ -47,7 +46,9 @@
         "@babel/preset-env",
         {
           "targets": {
-            "browsers": ["defaults"]
+            "browsers": [
+              "defaults"
+            ]
           }
         }
       ]
@@ -58,7 +59,11 @@
     ]
   },
   "jest": {
-    "setupFiles": ["./test/setup.js"],
-    "testMatch": ["**/*Test.js"]
+    "setupFiles": [
+      "./test/setup.js"
+    ],
+    "testMatch": [
+      "**/*Test.js"
+    ]
   }
 }
