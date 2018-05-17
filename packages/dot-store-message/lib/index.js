@@ -5,8 +5,9 @@ export default function(store, { key = "iframes" } = {}) {
 
   store.on(`${key}.{divId}`, async options => {
     const { divId, meta, op, prop, value } = options
+    const valid = value && !value.dfp
 
-    if (meta.fromWindow || value.dfp) {
+    if (!valid || meta.fromWindow) {
       return
     }
 

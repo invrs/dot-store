@@ -140,6 +140,8 @@ export default class DotStore extends Emitter {
       if (vars) {
         return { ...options, ...vars }
       }
+
+      return await this.once(event, prop)
     }
 
     return await super.once(event)

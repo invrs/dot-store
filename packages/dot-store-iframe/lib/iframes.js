@@ -7,12 +7,13 @@ export async function createIframe(options) {
   const { iframes } = state
 
   const iframe = iframes[iframeId]
-  const { divId, url } = iframe
+  const valid = iframe && !iframe.dfp
 
-  if (props.length != 2 || prev || !url) {
+  if (valid || props.length != 2 || prev) {
     return
   }
 
+  const { divId, url } = iframe
   const loaded = `iframes.${iframeId}.loaded`
   const onLoad = () => store.set(loaded, true)
 

@@ -18,9 +18,14 @@ export function attachDfp(store) {
 
     window.googletag
       .pubads()
-      .addEventListener("slotRenderEnded", event => {
-        const divId = event.slot.getSlotElementId()
-        store.set(`iframes.${divId}.rendered`, true)
+      .addEventListener("slotRenderEnded", async event => {
+        const { isEmpty, size, slot } = event
+        const divId = slot.getSlotElementId()
+        store.set(`iframes.${divId}.rendered`, {
+          divId,
+          isEmpty,
+          size,
+        })
       })
 
     window.googletag
