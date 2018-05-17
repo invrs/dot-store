@@ -9,7 +9,7 @@ export async function createIframe(options) {
   const iframe = iframes[iframeId]
   const valid = iframe && !iframe.dfp
 
-  if (valid || props.length != 2 || prev) {
+  if (!valid || props.length != 2 || prev) {
     return
   }
 
