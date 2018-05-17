@@ -1,5 +1,5 @@
 import React from "react"
-import { mount } from "enzyme"
+import { mount } from "@invrs/enzyme"
 
 import { StoreProvider, withStore } from "../dist"
 import Store from "../../dot-store-core/dist"

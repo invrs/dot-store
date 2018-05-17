@@ -1,7 +1,6 @@
 import React from "react"
-import reactContext from "create-react-context"
 
-const StoreContext = reactContext()
+const { Provider, Consumer } = React.createContext()
 
 export const withStore = Component =>
   class extends React.Component {
@@ -26,7 +25,7 @@ export const withStore = Component =>
 
     render() {
       return (
-        <StoreContext.Consumer>
+        <Consumer>
           {([changes, changeFns, store]) => (
             <Component
               {...this.props}
@@ -36,7 +35,7 @@ export const withStore = Component =>
               store={store}
             />
           )}
-        </StoreContext.Consumer>
+        </Consumer>
       )
     }
   }
@@ -72,11 +71,9 @@ export class StoreProvider extends React.Component {
     this.changeFns = []
 
     return (
-      <StoreContext.Provider
-        value={[changes, changeFns, this.store]}
-      >
+      <Provider value={[changes, changeFns, this.store]}>
         {this.props.children}
-      </StoreContext.Provider>
+      </Provider>
     )
   }
 }
