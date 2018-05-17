@@ -79,11 +79,11 @@ export async function createDfpSlot(options) {
     if (slot) {
       slot.defineSizeMapping(sizeMap)
     }
+  }
 
-    if (slot && targets) {
-      for (const key in targets) {
-        slot.setTargeting(key, targets[key])
-      }
+  if (slot && targets) {
+    for (const key in targets) {
+      slot.setTargeting(key, targets[key])
     }
   }
 
