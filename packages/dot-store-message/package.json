@@ -16,16 +16,19 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-message#readme",
+  "homepage":
+    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-message#readme",
   "scripts": {
-    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build":
+      "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
     "test": "jest test",
-    "watch": "rimraf dist; babel lib --watch --out-dir dist --source-maps"
+    "watch":
+      "rimraf dist; babel lib --watch --out-dir dist --source-maps"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.47"
@@ -33,7 +36,8 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.47",
     "@babel/core": "^7.0.0-beta.47",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.47",
+    "@babel/plugin-proposal-object-rest-spread":
+      "^7.0.0-beta.47",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.47",
     "@babel/preset-env": "^7.0.0-beta.47",
     "babel-core": "^7.0.0-bridge.0",
@@ -48,7 +52,10 @@
         {
           "targets": {
             "browsers": [
-              "defaults"
+              "> 0.5%",
+              "last 2 versions",
+              "Firefox ESR",
+              "not dead"
             ]
           }
         }
@@ -60,12 +67,8 @@
     ]
   },
   "jest": {
-    "setupFiles": [
-      "./test/setup.js"
-    ],
-    "testMatch": [
-      "**/*Test.js"
-    ],
+    "setupFiles": ["./test/setup.js"],
+    "testMatch": ["**/*Test.js"],
     "verbose": true
   }
 }

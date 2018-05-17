@@ -16,9 +16,11 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
+  "homepage":
+    "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
   "scripts": {
-    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build":
+      "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
@@ -36,7 +38,8 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.47",
     "@babel/core": "^7.0.0-beta.47",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.47",
+    "@babel/plugin-proposal-object-rest-spread":
+      "^7.0.0-beta.47",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.47",
     "@babel/preset-env": "^7.0.0-beta.47",
     "babel-core": "^7.0.0-bridge.0",
@@ -49,11 +52,7 @@
       [
         "@babel/preset-env",
         {
-          "targets": {
-            "browsers": [
-              "defaults"
-            ]
-          }
+          "node": "current"
         }
       ]
     ],
@@ -63,12 +62,8 @@
     ]
   },
   "jest": {
-    "setupFiles": [
-      "./test/setup.js"
-    ],
-    "testMatch": [
-      "**/*Test.js"
-    ],
+    "setupFiles": ["./test/setup.js"],
+    "testMatch": ["**/*Test.js"],
     "verbose": true
   }
 }
