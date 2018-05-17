@@ -1,6 +1,6 @@
 {
   "name": "dot-store-iframe",
-  "version": "2.2.7",
+  "version": "2.2.8",
   "description": "Iframe controller integration for dot-store",
   "keywords": [
     "iframe",
@@ -32,7 +32,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "dot-store": "^2.2.2",
+    "dot-store": "^2.2.8",
     "fxtr": "1",
     "jest": "^22.4.3",
     "rimraf": "2"
