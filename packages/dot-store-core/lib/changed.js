@@ -1,5 +1,5 @@
 // Packages
-import dot from "dot-prop-immutable"
+import dot from "@invrs/dot-prop-immutable"
 
 // Strings
 import { propToArray } from "./string"

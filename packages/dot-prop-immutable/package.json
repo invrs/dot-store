@@ -1,13 +1,21 @@
 {
-  "name": "dot-store-fs",
-  "version": "2.4.3",
-  "description": "Adds filesystem read/write to dot-store",
+  "name": "@invrs/dot-prop-immutable",
+  "version": "0.1.0",
+  "description": "Immutable version of dot-prop with some extensions",
   "keywords": [
-    "accessor",
-    "fs",
     "immutable",
-    "json",
-    "store"
+    "dot-prop",
+    "react",
+    "redux",
+    "obj",
+    "object",
+    "prop",
+    "property",
+    "dot",
+    "path",
+    "get",
+    "access",
+    "notation"
   ],
   "author": "Inverse Labs <labs@inverse.com>",
   "repository": {
@@ -16,22 +24,18 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "homepage": "https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme",
+  "homepage": "https://github.com/invrs/dot-store#readme",
   "scripts": {
-    "build": "rimraf dist; babel lib --out-dir dist --source-maps",
+    "build": "rimraf dist; babel index.js --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
-    "test": "jest test"
+    "test": "jest"
   },
   "dependencies": {
-    "@babel/runtime": "7.0.0-beta.42",
-    "@invrs/dot-prop-immutable": "^0.1.0",
-    "fs-extra": "5",
-    "glob": "7",
-    "proper-lockfile": "3"
+    "@babel/runtime": "7.0.0-beta.42"
   },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.42",
@@ -40,8 +44,9 @@
     "@babel/plugin-transform-runtime": "7.0.0-beta.42",
     "@babel/preset-env": "7.0.0-beta.42",
     "babel-core": "^7.0.0-bridge.0",
+    "emittery": "^0.3.0",
     "fxtr": "1",
-    "jest": "^22.4.3",
+    "jest": "22",
     "rimraf": "2"
   },
   "babel": {
@@ -49,21 +54,31 @@
       [
         "@babel/preset-env",
         {
-          "node": "current"
+          "targets": {
+            "browsers": [
+              "> 0.5%",
+              "last 2 versions",
+              "Firefox ESR",
+              "not dead"
+            ]
+          }
         }
       ]
     ],
     "plugins": [
-      "@babel/plugin-proposal-object-rest-spread",
-      "@babel/plugin-transform-runtime"
+      "@babel/plugin-transform-runtime",
+      "@babel/plugin-proposal-object-rest-spread"
     ]
   },
   "jest": {
+    "roots": [
+      "<rootDir>/test/"
+    ],
     "setupFiles": [
       "./test/setup.js"
     ],
     "testMatch": [
-      "**/*Test.js"
+      "**/*.spec.js"
     ],
     "verbose": true
   }

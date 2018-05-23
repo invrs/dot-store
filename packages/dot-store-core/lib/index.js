@@ -1,4 +1,4 @@
-import dot from "dot-prop-immutable"
+import dot from "@invrs/dot-prop-immutable"
 import Emitter from "./emitter"
 
 import { buildChanged } from "./changed"

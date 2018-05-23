@@ -1,6 +1,6 @@
 import { join } from "path"
 
-import dot from "dot-prop-immutable"
+import dot from "@invrs/dot-prop-immutable"
 import { ensureDir } from "fs-extra"
 import { lock } from "proper-lockfile"
 

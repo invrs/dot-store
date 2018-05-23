@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.42",
-    "dot-prop-immutable": "^1.4.0"
+    "@invrs/dot-prop-immutable": "^0.1.0"
   },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.42",
