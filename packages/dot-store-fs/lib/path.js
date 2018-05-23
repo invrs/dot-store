@@ -15,7 +15,7 @@ export function nearestPath({ path, paths }) {
   return paths.find(
     p =>
       p.slice(0, path.length) == path &&
-      matchEndings.includes(p.charAt(path.length))
+      matchEndings.indexOf(p.charAt(path.length)) > -1
   )
 }
 
