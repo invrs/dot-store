@@ -43,7 +43,7 @@ export function buildSizeMap({ dfp, unit }) {
   }
 
   const map = window.googletag.sizeMapping()
-  const entries = Object.entries(dfp.viewportMaps)
+  const entries = Array.entries(dfp.viewportMaps)
 
   for (let [i, value] of entries) {
     map.addSize([value[0], 0], unit.viewportSizes[i])

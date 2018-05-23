@@ -20,7 +20,7 @@ export function buildChanged(options) {
 export function changed(matcher, options) {
   const { props, prevState, state } = options
   const matchProps = propToArray(matcher)
-  const entries = Object.entries(matchProps)
+  const entries = Array.entries(matchProps)
   const vars = {}
 
   for (const [index, value] of entries) {
