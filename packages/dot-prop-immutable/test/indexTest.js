@@ -2,7 +2,7 @@
 
 var dotProp = require("..")
 
-describe("dot-prop-immutable.spec.js", function() {
+describe("index test", function() {
   var obj = {
     a: 1,
     b: {

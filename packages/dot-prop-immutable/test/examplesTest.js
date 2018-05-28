@@ -1,6 +1,6 @@
 var dotProp = require("..")
 
-describe("examples.spec.js", function() {
+describe("examples test", function() {
   describe("when get", function() {
     it("prop", function() {
       expect(

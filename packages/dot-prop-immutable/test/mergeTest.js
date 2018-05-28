@@ -2,7 +2,7 @@
 
 var dotProp = require("..")
 
-describe("dot-prop-immutable.merge.spec.js", function() {
+describe("merge test", function() {
   var obj = {
     a: 1,
     b: {

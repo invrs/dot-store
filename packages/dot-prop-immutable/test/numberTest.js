@@ -1,6 +1,6 @@
 var dotProp = require("..")
 
-describe("dot-prop-immutable.number.spec.js", function() {
+describe("number test", function() {
   var arr = [1, { a: false }]
 
   var result

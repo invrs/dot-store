@@ -31,14 +31,14 @@
   "dependencies": {},
   "devDependencies": {
     "babel-eslint": "^8.2.3",
-    "eslint": "^4.19.1",
+    "eslint": "4",
     "eslint-config-prettier": "2",
     "eslint-plugin-prettier": "2",
     "eslint-plugin-react": "7",
-    "husky": "^0.15.0-rc.13",
+    "husky": "1.0.0-rc.8",
     "lerna": "^2.11.0",
     "lint-staged": "^6.1.1",
-    "prettier": "^1.12.1"
+    "prettier": "^1.13.0"
   },
   "eslintConfig": {
     "env": {
@@ -63,7 +63,10 @@
       "curly": "error",
       "indent": [
         "error",
-        2
+        2,
+        {
+          "SwitchCase": 1
+        }
       ],
       "linebreak-style": [
         "error",
@@ -134,5 +137,11 @@
     "printWidth": 60,
     "semi": false,
     "trailingComma": "es5"
-  }
+  },
+  "starters": [
+    "basics",
+    "eslint",
+    "husky",
+    "lerna"
+  ]
 }

@@ -26,11 +26,13 @@
     "pretest": "npm run build",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
-    "test": "jest"
+    "test": "jest",
+    "watch": "rimraf dist; babel lib --watch --out-dir dist --source-maps"
   },
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.42",
-    "@invrs/dot-prop-immutable": "^2.4.4"
+    "@invrs/dot-prop-immutable": "^2.4.4",
+    "rimraf": "2"
   },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.42",
@@ -61,8 +63,8 @@
       ]
     ],
     "plugins": [
-      "@babel/plugin-transform-runtime",
-      "@babel/plugin-proposal-object-rest-spread"
+      "@babel/plugin-proposal-object-rest-spread",
+      "@babel/plugin-transform-runtime"
     ]
   },
   "jest": {
@@ -70,11 +72,18 @@
       "<rootDir>/test/"
     ],
     "setupFiles": [
-      "./test/setup.js"
+      "<rootDir>/test/setup.js"
     ],
     "testMatch": [
-      "**/*Test.js"
+      "<rootDir>/test/**/*Test.js"
     ],
     "verbose": true
-  }
+  },
+  "starters": [
+    "basics",
+    "babel",
+    "babel-scripts",
+    "babel-web",
+    "jest"
+  ]
 }
