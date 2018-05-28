@@ -1,6 +1,6 @@
 {
   "name": "@invrs/dot-prop-immutable",
-  "version": "2.4.4",
+  "version": "2.4.8",
   "description": "Immutable version of dot-prop with some extensions",
   "keywords": [
     "immutable",
