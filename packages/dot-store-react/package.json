@@ -21,7 +21,6 @@
     "build": "rimraf dist; babel lib --out-dir dist --source-maps",
     "fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run build",
-    "pretest": "npm run build",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "lint": "eslint --ignore-path .gitignore --ext=js .",
     "test": "jest",
