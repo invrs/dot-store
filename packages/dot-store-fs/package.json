@@ -1,6 +1,6 @@
 {
   "name": "dot-store-fs",
-  "version": "2.4.8",
+  "version": "2.4.9",
   "description": "Adds filesystem read/write to dot-store",
   "keywords": [
     "accessor",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.42",
-    "@invrs/dot-prop-immutable": "^2.4.8",
+    "@invrs/dot-prop-immutable": "^2.4.9",
     "fs-extra": "5",
     "glob": "7",
     "proper-lockfile": "3",
