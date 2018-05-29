@@ -80,10 +80,31 @@
     "verbose": true
   },
   "starters": [
-    "basics",
     "babel",
     "babel-scripts",
     "babel-web",
-    "jest"
-  ]
+    "basics",
+    "jest",
+    "watchman-babel"
+  ],
+  "watchman": {
+    "triggers": [
+      {
+        "name": "babel",
+        "expression": [
+          "anyof",
+          [
+            "match",
+            "lib/**/*.js",
+            "wholename"
+          ]
+        ],
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ]
+      }
+    ]
+  }
 }

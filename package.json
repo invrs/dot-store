@@ -139,7 +139,6 @@
     "trailingComma": "es5"
   },
   "starters": [
-    "basics",
     "eslint",
     "husky",
     "lerna"
