@@ -25,7 +25,10 @@ export default function(store, { key = "iframes" } = {}) {
 
   window.addEventListener(
     "message",
-    ({ data }) => {
+    ({ data, origin }) => {
+      if (origin == window.location.origin) {
+        return
+      }
       const { dotStore, op, prop, value } = data
       if (dotStore) {
         store[op](prop, value, { fromWindow: true })

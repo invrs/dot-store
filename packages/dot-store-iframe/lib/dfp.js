@@ -56,14 +56,14 @@ export async function createDfpSlot(options) {
   const { iframeId, prev, props, state, store } = options
   const { dfp, iframes } = state
 
-  await store.onceExists("dfp.loaded")
-
   const iframe = iframes[iframeId]
   const valid = iframe && iframe.dfp
 
   if (!valid || props.length != 2 || prev) {
     return
   }
+
+  await store.onceExists("dfp.loaded")
 
   const { divId } = iframe
   const { oop, path, targets, unitId } = iframe.dfp
@@ -100,7 +100,19 @@ export async function createDfpSlot(options) {
   }
 }
 
-export async function destroyDfpSlot({ iframeId, store }) {
+export async function destroyDfpSlot({
+  iframeId,
+  state,
+  store,
+}) {
+  const { iframes } = state
+  const iframe = iframes[iframeId]
+  const valid = iframe && iframe.dfp
+
+  if (!valid) {
+    return
+  }
+
   await store.onceExists("dfp.loaded")
 
   window.googletag.destroySlots([slots[iframeId]])
@@ -112,14 +124,21 @@ export async function refreshDfpSlot({
   state,
   store,
 }) {
-  await store.onceExists("dfp.loaded")
-
   const { iframes } = state
+  const iframe = iframes[iframeId]
+  const valid = iframe && iframe.dfp
+
+  if (!valid) {
+    return
+  }
+
   const { divId } = iframes[iframeId]
 
   if (!slots[divId]) {
     return
   }
+
+  await store.onceExists("dfp.loaded")
 
   window.googletag
     .pubads()
