@@ -133,15 +133,12 @@ export default class DotStore extends Emitter {
     }
 
     if (prop) {
-      const options = await super.once(event)
-      const { changed } = options
-      const vars = changed(prop)
-
-      if (vars) {
-        return { ...options, ...vars }
-      }
-
-      return await this.once(event, prop)
+      return new Promise(resolve => {
+        const unsub = this.on(event, prop, options => {
+          resolve(options)
+          unsub()
+        })
+      })
     }
 
     return await super.once(event)
