@@ -77,7 +77,7 @@ export default class DotStore extends Emitter {
     const events = this.events(event, data)
 
     for (const e of events) {
-      await this.emitSerial(e, {
+      await this.emit(e, {
         ...data,
         state: this.state,
       })
