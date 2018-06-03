@@ -2,7 +2,7 @@ import dot from "@invrs/dot-prop-immutable"
 import Emitter from "./emitter"
 
 import { buildChanged } from "./changed"
-import { capitalize } from "./string"
+import { defaultArgs } from "./args"
 
 export const ops = [
   "delete",
@@ -11,8 +11,6 @@ export const ops = [
   "set",
   "toggle",
 ]
-
-export const opEventRegex = /(before|after)(Delete|Get|Merge|Set|Toggle|Update)/
 
 export default class DotStore extends Emitter {
   constructor(state = {}) {
@@ -85,12 +83,12 @@ export default class DotStore extends Emitter {
   }
 
   events(event, { op }) {
-    let opEvent = `${event}${capitalize(op)}`
+    let opEvent = `${event}${op}`
 
     if (op == "get") {
       return [opEvent]
     } else {
-      return [opEvent, `${event}Update`]
+      return [opEvent, `${event}update`]
     }
   }
 
@@ -106,21 +104,11 @@ export default class DotStore extends Emitter {
   }
 
   on(event, prop, listener) {
-    if (!prop && !listener) {
-      ;[event, prop, listener] = [
-        "afterUpdate",
-        undefined,
-        event,
-      ]
-    } else if (!listener && event.match(opEventRegex)) {
-      ;[prop, listener] = [undefined, prop]
-    } else if (!listener) {
-      ;[event, prop, listener] = [
-        "afterUpdate",
-        event,
-        prop,
-      ]
-    }
+    ;[event, prop, listener] = defaultArgs(
+      event,
+      prop,
+      listener
+    )
 
     if (prop) {
       return super.on(
@@ -133,9 +121,7 @@ export default class DotStore extends Emitter {
   }
 
   async once(event, prop) {
-    if (!prop && !event.match(opEventRegex)) {
-      ;[event, prop] = ["afterUpdate", event]
-    }
+    ;[event, prop] = defaultArgs(event, prop)
 
     if (prop) {
       return new Promise(resolve => {
@@ -150,9 +136,7 @@ export default class DotStore extends Emitter {
   }
 
   async onceExists(event, prop) {
-    if (!prop && !event.match(opEventRegex)) {
-      ;[event, prop] = ["afterUpdate", event]
-    }
+    ;[event, prop] = defaultArgs(event, prop)
 
     if (prop) {
       const value = this.getSync(prop)
@@ -174,13 +158,11 @@ export default class DotStore extends Emitter {
   }
 
   off(event, listener) {
-    if (!listener) {
-      ;[event, listener] = ["afterUpdate", event]
-    } else if (!event.match(opEventRegex)) {
-      throw new TypeError(
-        `off event must be ${opEventRegex}`
-      )
-    }
+    ;[event, , listener] = defaultArgs(
+      event,
+      undefined,
+      listener
+    )
 
     super.off(event, listener)
   }
