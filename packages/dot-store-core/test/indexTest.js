@@ -64,9 +64,11 @@ test("changed mismatch", async () => {
 test("on", async () => {
   let fn1 = jest.fn()
   let fn2 = jest.fn()
+  let fn3 = jest.fn()
 
   store.on(fn1)
   store.on("afterSet", fn2)
+  store.on("test", fn3)
 
   await store.set("test", false)
 
@@ -85,11 +87,37 @@ test("on", async () => {
 
   expect(fn1).toHaveBeenCalledWith(payload)
   expect(fn2).toHaveBeenCalledWith(payload)
+  expect(fn3).toHaveBeenCalledWith(payload)
 
   expect(await store.get("test")).toBe(false)
 })
 
 test("on with prop var", async () => {
+  let fn1 = jest.fn()
+
+  store.on("test.{key}", fn1)
+
+  await store.set("test.foo", false)
+
+  let payload = {
+    changed: expect.any(Function),
+    key: "foo",
+    meta: expect.any(Object),
+    op: "set",
+    prev: undefined,
+    prevState: { test: true },
+    prop: "test.foo",
+    props: ["test", "foo"],
+    state: { test: { foo: false } },
+    store: expect.any(Object),
+    value: false,
+  }
+
+  expect(fn1).toHaveBeenCalledWith(payload)
+  expect(await store.get("test.foo")).toBe(false)
+})
+
+test("on with root prop var", async () => {
   let fn1 = jest.fn()
 
   store.on("{key}", fn1)

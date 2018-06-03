@@ -1,6 +1,9 @@
 // Packages
 import dot from "@invrs/dot-prop-immutable"
 
+// Constants
+export const varPropRegex = /\{([^}]+)\}/
+
 // Helpers
 export function buildChanged(options) {
   return (...matchers) =>
@@ -24,7 +27,7 @@ export function changed(matcher, options) {
 
   for (const [index, value] of entries) {
     const prop = props[index]
-    const varProp = value.match(/\{([^}]+)\}/)
+    const varProp = value.match(varPropRegex)
 
     const mismatch = !varProp && prop != value
     const needProp = varProp && !prop

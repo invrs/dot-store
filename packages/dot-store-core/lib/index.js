@@ -75,25 +75,27 @@ export default class DotStore extends Emitter {
     }
   }
 
-  async emitOp(event, data) {
-    const events = this.events(event, data)
+  async emitOp(event, payload) {
+    const events = this.events(event, payload)
 
     for (const e of events) {
       await this.emit(e, {
-        ...data,
+        ...payload,
         state: this.state,
       })
     }
   }
 
-  events(event, { op }) {
-    let opEvent = `${event}${op}`
+  events(event, { op, props }) {
+    const opEvents = [`${event}${op}`]
 
-    if (op == "get") {
-      return [opEvent]
-    } else {
-      return [opEvent, `${event}update`]
+    if (op != "get") {
+      opEvents.push(`${event}update`)
     }
+
+    const propEvents = opEvents.map(e => `${e}:${props[0]}`)
+
+    return [...opEvents, ...propEvents]
   }
 
   listener({ listener, prop }) {
@@ -129,10 +131,16 @@ export default class DotStore extends Emitter {
 
     if (prop) {
       return new Promise(resolve => {
-        const unsub = this.on(event, prop, options => {
-          resolve(options)
-          unsub()
-        })
+        const unsub = super.on(
+          event,
+          this.listener({
+            listener: options => {
+              resolve(options)
+              unsub()
+            },
+            prop,
+          })
+        )
       })
     }
 
