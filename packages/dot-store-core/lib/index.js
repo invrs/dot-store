@@ -140,14 +140,15 @@ export default class DotStore extends Emitter {
     ;[event, prop] = parseArgs(event, prop)
 
     if (prop) {
-      const value = this.getSync(prop)
+      const props = dot.propToArray(prop)
+      const value = this.getSync(props)
 
       if (value) {
         return {
           prev: value,
           prevState: this.state,
           prop,
-          props: dot.propToArray(prop),
+          props,
           state: this.state,
           store: this,
           value,
