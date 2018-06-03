@@ -11,7 +11,17 @@ test("parseArgs", async () => {
     fn,
   ])
 
-  expect(parseArgs(event)).toEqual(["afterset"])
+  expect(parseArgs(event)).toEqual([
+    "afterset",
+    undefined,
+    undefined,
+  ])
+
+  expect(parseArgs(event, prop)).toEqual([
+    "afterset:foo",
+    prop,
+    undefined,
+  ])
 
   expect(parseArgs(event, fn)).toEqual([
     "afterset",
@@ -19,7 +29,11 @@ test("parseArgs", async () => {
     fn,
   ])
 
-  expect(parseArgs(prop)).toEqual(["afterupdate:foo", prop])
+  expect(parseArgs(prop)).toEqual([
+    "afterupdate:foo",
+    prop,
+    undefined,
+  ])
 
   expect(parseArgs(prop, fn)).toEqual([
     "afterupdate:foo",

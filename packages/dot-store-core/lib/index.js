@@ -120,16 +120,10 @@ export default class DotStore extends Emitter {
 
     if (prop) {
       return new Promise(resolve => {
-        const unsub = super.on(
-          event,
-          changeListener({
-            listener: options => {
-              resolve(options)
-              unsub()
-            },
-            prop,
-          })
-        )
+        const unsub = this.on(event, prop, options => {
+          resolve(options)
+          unsub()
+        })
       })
     }
 
@@ -160,12 +154,7 @@ export default class DotStore extends Emitter {
   }
 
   off(event, listener) {
-    ;[event, , listener] = parseArgs(
-      event,
-      undefined,
-      listener
-    )
-
+    ;[event, , listener] = parseArgs(event, listener)
     super.off(event, listener)
   }
 }

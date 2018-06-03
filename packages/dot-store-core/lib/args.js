@@ -2,48 +2,44 @@
 import dot from "@invrs/dot-prop-immutable"
 
 // Constants
-export const opEventRegex = /(before|after)(delete|get|merge|set|toggle|update)/i
+export const opEventRegex = /^(before|after)(delete|get|merge|set|toggle|update)(:?)/i
 import { varPropRegex } from "./changed"
 
 // Helpers
-export function parseArgs(event, prop, listener) {
-  if (typeof event === "function") {
-    return ["afterupdate", undefined, event]
-  }
+export function parseArgs(...args) {
+  let event = "afterupdate",
+    eventMatch,
+    listener,
+    prop
 
-  const isEvent =
-    typeof event === "string" && event.match(opEventRegex)
+  for (const arg of args) {
+    const type = typeof arg
 
-  if (isEvent) {
-    event = event.toLowerCase()
-  }
+    if (type === "string") {
+      const match = arg.match(opEventRegex)
 
-  if (isEvent && prop && listener) {
-    const newEvent = eventFromProp(event, prop)
-    return [newEvent, prop, listener]
-  }
-
-  if (isEvent && listener) {
-    return [event, undefined, listener]
-  }
-
-  if (isEvent && prop) {
-    return [event, undefined, prop]
-  }
-
-  if (isEvent && !prop) {
-    return [event]
-  }
-
-  if (event && prop) {
-    const newEvent = eventFromProp("afterupdate", event)
-    return [newEvent, event, prop]
+      if (match) {
+        eventMatch = match
+        event = arg
+      } else {
+        prop = arg
+      }
+    } else if (type === "function") {
+      listener = arg
+    }
   }
 
   if (event) {
-    const newEvent = eventFromProp("afterupdate", event)
-    return [newEvent, event]
+    event = event.toLowerCase()
   }
+
+  const needsProp = !eventMatch || !eventMatch[3]
+
+  if (event && prop && needsProp) {
+    event = eventFromProp(event, prop)
+  }
+
+  return [event, prop, listener]
 }
 
 function eventFromProp(event, prop) {
