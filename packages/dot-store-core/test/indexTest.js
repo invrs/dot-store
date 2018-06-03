@@ -47,6 +47,20 @@ test("changed equality", async () => {
   await store.set("nested.value.test", true)
 })
 
+test("changed mismatch", async () => {
+  expect.assertions(3)
+
+  store.on(({ changed }) => {
+    expect(changed("foo")).toEqual(false)
+    expect(changed("foo.{bar}")).toEqual(false)
+    expect(changed("nested.value.test.{bar}")).toEqual(
+      false
+    )
+  })
+
+  await store.set("nested.value.test", true)
+})
+
 test("on", async () => {
   let fn1 = jest.fn()
   let fn2 = jest.fn()

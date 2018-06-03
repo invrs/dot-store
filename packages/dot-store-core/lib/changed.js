@@ -1,9 +1,6 @@
 // Packages
 import dot from "@invrs/dot-prop-immutable"
 
-// Strings
-import { propToArray } from "./string"
-
 export function buildChanged(options) {
   return (...matchers) =>
     matchers.reduce((memo, matcher) => {
@@ -19,18 +16,24 @@ export function buildChanged(options) {
 
 export function changed(matcher, options) {
   const { props, prevState, state } = options
-  const matchProps = propToArray(matcher)
+
+  const matchProps = dot.propToArray(matcher)
   const entries = Array.entries(matchProps)
   const vars = {}
 
   for (const [index, value] of entries) {
     const prop = props[index]
-    const match = value.match(/\{([^}]+)\}/)
+    const varProp = value.match(/\{([^}]+)\}/)
 
-    if (match && !prop) {
+    const mismatch = !varProp && prop != value
+    const needProp = varProp && !prop
+
+    if (mismatch || needProp) {
       return false
-    } else if (match) {
-      vars[match[1]] = prop
+    }
+
+    if (varProp) {
+      vars[varProp[1]] = prop
       matchProps[index] = prop
     }
   }

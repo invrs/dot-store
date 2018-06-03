@@ -184,6 +184,10 @@ function getArrayIndex(head, obj) {
 }
 
 function propToArray(prop) {
+  if (Array.isArray(prop)) {
+    return prop
+  }
+
   return prop
     .split(".")
     .reduce(function(ret, el, index, list) {
@@ -199,9 +203,10 @@ function propToArray(prop) {
 }
 
 module.exports = {
-  set: set,
-  get: get,
   delete: _delete,
-  toggle: toggle,
-  merge: merge,
+  get,
+  merge,
+  propToArray,
+  set,
+  toggle,
 }

@@ -2,7 +2,7 @@ import dot from "@invrs/dot-prop-immutable"
 import Emitter from "./emitter"
 
 import { buildChanged } from "./changed"
-import { capitalize, propToArray } from "./string"
+import { capitalize } from "./string"
 
 export const ops = [
   "delete",
@@ -31,7 +31,7 @@ export default class DotStore extends Emitter {
   }
 
   async store({ meta, op, prop, value }) {
-    const props = propToArray(prop)
+    const props = dot.propToArray(prop)
     const prev = this.getSync(prop)
 
     let payload = {
@@ -47,11 +47,11 @@ export default class DotStore extends Emitter {
 
     await this.emitOp("before", payload)
 
-    const result = dot[op](this.state, prop, value)
+    const state = dot[op](this.state, prop, value)
     let prevState = this.state
 
     if (op != "get") {
-      this.state = result
+      this.state = state
     }
 
     payload = {
@@ -59,7 +59,7 @@ export default class DotStore extends Emitter {
       changed: buildChanged({
         prevState,
         props,
-        state: this.state,
+        state,
       }),
       prevState,
     }
@@ -67,7 +67,7 @@ export default class DotStore extends Emitter {
     await this.emitOp("after", payload)
 
     if (op == "get") {
-      return result
+      return state
     } else {
       return this.state
     }
@@ -94,6 +94,17 @@ export default class DotStore extends Emitter {
     }
   }
 
+  listener({ listener, prop }) {
+    return options => {
+      const { changed } = options
+      const vars = changed(prop)
+
+      if (vars) {
+        return listener({ ...options, ...vars })
+      }
+    }
+  }
+
   on(event, prop, listener) {
     if (!prop && !listener) {
       ;[event, prop, listener] = [
@@ -112,16 +123,10 @@ export default class DotStore extends Emitter {
     }
 
     if (prop) {
-      const customListener = options => {
-        const { changed } = options
-        const vars = changed(prop)
-
-        if (vars) {
-          return listener({ ...options, ...vars })
-        }
-      }
-
-      return super.on(event, customListener)
+      return super.on(
+        event,
+        this.listener({ listener, prop })
+      )
     } else {
       return super.on(event, listener)
     }
@@ -157,7 +162,7 @@ export default class DotStore extends Emitter {
           prev: value,
           prevState: this.state,
           prop,
-          props: propToArray(prop),
+          props: dot.propToArray(prop),
           state: this.state,
           store: this,
           value,
