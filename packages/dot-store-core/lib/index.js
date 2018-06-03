@@ -3,7 +3,7 @@ import dot from "@invrs/dot-prop-immutable"
 import Emitter from "./emitter"
 
 // Helpers
-import { buildChanged } from "./changed"
+import { buildChanged, changeListener } from "./changed"
 import { parseArgs } from "./args"
 
 // Constants
@@ -24,7 +24,7 @@ export default class DotStore extends Emitter {
 
     for (let op of ops) {
       this[op] = async (prop, value, meta = {}) =>
-        await this.store({ meta, op, prop, value })
+        await this.operate({ meta, op, prop, value })
     }
   }
 
@@ -32,7 +32,7 @@ export default class DotStore extends Emitter {
     return dot.get(this.state, prop)
   }
 
-  async store({ meta, op, prop, value }) {
+  async operate({ meta, op, prop, value }) {
     const props = dot.propToArray(prop)
     const prev = this.getSync(prop)
 
@@ -98,17 +98,6 @@ export default class DotStore extends Emitter {
     return [...opEvents, ...propEvents]
   }
 
-  listener({ listener, prop }) {
-    return options => {
-      const { changed } = options
-      const vars = changed(prop)
-
-      if (vars) {
-        return listener({ ...options, ...vars })
-      }
-    }
-  }
-
   on(event, prop, listener) {
     ;[event, prop, listener] = parseArgs(
       event,
@@ -119,7 +108,7 @@ export default class DotStore extends Emitter {
     if (prop) {
       return super.on(
         event,
-        this.listener({ listener, prop })
+        changeListener({ listener, prop })
       )
     } else {
       return super.on(event, listener)
@@ -133,7 +122,7 @@ export default class DotStore extends Emitter {
       return new Promise(resolve => {
         const unsub = super.on(
           event,
-          this.listener({
+          changeListener({
             listener: options => {
               resolve(options)
               unsub()

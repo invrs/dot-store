@@ -51,3 +51,14 @@ export function changed(matcher, options) {
 
   return false
 }
+
+export function changeListener({ listener, prop }) {
+  return options => {
+    const { changed } = options
+    const vars = changed(prop)
+
+    if (vars) {
+      return listener({ ...options, ...vars })
+    }
+  }
+}
