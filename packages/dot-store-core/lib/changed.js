@@ -1,6 +1,7 @@
 // Packages
 import dot from "@invrs/dot-prop-immutable"
 
+// Helpers
 export function buildChanged(options) {
   return (...matchers) =>
     matchers.reduce((memo, matcher) => {

@@ -1,5 +1,7 @@
+// Constants
 export const opEventRegex = /(before|after)(delete|get|merge|set|toggle|update)/i
 
+// Helpers
 export function defaultArgs(event, prop, listener) {
   if (typeof event === "function") {
     return ["afterupdate", undefined, event]

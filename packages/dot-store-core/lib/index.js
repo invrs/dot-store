@@ -1,9 +1,12 @@
+// Packages
 import dot from "@invrs/dot-prop-immutable"
 import Emitter from "./emitter"
 
+// Helpers
 import { buildChanged } from "./changed"
 import { defaultArgs } from "./args"
 
+// Constants
 export const ops = [
   "delete",
   "get",
@@ -12,6 +15,7 @@ export const ops = [
   "toggle",
 ]
 
+// Classes
 export default class DotStore extends Emitter {
   constructor(state = {}) {
     super()
