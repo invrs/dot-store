@@ -4,7 +4,7 @@ import Emitter from "./emitter"
 
 // Helpers
 import { buildChanged } from "./changed"
-import { defaultArgs } from "./args"
+import { parseArgs } from "./args"
 
 // Constants
 export const ops = [
@@ -108,7 +108,7 @@ export default class DotStore extends Emitter {
   }
 
   on(event, prop, listener) {
-    ;[event, prop, listener] = defaultArgs(
+    ;[event, prop, listener] = parseArgs(
       event,
       prop,
       listener
@@ -125,7 +125,7 @@ export default class DotStore extends Emitter {
   }
 
   async once(event, prop) {
-    ;[event, prop] = defaultArgs(event, prop)
+    ;[event, prop] = parseArgs(event, prop)
 
     if (prop) {
       return new Promise(resolve => {
@@ -140,7 +140,7 @@ export default class DotStore extends Emitter {
   }
 
   async onceExists(event, prop) {
-    ;[event, prop] = defaultArgs(event, prop)
+    ;[event, prop] = parseArgs(event, prop)
 
     if (prop) {
       const value = this.getSync(prop)
@@ -162,7 +162,7 @@ export default class DotStore extends Emitter {
   }
 
   off(event, listener) {
-    ;[event, , listener] = defaultArgs(
+    ;[event, , listener] = parseArgs(
       event,
       undefined,
       listener

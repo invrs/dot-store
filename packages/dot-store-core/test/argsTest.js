@@ -1,33 +1,33 @@
-import { defaultArgs } from "../lib/args"
+import { parseArgs } from "../lib/args"
 
-test("defaultArgs", async () => {
+test("parseArgs", async () => {
   const event = "afterSet"
   const prop = "prop"
   const fn = () => {}
 
-  expect(defaultArgs(fn)).toEqual([
+  expect(parseArgs(fn)).toEqual([
     "afterupdate",
     undefined,
     fn,
   ])
 
-  expect(defaultArgs(event)).toEqual(["afterset"])
+  expect(parseArgs(event)).toEqual(["afterset"])
 
-  expect(defaultArgs(event, fn)).toEqual([
+  expect(parseArgs(event, fn)).toEqual([
     "afterset",
     undefined,
     fn,
   ])
 
-  expect(defaultArgs(prop)).toEqual(["afterupdate", prop])
+  expect(parseArgs(prop)).toEqual(["afterupdate", prop])
 
-  expect(defaultArgs(prop, fn)).toEqual([
+  expect(parseArgs(prop, fn)).toEqual([
     "afterupdate",
     prop,
     fn,
   ])
 
-  expect(defaultArgs(event, prop, fn)).toEqual([
+  expect(parseArgs(event, prop, fn)).toEqual([
     "afterset",
     prop,
     fn,
