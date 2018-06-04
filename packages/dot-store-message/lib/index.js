@@ -5,7 +5,9 @@ export default function(store, { key = "iframes" } = {}) {
 
   store.on(`${key}.{divId}`, async options => {
     const { divId, meta, op, prop, value } = options
-    const valid = value && !value.dfp
+
+    const iframe = store.getSync(`${key}.${divId}`)
+    const valid = iframe && !iframe.dfp
 
     if (!valid || meta.fromWindow) {
       return
@@ -13,6 +15,14 @@ export default function(store, { key = "iframes" } = {}) {
 
     const message = { dotStore: true, op, prop, value }
     const el = document.getElementById(divId)
+
+    if (el && !el.firstChild) {
+      return
+    }
+
+    if (!el && window.parent == window) {
+      return
+    }
 
     const target = el
       ? el.firstChild.contentWindow
