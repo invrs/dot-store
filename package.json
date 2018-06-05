@@ -77,7 +77,8 @@
         {
           "code": 60,
           "ignoreRegExpLiterals": true,
-          "ignoreStrings": true
+          "ignoreStrings": true,
+          "ignoreTemplateLiterals": true
         }
       ],
       "no-console": [

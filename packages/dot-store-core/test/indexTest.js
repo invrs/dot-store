@@ -30,6 +30,19 @@ test("changed", async () => {
   await store.set("nested.value.test", true)
 })
 
+test("changed nested key", async () => {
+  expect.assertions(2)
+
+  await store.set("nested", {})
+
+  store.on(({ changed }) => {
+    expect(changed("nested.value.key")).toEqual({})
+    expect(changed("nested.value.key2")).toEqual(false)
+  })
+
+  await store.set("nested.value", { key: true })
+})
+
 test("changed equality", async () => {
   await store.set("nested.value.test", true)
 

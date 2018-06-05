@@ -29,7 +29,7 @@ export function changed(matcher, options) {
     const prop = props[index]
     const varProp = value.match(varPropRegex)
 
-    const mismatch = !varProp && prop != value
+    const mismatch = !varProp && prop && prop != value
     const needProp = varProp && !prop
 
     if (mismatch || needProp) {
