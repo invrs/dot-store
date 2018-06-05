@@ -1,6 +1,6 @@
 {
   "name": "dot-store-cookie",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "description": "Cookie integration for dot-store",
   "keywords": [
     "dot-store",
