@@ -21,6 +21,7 @@ export async function createIframe(options) {
   el.onload = onLoad
 
   el.frameBorder = 0
+  el.height = 0
   el.src = url
 
   document.getElementById(divId).appendChild(el)
