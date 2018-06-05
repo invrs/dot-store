@@ -32,6 +32,10 @@ export default class DotStore extends Emitter {
     return dot.get(this.state, prop)
   }
 
+  timestamp(prop) {
+    return this.set(prop, new Date().getTime())
+  }
+
   async operate({ meta, op, prop, value }) {
     const props = dot.propToArray(prop)
     const prev = this.getSync(prop)
