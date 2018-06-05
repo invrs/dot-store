@@ -105,6 +105,39 @@ test("on", async () => {
   expect(await store.get("test")).toBe(false)
 })
 
+test.only("on beforeUpdate", async () => {
+  let fn1 = jest.fn()
+  let fn2 = jest.fn()
+  let fn3 = jest.fn()
+  let fn4 = jest.fn()
+
+  store.on("beforeUpdate", fn1)
+  store.on("beforeUpdate", "test", fn2)
+  store.on("beforeUpdate", "test.hello", fn3)
+  store.on("beforeUpdate", "blah", fn4)
+
+  await store.set("test", false)
+
+  let payload = {
+    changed: expect.any(Function),
+    meta: expect.any(Object),
+    op: "set",
+    prev: true,
+    prop: "test",
+    props: ["test"],
+    state: { test: true },
+    store: expect.any(Object),
+    value: false,
+  }
+
+  expect(fn1).toHaveBeenCalledWith(payload)
+  expect(fn2).toHaveBeenCalledWith(payload)
+  expect(fn3).toHaveBeenCalledWith(payload)
+  expect(fn4).not.toHaveBeenCalledWith(payload)
+
+  expect(await store.get("test")).toBe(false)
+})
+
 test("on with prop var", async () => {
   let fn1 = jest.fn()
 

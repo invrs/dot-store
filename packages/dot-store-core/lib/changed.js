@@ -19,17 +19,17 @@ export function buildChanged(options) {
 }
 
 export function changed(matcher, options) {
-  const { props, prevState, state } = options
+  const { props, prevState, state, value } = options
 
   const matchProps = dot.propToArray(matcher)
   const entries = Array.entries(matchProps)
   const vars = {}
 
-  for (const [index, value] of entries) {
+  for (const [index, matchProp] of entries) {
     const prop = props[index]
-    const varProp = value.match(varPropRegex)
+    const varProp = matchProp.match(varPropRegex)
 
-    const mismatch = !varProp && prop && prop != value
+    const mismatch = !varProp && prop && prop != matchProp
     const needProp = varProp && !prop
 
     if (mismatch || needProp) {
@@ -40,6 +40,16 @@ export function changed(matcher, options) {
       vars[varProp[1]] = prop
       matchProps[index] = prop
     }
+  }
+
+  if (!prevState) {
+    const current = dot.get(state, props)
+
+    if (current != value) {
+      return vars
+    }
+
+    return false
   }
 
   const current = dot.get(state, matchProps)

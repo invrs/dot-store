@@ -41,7 +41,11 @@ export default class DotStore extends Emitter {
     const prev = this.getSync(prop)
 
     let payload = {
-      changed: buildChanged({ props }),
+      changed: buildChanged({
+        props,
+        state: this.state,
+        value,
+      }),
       meta,
       op,
       prev,
