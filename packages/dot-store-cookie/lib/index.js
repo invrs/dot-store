@@ -3,12 +3,8 @@ import Cookies from "js-cookie"
 
 // Composers
 export default function(store) {
-  store.on("beforeGet:cookies", getCookie)
-  store.on(
-    "beforeUpdate",
-    "cookies.{cookieKey}",
-    updateCookie
-  )
+  store.on("beforeGet", "cookies.{cookieKey}", getCookie)
+  store.on("cookies.{cookieKey}", updateCookie)
   return store
 }
 

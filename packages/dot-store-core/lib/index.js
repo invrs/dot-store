@@ -42,6 +42,7 @@ export default class DotStore extends Emitter {
 
     let payload = {
       changed: buildChanged({
+        op,
         props,
         state: this.state,
         value,
@@ -67,6 +68,7 @@ export default class DotStore extends Emitter {
     payload = {
       ...payload,
       changed: buildChanged({
+        op,
         prevState,
         props,
         state,

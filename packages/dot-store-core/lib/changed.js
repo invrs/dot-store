@@ -19,7 +19,7 @@ export function buildChanged(options) {
 }
 
 export function changed(matcher, options) {
-  const { props, prevState, state, value } = options
+  const { op, prevState, props, state, value } = options
 
   const matchProps = dot.propToArray(matcher)
   const entries = Array.entries(matchProps)
@@ -45,7 +45,7 @@ export function changed(matcher, options) {
   if (!prevState) {
     const current = dot.get(state, props)
 
-    if (current != value) {
+    if (op === "get" || current != value) {
       return vars
     }
 
