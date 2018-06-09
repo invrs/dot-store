@@ -32,7 +32,7 @@ export default class DotStore extends Emitter {
     return dot.get(this.state, prop)
   }
 
-  timestamp(prop) {
+  time(prop) {
     return this.set(prop, new Date().getTime())
   }
 
