@@ -15,7 +15,7 @@ async function getCookie({ cookieKey, store }) {
   if (!value) {
     await store.set(
       `cookies.${cookieKey}`,
-      Cookies.getJSON(cookieKey),
+      Cookies.getJSON(cookieKey) || {},
       { fromCookie: true }
     )
   }
