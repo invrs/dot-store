@@ -28,13 +28,36 @@ export async function createIframe(options) {
   elements[divId] = el
 }
 
+export async function deleteIframe({
+  iframeId,
+  prevState,
+}) {
+  const { iframes } = prevState
+  const iframe = iframes[iframeId]
+  const valid = iframe && !iframe.dfp
+
+  if (!valid) {
+    return
+  }
+
+  const { divId } = iframe
+  const el = document.getElementById(divId)
+
+  if (el && el.parentNode) {
+    el.parentNode.removeChild(el)
+  }
+}
+
 export function iframeSize(options) {
   const { iframeId, state } = options
   const { iframes } = state
-
   const iframe = iframes[iframeId]
-  const { divId, height, width } = iframe
 
+  if (!iframe) {
+    return
+  }
+
+  const { divId, height, width } = iframe
   const el = document.getElementById(divId).firstChild
 
   if (height) {

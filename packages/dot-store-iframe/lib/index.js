@@ -2,13 +2,17 @@
 import {
   attachDfp,
   createDfpSlot,
-  destroyDfpSlot,
+  deleteDfpSlot,
   refreshDfpSlot,
   updateDfpTargets,
 } from "./dfp"
 
 // Iframes
-import { createIframe, iframeSize } from "./iframes"
+import {
+  createIframe,
+  deleteIframe,
+  iframeSize,
+} from "./iframes"
 
 // Composers
 export default function(store) {
@@ -23,7 +27,13 @@ export default function(store) {
   store.on(
     "afterDelete",
     "iframes.{iframeId}",
-    destroyDfpSlot
+    deleteDfpSlot
+  )
+
+  store.on(
+    "afterDelete",
+    "iframes.{iframeId}",
+    deleteIframe
   )
 
   attachDfp(store)

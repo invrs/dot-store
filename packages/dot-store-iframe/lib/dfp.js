@@ -100,12 +100,12 @@ export async function createDfpSlot(options) {
   }
 }
 
-export async function destroyDfpSlot({
+export async function deleteDfpSlot({
   iframeId,
-  state,
+  prevState,
   store,
 }) {
-  const { iframes } = state
+  const { iframes } = prevState
   const iframe = iframes[iframeId]
   const valid = iframe && iframe.dfp
 
