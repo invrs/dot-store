@@ -8,7 +8,7 @@ export const varPropRegex = /\{([^}]+)\}/
 export function buildChanged(options) {
   return (...matchers) =>
     matchers.reduce((memo, matcher) => {
-      let out = changed(matcher, options)
+      const out = changed(matcher, options)
 
       if (out) {
         return { ...(memo || {}), ...out }
@@ -19,28 +19,36 @@ export function buildChanged(options) {
 }
 
 export function changed(matcher, options) {
-  const { op, prevState, props, state, value } = options
+  const { matchProps, vars } = changedVars({
+    matcher,
+    options,
+  })
+  if (vars) {
+    return changedMatch({ matchProps, options, vars })
+  } else {
+    return false
+  }
+}
 
-  const matchProps = dot.propToArray(matcher)
-  const entries = Array.entries(matchProps)
-  const vars = {}
+export function changeListener({ listener, prop }) {
+  return options => {
+    const { value, vars } = changedValueVars({
+      options,
+      prop,
+    })
 
-  for (const [index, matchProp] of entries) {
-    const prop = props[index]
-    const varProp = matchProp.match(varPropRegex)
-
-    const mismatch = !varProp && prop && prop != matchProp
-    const needProp = varProp && !prop
-
-    if (mismatch || needProp) {
-      return false
-    }
-
-    if (varProp) {
-      vars[varProp[1]] = prop
-      matchProps[index] = prop
+    if (vars) {
+      return listener({ ...options, ...vars, value })
     }
   }
+}
+
+export function changedMatch({
+  matchProps,
+  options,
+  vars,
+}) {
+  const { op, prevState, props, state, value } = options
 
   if (!prevState) {
     const current = dot.get(state, props)
@@ -62,13 +70,46 @@ export function changed(matcher, options) {
   return false
 }
 
-export function changeListener({ listener, prop }) {
-  return options => {
-    const { changed } = options
-    const vars = changed(prop)
+export function changedVars({ matcher, options }) {
+  const { props } = options
+  const matchProps = dot.propToArray(matcher)
+  const entries = Array.entries(matchProps)
+  const vars = {}
 
-    if (vars) {
-      return listener({ ...options, ...vars })
+  for (const [index, matchProp] of entries) {
+    const prop = props[index]
+    const varProp = matchProp.match(varPropRegex)
+
+    const mismatch = !varProp && prop && prop != matchProp
+    const needProp = varProp && !prop
+
+    if (mismatch || needProp) {
+      return { vars: false }
     }
+
+    if (varProp) {
+      vars[varProp[1]] = prop
+      matchProps[index] = prop
+    }
+  }
+
+  return { matchProps, vars }
+}
+
+export function changedValueVars({ options, prop }) {
+  const { state } = options
+  if (!prop) {
+    return {
+      value: state,
+      vars: {},
+    }
+  }
+  const { matchProps, vars } = changedVars({
+    matcher: prop,
+    options,
+  })
+  return {
+    value: dot.get(state, matchProps),
+    vars: changedMatch({ matchProps, options, vars }),
   }
 }

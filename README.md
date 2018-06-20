@@ -50,7 +50,7 @@ const listener = async () => {}
 store.on("hello.world", listener)
 
 // Remove prop listener
-let off = store.on("hello.world", listener)
+const off = store.on("hello.world", listener)
 off()
 
 // Resolve once prop changes
@@ -75,7 +75,7 @@ Subscription listeners receive a lot of useful arguments:
 | `props`           | Array of prop keys                                                       |
 | `state`           | State snapshot                                                           |
 | `store`           | Store instance                                                           |
-| `value`           | Third argument to operation (if present)                                 |
+| `value`           | Subscription prop value                                                  |
 
 ## Operation subscriptions
 
@@ -97,16 +97,15 @@ const listener = async () => {}
 store.on(listener)
 
 // Remove `afterUpdate` subscription
-store.off(listener)
+const off = store.on(listener)
+off()
 
 // Subscribe to `beforeGet`
 store.on("beforeGet", listener)
 
 // Unsubscribe from `beforeGet`
-store.off("beforeGet", listener)
-
-// Unsubscribe all from `beforeGet`
-store.off("beforeGet")
+const off = store.on("beforeGet", listener)
+off()
 ```
 
 ## Extensions

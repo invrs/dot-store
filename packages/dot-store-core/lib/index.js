@@ -40,7 +40,7 @@ export default class DotStore extends Emitter {
     const props = dot.propToArray(prop)
     const prev = this.getSync(prop)
 
-    let payload = {
+    const beforePayload = {
       changed: buildChanged({
         op,
         props,
@@ -56,17 +56,17 @@ export default class DotStore extends Emitter {
       value,
     }
 
-    await this.emitOp("before", payload)
+    await this.emitOp("before", beforePayload)
 
     const state = dot[op](this.state, prop, value)
-    let prevState = this.state
+    const prevState = this.state
 
     if (op != "get") {
       this.state = state
     }
 
-    payload = {
-      ...payload,
+    const afterPayload = {
+      ...beforePayload,
       changed: buildChanged({
         op,
         prevState,
@@ -76,7 +76,7 @@ export default class DotStore extends Emitter {
       prevState,
     }
 
-    await this.emitOp("after", payload)
+    await this.emitOp("after", afterPayload)
 
     if (op == "get") {
       return state
@@ -115,29 +115,21 @@ export default class DotStore extends Emitter {
       listener
     )
 
-    if (prop) {
-      return super.on(
-        event,
-        changeListener({ listener, prop })
-      )
-    } else {
-      return super.on(event, listener)
-    }
+    return super.on(
+      event,
+      changeListener({ listener, prop })
+    )
   }
 
   async once(event, prop) {
     ;[event, prop] = parseArgs(event, prop)
 
-    if (prop) {
-      return new Promise(resolve => {
-        const unsub = this.on(event, prop, options => {
-          resolve(options)
-          unsub()
-        })
+    return new Promise(resolve => {
+      const unsub = this.on(event, prop, options => {
+        resolve(options)
+        unsub()
       })
-    }
-
-    return await super.once(event)
+    })
   }
 
   async onceExists(event, prop) {

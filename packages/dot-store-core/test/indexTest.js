@@ -74,10 +74,33 @@ test("changed mismatch", async () => {
   await store.set("nested.value.test", true)
 })
 
+test("merge", async () => {
+  const fn1 = jest.fn()
+  store.on("obj.key", fn1)
+
+  await store.merge("obj", { key: true })
+
+  const payload = {
+    changed: expect.any(Function),
+    meta: expect.any(Object),
+    op: "merge",
+    prev: undefined,
+    prevState: { test: true },
+    prop: "obj",
+    props: ["obj"],
+    state: { obj: { key: true }, test: true },
+    store: expect.any(Object),
+    value: true,
+  }
+
+  expect(fn1).toHaveBeenCalledWith(payload)
+  expect(await store.get("obj.key")).toBe(true)
+})
+
 test("on", async () => {
-  let fn1 = jest.fn()
-  let fn2 = jest.fn()
-  let fn3 = jest.fn()
+  const fn1 = jest.fn()
+  const fn2 = jest.fn()
+  const fn3 = jest.fn()
 
   store.on(fn1)
   store.on("afterSet", fn2)
@@ -85,7 +108,7 @@ test("on", async () => {
 
   await store.set("test", false)
 
-  let payload = {
+  const payload = {
     changed: expect.any(Function),
     meta: expect.any(Object),
     op: "set",
@@ -95,21 +118,24 @@ test("on", async () => {
     props: ["test"],
     state: { test: false },
     store: expect.any(Object),
-    value: false,
+    value: { test: false },
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
   expect(fn2).toHaveBeenCalledWith(payload)
-  expect(fn3).toHaveBeenCalledWith(payload)
+  expect(fn3).toHaveBeenCalledWith({
+    ...payload,
+    value: false,
+  })
 
   expect(await store.get("test")).toBe(false)
 })
 
-test.only("on beforeUpdate", async () => {
-  let fn1 = jest.fn()
-  let fn2 = jest.fn()
-  let fn3 = jest.fn()
-  let fn4 = jest.fn()
+test("on beforeUpdate", async () => {
+  const fn1 = jest.fn()
+  const fn2 = jest.fn()
+  const fn3 = jest.fn()
+  const fn4 = jest.fn()
 
   store.on("beforeUpdate", fn1)
   store.on("beforeUpdate", "test", fn2)
@@ -118,7 +144,7 @@ test.only("on beforeUpdate", async () => {
 
   await store.set("test", false)
 
-  let payload = {
+  const payload = {
     changed: expect.any(Function),
     meta: expect.any(Object),
     op: "set",
@@ -127,25 +153,31 @@ test.only("on beforeUpdate", async () => {
     props: ["test"],
     state: { test: true },
     store: expect.any(Object),
-    value: false,
+    value: { test: true },
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
-  expect(fn2).toHaveBeenCalledWith(payload)
-  expect(fn3).toHaveBeenCalledWith(payload)
-  expect(fn4).not.toHaveBeenCalledWith(payload)
+  expect(fn2).toHaveBeenCalledWith({
+    ...payload,
+    value: true,
+  })
+  expect(fn3).toHaveBeenCalledWith({
+    ...payload,
+    value: undefined,
+  })
+  expect(fn4).not.toHaveBeenCalled()
 
   expect(await store.get("test")).toBe(false)
 })
 
 test("on with prop var", async () => {
-  let fn1 = jest.fn()
+  const fn1 = jest.fn()
 
   store.on("test.{key}", fn1)
 
   await store.set("test.foo", false)
 
-  let payload = {
+  const payload = {
     changed: expect.any(Function),
     key: "foo",
     meta: expect.any(Object),
@@ -164,13 +196,13 @@ test("on with prop var", async () => {
 })
 
 test("on with root prop var", async () => {
-  let fn1 = jest.fn()
+  const fn1 = jest.fn()
 
   store.on("{key}", fn1)
 
   await store.set("test", false)
 
-  let payload = {
+  const payload = {
     changed: expect.any(Function),
     key: "test",
     meta: expect.any(Object),
@@ -253,25 +285,10 @@ test("onceExists", async () => {
 })
 
 test("off", async () => {
-  let fn1 = jest.fn()
-  let fn2 = jest.fn()
+  const fn1 = jest.fn()
+  const fn2 = jest.fn()
 
-  store.on("afterUpdate", fn1)
-  store.on("afterUpdate", fn2)
-
-  store.off("afterUpdate", fn1)
-
-  await store.set("test", false)
-
-  expect(fn1).not.toHaveBeenCalled()
-  expect(fn2).toHaveBeenCalled()
-})
-
-test("off (return value)", async () => {
-  let fn1 = jest.fn()
-  let fn2 = jest.fn()
-
-  let off = store.on("test", fn1)
+  const off = store.on("test", fn1)
   store.on("test", fn2)
 
   off()
