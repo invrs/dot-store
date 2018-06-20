@@ -98,16 +98,15 @@ export function changedVars({ matcher, options }) {
 
 export function changedValueVars({ options, prop }) {
   const { state } = options
-  const defaultVars = { value: state, vars: {} }
   if (!prop) {
-    return defaultVars
+    return { value: state, vars: {} }
   }
   const { matchProps, vars } = changedVars({
     matcher: prop,
     options,
   })
   if (!vars) {
-    return defaultVars
+    return { value: state, vars }
   }
   return {
     value: dot.get(state, matchProps),

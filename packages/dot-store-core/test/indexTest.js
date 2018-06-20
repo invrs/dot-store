@@ -131,6 +131,19 @@ test("on", async () => {
   expect(await store.get("test")).toBe(false)
 })
 
+test("on (mismatch)", async () => {
+  const fn1 = jest.fn()
+  const fn2 = jest.fn()
+
+  store.on("obj.a", fn1)
+  store.on("obj.b", fn2)
+
+  await store.set("obj.a", true)
+
+  expect(fn1).toHaveBeenCalled()
+  expect(fn2).not.toHaveBeenCalled()
+})
+
 test("on beforeUpdate", async () => {
   const fn1 = jest.fn()
   const fn2 = jest.fn()
