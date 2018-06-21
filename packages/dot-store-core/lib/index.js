@@ -3,8 +3,9 @@ import dot from "@invrs/dot-prop-immutable"
 import Emitter from "./emitter"
 
 // Helpers
-import { buildChanged, changeListener } from "./changed"
 import { parseArgs } from "./args"
+import { buildChanged, changeListener } from "./changed"
+import { debug } from "./debug"
 
 // Constants
 export const ops = [
@@ -26,6 +27,8 @@ export default class DotStore extends Emitter {
       this[op] = async (prop, value, meta = {}) =>
         await this.operate({ meta, op, prop, value })
     }
+
+    debug(this)
   }
 
   getSync(prop) {

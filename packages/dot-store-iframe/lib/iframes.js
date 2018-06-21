@@ -22,7 +22,7 @@ export async function createIframe(options) {
 
   el.frameBorder = 0
   el.height = 0
-  el.src = url
+  el.src = addDebug({ state, url })
 
   document.getElementById(divId).appendChild(el)
   elements[divId] = el
@@ -67,4 +67,13 @@ export function iframeSize(options) {
   if (width) {
     el.width = width
   }
+}
+
+// Helpers
+export function addDebug({ state, url }) {
+  if (!state.debugMode) {
+    return
+  }
+  const separator = url.indexOf("?") < 0 ? "?" : "&"
+  return url + `${separator}store_debug=1`
 }
