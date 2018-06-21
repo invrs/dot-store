@@ -29,7 +29,7 @@ export function parseArgs(...args) {
     }
   }
 
-  if (event) {
+  if (event && event.indexOf(":") < 0) {
     event = event.toLowerCase()
   }
 
