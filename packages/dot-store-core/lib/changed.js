@@ -32,13 +32,24 @@ export function changed(matcher, options) {
 
 export function changeListener({ listener, prop }) {
   return options => {
-    const { value, vars } = changedValueVars({
+    const {
+      listenProp,
+      listenProps,
+      listenValue,
+      vars,
+    } = changedValueVars({
       options,
       prop,
     })
 
     if (vars) {
-      return listener({ ...options, ...vars, value })
+      return listener({
+        ...options,
+        ...vars,
+        listenProp,
+        listenProps,
+        listenValue,
+      })
     }
   }
 }
@@ -99,17 +110,19 @@ export function changedVars({ matcher, options }) {
 export function changedValueVars({ options, prop }) {
   const { state } = options
   if (!prop) {
-    return { value: state, vars: {} }
+    return { listenValue: state, value: state, vars: {} }
   }
   const { matchProps, vars } = changedVars({
     matcher: prop,
     options,
   })
   if (!vars) {
-    return { value: state, vars }
+    return { vars }
   }
   return {
-    value: dot.get(state, matchProps),
+    listenProp: matchProps.join("."),
+    listenProps: matchProps,
+    listenValue: dot.get(state, matchProps),
     vars: changedMatch({ matchProps, options, vars }),
   }
 }

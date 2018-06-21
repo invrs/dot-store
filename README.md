@@ -65,17 +65,20 @@ store.on("{hello}.{world}", async ({ hello, world }) => {})
 
 Subscription listeners receive a lot of useful arguments:
 
-| Listener argument | Description                                                              |
-| :---------------- | :----------------------------------------------------------------------- |
-| `changed`         | Function to check if props changed                                       |
-| `op`              | Operation string (`get`, `delete`, etc)                                  |
-| `prev`            | Previous value                                                           |
-| `prevState`       | Previous state snapshot                                                  |
-| `prop`            | [Dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
-| `props`           | Array of prop keys                                                       |
-| `state`           | State snapshot                                                           |
-| `store`           | Store instance                                                           |
-| `value`           | Subscription prop value                                                  |
+| Listener argument | Description                                                                       |
+| :---------------- | :-------------------------------------------------------------------------------- |
+| `changed`         | Function to check if props changed                                                |
+| `listenProp`      | Listener [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
+| `listenProps`     | Array of listener prop keys                                                       |
+| `listenValue`     | Listener prop value                                                               |
+| `op`              | Operation string (`get`, `delete`, etc)                                           |
+| `prev`            | Previous value                                                                    |
+| `prevState`       | Previous state snapshot                                                           |
+| `prop`            | Changed [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string  |
+| `props`           | Array of changed prop keys                                                        |
+| `state`           | State snapshot                                                                    |
+| `store`           | Store instance                                                                    |
+| `value`           | The prop update value                                                             |
 
 ## Operation subscriptions
 

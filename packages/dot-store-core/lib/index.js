@@ -141,6 +141,9 @@ export default class DotStore extends Emitter {
 
       if (value) {
         return {
+          listenProp: prop,
+          listenProps: props,
+          listenValue: value,
           prev: value,
           prevState: this.state,
           prop,
