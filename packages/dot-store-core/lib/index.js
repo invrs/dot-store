@@ -24,19 +24,28 @@ export default class DotStore extends Emitter {
     this.state = state
 
     for (let op of ops) {
-      this[op] = async (prop, value, meta = {}) =>
-        await this.operate({ meta, op, prop, value })
+      const fn = op === "get" ? "getAsync" : op
+      this[fn] = this.operateWrapper(op)
     }
 
     debug(this)
   }
 
-  getSync(prop) {
+  get(prop) {
     return dot.get(this.state, prop)
+  }
+
+  getSync(prop) {
+    return this.get(prop)
   }
 
   time(prop) {
     return this.set(prop, new Date().getTime())
+  }
+
+  operateWrapper(op) {
+    return async (prop, value, meta = {}) =>
+      await this.operate({ meta, op, prop, value })
   }
 
   async operate({ meta, op, prop, value }) {

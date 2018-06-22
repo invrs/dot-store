@@ -31,11 +31,11 @@ await store.delete("users.employees.bob")
 Read state:
 
 ```js
-await store.get("users.employees.bob")
-// or
-store.getSync("users.employees.bob")
+store.get("users.employees.bob")
 // or
 store.state.users.employees.bob
+// or with listeners
+await store.getAsync("users.employees.bob")
 ```
 
 ## Prop subscriptions

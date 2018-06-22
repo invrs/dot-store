@@ -148,7 +148,7 @@ export async function refreshDfpSlot({
 export async function updateDfpTargets({ store }) {
   await store.onceExists("dfp.loaded")
 
-  const targets = store.getSync("dfp.targets") || {}
+  const targets = store.get("dfp.targets") || {}
 
   for (const key in targets) {
     window.googletag

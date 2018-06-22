@@ -7,8 +7,8 @@ beforeEach(() => {
 })
 
 test("get", async () => {
-  expect(store.getSync("test")).toBe(true)
-  expect(await store.get("test")).toBe(true)
+  expect(store.get("test")).toBe(true)
+  expect(await store.getAsync("test")).toBe(true)
 })
 
 test("changed", async () => {
@@ -97,7 +97,7 @@ test("merge", async () => {
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
-  expect(await store.get("obj.key")).toBe(true)
+  expect(await store.getAsync("obj.key")).toBe(true)
 })
 
 test("on", async () => {
@@ -139,7 +139,7 @@ test("on", async () => {
     value: false,
   })
 
-  expect(await store.get("test")).toBe(false)
+  expect(await store.getAsync("test")).toBe(false)
 })
 
 test("on (mismatch)", async () => {
@@ -251,7 +251,7 @@ test("on beforeUpdate", async () => {
   })
   expect(fn4).not.toHaveBeenCalled()
 
-  expect(await store.get("test")).toBe(false)
+  expect(await store.getAsync("test")).toBe(false)
 })
 
 test("on with prop var", async () => {
@@ -279,7 +279,7 @@ test("on with prop var", async () => {
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
-  expect(await store.get("test.foo")).toBe(false)
+  expect(await store.getAsync("test.foo")).toBe(false)
 })
 
 test("on with root prop var", async () => {
@@ -307,7 +307,7 @@ test("on with root prop var", async () => {
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
-  expect(await store.get("test")).toBe(false)
+  expect(await store.getAsync("test")).toBe(false)
 })
 
 test("once", async () => {

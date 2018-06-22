@@ -6,7 +6,7 @@ export default function(store, { key = "iframes" } = {}) {
   store.on(`${key}.{divId}`, async options => {
     const { divId, meta, op, prop, value } = options
 
-    const iframe = store.getSync(`${key}.${divId}`)
+    const iframe = store.get(`${key}.${divId}`)
     const valid = iframe && !iframe.dfp
 
     if (!valid || meta.fromWindow) {

@@ -10,7 +10,7 @@ export default function(store) {
 
 // Helpers
 async function getCookie({ cookieKey, store }) {
-  const value = store.getSync(`cookies.${cookieKey}`)
+  const value = store.get(`cookies.${cookieKey}`)
 
   if (!value) {
     await store.set(
@@ -28,8 +28,5 @@ async function updateCookie({ cookieKey, meta, store }) {
 
   await getCookie({ cookieKey, store })
 
-  Cookies.set(
-    cookieKey,
-    store.getSync(`cookies.${cookieKey}`)
-  )
+  Cookies.set(cookieKey, store.get(`cookies.${cookieKey}`))
 }
