@@ -33,7 +33,7 @@ Read state:
 ```js
 store.get("users.employees.bob")
 // or
-store.state.users.employees.bob
+store.get().users.employees.bob
 // or with listeners
 await store.getAsync("users.employees.bob")
 ```

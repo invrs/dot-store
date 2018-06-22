@@ -32,7 +32,11 @@ export default class DotStore extends Emitter {
   }
 
   get(prop) {
-    return dot.get(this.state, prop)
+    if (prop) {
+      return dot.get(this.state, prop)
+    } else {
+      return this.state
+    }
   }
 
   getSync(prop) {
