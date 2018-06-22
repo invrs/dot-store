@@ -18,17 +18,17 @@ export function debug(store) {
   const keys =
     debugMode && hasWindow ? windowKeys : processKeys
 
-  store.on(options => {
-    const { prop } = options
-    // eslint-disable-next-line no-console
-    console.log(
-      ...args,
-      prop + "\n ",
-      buildObject(options, keys)
-    )
-  })
-
   if (debugMode) {
+    store.on(options => {
+      const { prop } = options
+      // eslint-disable-next-line no-console
+      console.log(
+        ...args,
+        prop + "\n ",
+        buildObject(options, keys)
+      )
+    })
+
     store.time("debugMode")
   }
 }
