@@ -12,9 +12,6 @@ const debugMode =
       : false
 
 export function debug(store) {
-  const args =
-    debugMode && hasWindow ? [window.location.host] : []
-
   const keys =
     debugMode && hasWindow ? windowKeys : processKeys
 
@@ -22,11 +19,7 @@ export function debug(store) {
     store.on(options => {
       const { prop } = options
       // eslint-disable-next-line no-console
-      console.log(
-        ...args,
-        prop + "\n ",
-        buildObject(options, keys)
-      )
+      console.log(prop + "\n ", buildObject(options, keys))
     })
 
     store.time("debugMode")
