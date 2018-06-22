@@ -8,24 +8,17 @@ import { buildChanged, changeListener } from "./changed"
 import { debug } from "./debug"
 
 // Constants
-export const ops = [
-  "delete",
-  "get",
-  "merge",
-  "set",
-  "toggle",
-]
+export const ops = ["delete", "merge", "set", "toggle"]
 
 // Classes
 export default class DotStore extends Emitter {
   constructor(state = {}) {
     super()
-
     this.state = state
+    this["getAsync"] = this.operateWrapper("get")
 
     for (let op of ops) {
-      const fn = op === "get" ? "getAsync" : op
-      this[fn] = this.operateWrapper(op)
+      this[op] = this.operateWrapper(op)
     }
 
     debug(this)
