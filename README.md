@@ -68,6 +68,7 @@ Subscription listeners receive a lot of useful arguments:
 | Listener argument | Description                                                                       |
 | :---------------- | :-------------------------------------------------------------------------------- |
 | `changed`         | Function to check if props changed                                                |
+| `listenPrev`      | Previous listener prop value                                                      |
 | `listenProp`      | Listener [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
 | `listenProps`     | Array of listener prop keys                                                       |
 | `listenValue`     | Listener prop value                                                               |
