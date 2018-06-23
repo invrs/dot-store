@@ -82,6 +82,7 @@ test("merge", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    listenPrev: undefined,
     listenProp: "obj.key",
     listenProps: ["obj", "key"],
     listenValue: true,
@@ -113,6 +114,7 @@ test("on", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    listenPrev: { test: true },
     listenProp: undefined,
     listenProps: undefined,
     listenValue: { test: false },
@@ -131,6 +133,7 @@ test("on", async () => {
   expect(fn2).toHaveBeenCalledWith(payload)
   expect(fn3).toHaveBeenCalledWith({
     ...payload,
+    listenPrev: true,
     listenProp: "test",
     listenProps: ["test"],
     listenValue: false,
@@ -143,7 +146,7 @@ test("on", async () => {
   expect(await store.getAsync("test")).toBe(false)
 })
 
-test("on (mismatch)", async () => {
+test("on with mismatch", async () => {
   const fn1 = jest.fn()
   const fn2 = jest.fn()
 
@@ -156,7 +159,7 @@ test("on (mismatch)", async () => {
   expect(fn2).not.toHaveBeenCalled()
 })
 
-test("on (child changed)", async () => {
+test("on with child change", async () => {
   const fn1 = jest.fn()
 
   store.on("obj.a", fn1)
@@ -165,6 +168,7 @@ test("on (child changed)", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    listenPrev: undefined,
     listenProp: "obj.a",
     listenProps: ["obj", "a"],
     listenValue: { b: true },
@@ -182,7 +186,7 @@ test("on (child changed)", async () => {
   expect(fn1).toHaveBeenCalledWith(payload)
 })
 
-test("on (child changed w/ variable)", async () => {
+test("on with child change and prop var", async () => {
   const fn1 = jest.fn()
 
   store.on("obj.{var}", fn1)
@@ -191,6 +195,7 @@ test("on (child changed w/ variable)", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    listenPrev: undefined,
     listenProp: "obj.a",
     listenProps: ["obj", "a"],
     listenValue: { b: true },
@@ -224,6 +229,7 @@ test("on beforeUpdate", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    listenPrev: undefined,
     listenProp: undefined,
     listenProps: undefined,
     listenValue: { test: true },
@@ -265,6 +271,7 @@ test("on with prop var", async () => {
   const payload = {
     changed: expect.any(Function),
     key: "foo",
+    listenPrev: undefined,
     listenProp: "test.foo",
     listenProps: ["test", "foo"],
     listenValue: false,
@@ -293,6 +300,7 @@ test("on with root prop var", async () => {
   const payload = {
     changed: expect.any(Function),
     key: "test",
+    listenPrev: true,
     listenProp: "test",
     listenProps: ["test"],
     listenValue: false,
@@ -323,6 +331,7 @@ test("once", async () => {
 
   expect(payload).toEqual({
     changed: expect.any(Function),
+    listenPrev: true,
     listenProp: "test",
     listenProps: ["test"],
     listenValue: false,
@@ -338,7 +347,7 @@ test("once", async () => {
   })
 })
 
-test("onceExists (promise)", async () => {
+test("onceExists with promise", async () => {
   let payload
 
   const promise = store
@@ -354,6 +363,7 @@ test("onceExists (promise)", async () => {
 
   expect(payload).toEqual({
     changed: expect.any(Function),
+    listenPrev: undefined,
     listenProp: "test2",
     listenProps: ["test2"],
     listenValue: true,
@@ -372,6 +382,7 @@ test("onceExists (promise)", async () => {
 
   expect(payload).toEqual({
     changed: expect.any(Function),
+    listenPrev: true,
     listenProp: "test2",
     listenProps: ["test2"],
     listenValue: true,
@@ -386,7 +397,7 @@ test("onceExists (promise)", async () => {
   })
 })
 
-test("onceExists (listener)", async () => {
+test("onceExists with listener", async () => {
   const fn1 = jest.fn()
   const fn2 = jest.fn()
 
@@ -396,6 +407,7 @@ test("onceExists (listener)", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    listenPrev: undefined,
     listenProp: "test2",
     listenProps: ["test2"],
     listenValue: true,
@@ -413,23 +425,30 @@ test("onceExists (listener)", async () => {
   expect(fn1).toHaveBeenCalledWith(payload)
   expect(fn2).toHaveBeenCalledWith({
     ...payload,
+    listenPrev: true,
     op: undefined,
     prev: true,
     prevState: payload.state,
+    prop: payload.listenProp,
+    props: payload.listenProps,
+    value: payload.listenValue,
   })
 })
 
-test("onceExists (listener w/ vars)", async () => {
+test("onceExists with listener and prop var", async () => {
   const fn1 = jest.fn()
   const fn2 = jest.fn()
 
   store.onceExists("{id}", fn1)
   await store.set("test2", true)
   store.onceExists("{id}", fn2)
+  await store.set("test2", false)
+  await store.set("test2", true)
 
   const payload = {
     changed: expect.any(Function),
     id: "test2",
+    listenPrev: undefined,
     listenProp: "test2",
     listenProps: ["test2"],
     listenValue: true,
@@ -445,7 +464,46 @@ test("onceExists (listener w/ vars)", async () => {
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
+  expect(fn1.mock.calls.length).toBe(1)
   expect(fn2).not.toHaveBeenCalled()
+})
+
+test("onceExists with listener and child change", async () => {
+  const fn1 = jest.fn()
+  const fn2 = jest.fn()
+
+  store.onceExists("test2", fn1)
+  await store.set("test2.child", true)
+  store.onceExists("test2", fn2)
+
+  const payload = {
+    changed: expect.any(Function),
+    listenPrev: undefined,
+    listenProp: "test2",
+    listenProps: ["test2"],
+    listenValue: { child: true },
+    meta: expect.any(Object),
+    op: "set",
+    prev: undefined,
+    prevState: { test: true },
+    prop: "test2.child",
+    props: ["test2", "child"],
+    state: { test: true, test2: { child: true } },
+    store: expect.any(Object),
+    value: true,
+  }
+
+  expect(fn1).toHaveBeenCalledWith(payload)
+  expect(fn2).toHaveBeenCalledWith({
+    ...payload,
+    listenPrev: { child: true },
+    op: undefined,
+    prev: { child: true },
+    prevState: payload.state,
+    prop: payload.listenProp,
+    props: payload.listenProps,
+    value: payload.listenValue,
+  })
 })
 
 test("off", async () => {

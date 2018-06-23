@@ -1,6 +1,9 @@
 // Packages
 import dot from "@invrs/dot-prop-immutable"
 
+// Helpers
+import { payload } from "./payload"
+
 // Constants
 export const varPropRegex = /\{([^}]+)\}/
 
@@ -33,9 +36,8 @@ export function changed(matcher, options) {
 export function changeListener({ listener, prop }) {
   return options => {
     const {
-      listenProp,
       listenProps,
-      listenValue,
+      listenPrev,
       vars,
     } = changedValueVars({
       options,
@@ -43,13 +45,14 @@ export function changeListener({ listener, prop }) {
     })
 
     if (vars) {
-      return listener({
-        ...options,
-        ...vars,
-        listenProp,
-        listenProps,
-        listenValue,
-      })
+      return listener(
+        payload({
+          ...options,
+          listenPrev,
+          listenProps,
+          vars,
+        })
+      )
     }
   }
 }
@@ -108,9 +111,12 @@ export function changedVars({ matcher, options }) {
 }
 
 export function changedValueVars({ options, prop }) {
-  const { state } = options
+  const { prevState } = options
   if (!prop) {
-    return { listenValue: state, value: state, vars: {} }
+    return {
+      listenPrev: prevState,
+      vars: {},
+    }
   }
   const { matchProps, vars } = changedVars({
     matcher: prop,
@@ -120,9 +126,8 @@ export function changedValueVars({ options, prop }) {
     return { vars }
   }
   return {
-    listenProp: matchProps.join("."),
+    listenPrev: dot.get(prevState, matchProps),
     listenProps: matchProps,
-    listenValue: dot.get(state, matchProps),
     vars: changedMatch({ matchProps, options, vars }),
   }
 }

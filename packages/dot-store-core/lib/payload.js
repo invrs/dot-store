@@ -6,17 +6,19 @@ import { buildChanged } from "./changed"
 
 export function payload({
   changed,
+  listenPrev,
+  listenProp,
+  listenProps,
+  listenValue,
   meta = {},
   op,
   prev,
   prevState,
   prop,
   store,
-  listenProp = undefined,
-  listenProps = undefined,
+  vars = {},
   props = dot.propToArray(prop),
   value = store.get(props),
-  listenValue = value,
   state = store.state,
 }) {
   if (changed === true) {
@@ -29,8 +31,29 @@ export function payload({
     })
   }
 
+  if (listenProp || listenProps) {
+    if (!listenProp) {
+      listenProp = listenProps.join(".")
+    }
+
+    if (!listenProps) {
+      listenProps = dot.propToArray(listenProp)
+    }
+
+    if (!listenPrev && prevState) {
+      listenPrev = dot.get(prevState, listenProps)
+    }
+
+    listenValue = store.get(listenProps)
+  }
+
+  if (!listenProp) {
+    listenValue = state
+  }
+
   return {
     changed,
+    listenPrev,
     listenProp,
     listenProps,
     listenValue,
@@ -43,16 +66,15 @@ export function payload({
     state,
     store,
     value,
+    ...vars,
   }
 }
 
 export function existsPayload(options) {
-  const { prop, props, store, value } = options
+  const { store, value } = options
   return payload({
     ...options,
     changed: () => true,
-    listenProp: prop,
-    listenProps: props,
     prev: value,
     prevState: store.state,
   })
