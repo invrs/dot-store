@@ -419,6 +419,35 @@ test("onceExists (listener)", async () => {
   })
 })
 
+test("onceExists (listener w/ vars)", async () => {
+  const fn1 = jest.fn()
+  const fn2 = jest.fn()
+
+  store.onceExists("{id}", fn1)
+  await store.set("test2", true)
+  store.onceExists("{id}", fn2)
+
+  const payload = {
+    changed: expect.any(Function),
+    id: "test2",
+    listenProp: "test2",
+    listenProps: ["test2"],
+    listenValue: true,
+    meta: expect.any(Object),
+    op: "set",
+    prev: undefined,
+    prevState: { test: true },
+    prop: "test2",
+    props: ["test2"],
+    state: { test: true, test2: true },
+    store: expect.any(Object),
+    value: true,
+  }
+
+  expect(fn1).toHaveBeenCalledWith(payload)
+  expect(fn2).not.toHaveBeenCalled()
+})
+
 test("off", async () => {
   const fn1 = jest.fn()
   const fn2 = jest.fn()

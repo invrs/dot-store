@@ -4,7 +4,7 @@ import Emitter from "./emitter"
 
 // Helpers
 import { parseArgs } from "./args"
-import { changeListener } from "./changed"
+import { changeListener, changedVars } from "./changed"
 import { debug } from "./debug"
 import { existsPayload, payload } from "./payload"
 
@@ -130,6 +130,8 @@ export default class DotStore extends Emitter {
         resolve(options)
         unsub()
       })
+
+      return unsub
     })
   }
 
@@ -141,20 +143,29 @@ export default class DotStore extends Emitter {
     )
 
     const eventPayload = payload({ prop, store: this })
+    const { value } = eventPayload
 
     if (listener) {
-      if (eventPayload.value) {
+      if (value) {
         return await listener(existsPayload(eventPayload))
       }
 
-      return this.on(event, prop, async options => {
-        if (eventPayload.prop === options.prop) {
+      const unsub = this.on(event, prop, async options => {
+        const { vars } = changedVars({
+          matcher: prop,
+          options,
+        })
+
+        if (vars) {
+          unsub()
           return await listener(options)
         }
       })
+
+      return unsub
     }
 
-    if (eventPayload.value) {
+    if (value) {
       return existsPayload(eventPayload)
     }
 
