@@ -4,8 +4,9 @@ import Emitter from "./emitter"
 
 // Helpers
 import { parseArgs } from "./args"
-import { buildChanged, changeListener } from "./changed"
+import { changeListener } from "./changed"
 import { debug } from "./debug"
+import { existsPayload, payload } from "./payload"
 
 // Constants
 export const ops = ["delete", "merge", "set", "toggle"]
@@ -47,15 +48,10 @@ export default class DotStore extends Emitter {
 
   async operate({ meta, op, prop, value }) {
     const props = dot.propToArray(prop)
-    const prev = this.getSync(prop)
+    const prev = this.get(prop)
 
-    const beforePayload = {
-      changed: buildChanged({
-        op,
-        props,
-        state: this.state,
-        value,
-      }),
+    const beforePayload = payload({
+      changed: true,
       meta,
       op,
       prev,
@@ -63,7 +59,7 @@ export default class DotStore extends Emitter {
       props,
       store: this,
       value,
-    }
+    })
 
     await this.emitOp("before", beforePayload)
 
@@ -74,16 +70,12 @@ export default class DotStore extends Emitter {
       this.state = state
     }
 
-    const afterPayload = {
+    const afterPayload = payload({
       ...beforePayload,
-      changed: buildChanged({
-        op,
-        prevState,
-        props,
-        state,
-      }),
+      changed: true,
       prevState,
-    }
+      state,
+    })
 
     await this.emitOp("after", afterPayload)
 
@@ -141,27 +133,29 @@ export default class DotStore extends Emitter {
     })
   }
 
-  async onceExists(event, prop) {
-    ;[event, prop] = parseArgs(event, prop)
+  async onceExists(event, prop, listener) {
+    ;[event, prop, listener] = parseArgs(
+      event,
+      prop,
+      listener
+    )
 
-    if (prop) {
-      const props = dot.propToArray(prop)
-      const value = this.getSync(props)
+    const eventPayload = payload({ prop, store: this })
 
-      if (value) {
-        return {
-          listenProp: prop,
-          listenProps: props,
-          listenValue: value,
-          prev: value,
-          prevState: this.state,
-          prop,
-          props,
-          state: this.state,
-          store: this,
-          value,
-        }
+    if (listener) {
+      if (eventPayload.value) {
+        return await listener(existsPayload(eventPayload))
       }
+
+      return this.on(event, prop, async options => {
+        if (eventPayload.prop === options.prop) {
+          return await listener(options)
+        }
+      })
+    }
+
+    if (eventPayload.value) {
+      return existsPayload(eventPayload)
     }
 
     return await this.once(event, prop)
