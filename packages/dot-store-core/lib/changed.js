@@ -9,10 +9,10 @@ export const varPropRegex = /\{([^}]+)\}/
 
 // Helpers
 export function buildChanged(options) {
-  return (...matchers) =>
-    matchers.reduce((memo, matcher) => {
-      const matchProps = dot.propToArray(matcher)
-      const out = changed(matchProps, options)
+  return (...args) =>
+    args.reduce((memo, prop) => {
+      const props = dot.propToArray(prop)
+      const out = changed({ options, props })
 
       if (out) {
         return { ...(memo || {}), ...out }
@@ -22,10 +22,10 @@ export function buildChanged(options) {
     }, false)
 }
 
-export function changed(matcher, options) {
+export function changed({ options, props }) {
   const { matchProps, vars } = changedVars({
-    matchProps: matcher,
     options,
+    props,
   })
   if (vars) {
     return changedMatch({ matchProps, options, vars })
@@ -84,13 +84,13 @@ export function changedMatch({
   return false
 }
 
-export function changedVars({ matchProps, options }) {
-  const { props } = options
+export function changedVars({ props, options }) {
+  const matchProps = props.slice()
   const entries = Array.entries(matchProps)
   const vars = {}
 
   for (const [index, matchProp] of entries) {
-    const prop = props[index]
+    const prop = options.props[index]
     const varProp = matchProp.match(varPropRegex)
 
     const mismatch = !varProp && prop && prop != matchProp
@@ -118,8 +118,8 @@ export function changedValueVars({ options, props }) {
     }
   }
   const { matchProps, vars } = changedVars({
-    matchProps: props,
     options,
+    props,
   })
   if (!vars) {
     return { vars }

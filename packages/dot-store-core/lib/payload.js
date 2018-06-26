@@ -16,9 +16,9 @@ export function payload({
   prev,
   prevState,
   prop,
+  props,
   store,
   vars = {},
-  props = dot.propToArray(prop),
   value = store.get(props),
   state = store.state,
 }) {
@@ -30,6 +30,14 @@ export function payload({
       state,
       value,
     })
+  }
+
+  if (!props) {
+    props = dot.propToArray(prop)
+  }
+
+  if (!prop) {
+    prop = props.join(".")
   }
 
   if (listenProp || listenProps) {

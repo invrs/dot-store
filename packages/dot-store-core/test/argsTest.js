@@ -9,7 +9,6 @@ test("parseArgs", async () => {
     event: "after",
     key: "afterupdate",
     listener: fn,
-    prop: undefined,
     props: [],
   })
 
@@ -17,7 +16,6 @@ test("parseArgs", async () => {
     event: "after",
     key: "afterset",
     listener: undefined,
-    prop: undefined,
     props: [],
   })
 
@@ -25,7 +23,6 @@ test("parseArgs", async () => {
     event: "after",
     key: "afterset:foo",
     listener: undefined,
-    prop: "foo.bar",
     props: ["foo", "bar"],
   })
 
@@ -33,7 +30,6 @@ test("parseArgs", async () => {
     event: "after",
     key: "afterset",
     listener: expect.any(Function),
-    prop: undefined,
     props: [],
   })
 
@@ -41,7 +37,6 @@ test("parseArgs", async () => {
     event: "after",
     key: "afterupdate:foo",
     listener: undefined,
-    prop: "foo.bar",
     props: ["foo", "bar"],
   })
 
@@ -49,7 +44,6 @@ test("parseArgs", async () => {
     event: "after",
     key: "afterupdate:foo",
     listener: expect.any(Function),
-    prop: "foo.bar",
     props: ["foo", "bar"],
   })
 
@@ -57,7 +51,6 @@ test("parseArgs", async () => {
     event: "after",
     key: "afterset:foo",
     listener: fn,
-    prop: "foo.bar",
     props: ["foo", "bar"],
   })
 })

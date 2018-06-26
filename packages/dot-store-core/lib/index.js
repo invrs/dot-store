@@ -118,10 +118,10 @@ export default class DotStore extends Emitter {
   }
 
   async once(...args) {
-    const { event, key, prop } = parseArgs(args)
+    const { event, key, props } = parseArgs(args)
 
     return new Promise(resolve => {
-      const unsub = this.on(key, prop, options => {
+      const unsub = this.on(key, props, options => {
         resolve({ event, ...options })
         unsub()
       })
@@ -131,23 +131,23 @@ export default class DotStore extends Emitter {
   }
 
   async onceExists(...args) {
-    const { event, key, prop, listener } = parseArgs(args)
+    const { event, key, props, listener } = parseArgs(args)
 
     const eventPayload = payload({
       event,
-      listenProp: prop,
-      prop,
+      listenProps: props,
+      props,
       store: this,
     })
 
-    const { props, value } = eventPayload
+    const { value } = eventPayload
 
     if (listener) {
       if (value) {
         return await listener(existsPayload(eventPayload))
       }
 
-      const unsub = this.on(key, prop, async options => {
+      const unsub = this.on(key, props, async options => {
         const {
           listenPrev,
           listenProps,
@@ -177,7 +177,7 @@ export default class DotStore extends Emitter {
       return existsPayload(eventPayload)
     }
 
-    return await this.once(key, prop)
+    return await this.once(key, props)
   }
 
   off(...args) {

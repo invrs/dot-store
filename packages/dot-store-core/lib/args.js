@@ -26,6 +26,8 @@ export function parseArgs(args) {
       }
     } else if (type === "function") {
       listener = arg
+    } else if (type === "object") {
+      prop = arg
     }
   }
 
@@ -44,7 +46,6 @@ export function parseArgs(args) {
     event: eventMatch[1],
     key,
     listener,
-    prop,
     props,
   }
 }
