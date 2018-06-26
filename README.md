@@ -46,40 +46,49 @@ Subscribe and unsubscribe to store changes:
 // Async listener
 const listener = async () => {}
 
-// Subscribe to prop (afterUpdate)
+// Listen to prop changes (afterUpdate)
 store.on("hello.world", listener)
 
-// Remove prop listener
+// Disable listener
 const off = store.on("hello.world", listener)
 off()
 
-// Resolve once prop changes
+// Once prop value changes (promise)
 await store.once("hello.world")
 
-// Resolve once prop exists
+// Once prop value exists (promise)
 await store.onceExists("hello.world")
 
 // Capture prop keys as variables
-store.on("{hello}.{world}", async ({ hello, world }) => {})
+store.on("users.{id}", async ({ id }) => {
+  // Listen to any user update
+})
+
+// Once prop value exists (w/ prop key and callback)
+store.onceExists(
+  "users.{id}",
+  async ({ id }) => {} // Listen for new users
+)
 ```
 
 Subscription listeners receive a lot of useful arguments:
 
 | Listener argument | Description                                                                       |
 | :---------------- | :-------------------------------------------------------------------------------- |
-| `changed`         | Function to check if props changed                                                |
-| `listenPrev`      | Previous listener prop value                                                      |
+| `changed`         | Check if props changed function                                                   |
+| `event`           | Event type string (`before` or `after`)                                           |
+| `listenPrev`      | Previous `listenProp` value                                                       |
 | `listenProp`      | Listener [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
-| `listenProps`     | Array of listener prop keys                                                       |
-| `listenValue`     | Listener prop value                                                               |
+| `listenProps`     | Array of listen prop keys                                                         |
+| `listenValue`     | Listen prop value                                                                 |
 | `op`              | Operation string (`get`, `delete`, etc)                                           |
-| `prev`            | Previous value                                                                    |
+| `prev`            | Previous prop value                                                               |
 | `prevState`       | Previous state snapshot                                                           |
 | `prop`            | Changed [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string  |
 | `props`           | Array of changed prop keys                                                        |
 | `state`           | State snapshot                                                                    |
 | `store`           | Store instance                                                                    |
-| `value`           | The prop update value                                                             |
+| `value`           | The passed prop value                                                             |
 
 ## Operation subscriptions
 
