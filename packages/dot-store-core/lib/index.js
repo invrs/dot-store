@@ -140,7 +140,7 @@ export default class DotStore extends Emitter {
       store: this,
     })
 
-    const { value } = eventPayload
+    const { props, value } = eventPayload
 
     if (listener) {
       if (value) {
@@ -154,7 +154,7 @@ export default class DotStore extends Emitter {
           vars,
         } = changedValueVars({
           options,
-          prop,
+          props,
         })
 
         if (vars && listenPrev === undefined) {

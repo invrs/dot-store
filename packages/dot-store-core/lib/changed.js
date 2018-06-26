@@ -11,7 +11,8 @@ export const varPropRegex = /\{([^}]+)\}/
 export function buildChanged(options) {
   return (...matchers) =>
     matchers.reduce((memo, matcher) => {
-      const out = changed(matcher, options)
+      const matchProps = dot.propToArray(matcher)
+      const out = changed(matchProps, options)
 
       if (out) {
         return { ...(memo || {}), ...out }
@@ -23,7 +24,7 @@ export function buildChanged(options) {
 
 export function changed(matcher, options) {
   const { matchProps, vars } = changedVars({
-    matcher,
+    matchProps: matcher,
     options,
   })
   if (vars) {
@@ -33,7 +34,7 @@ export function changed(matcher, options) {
   }
 }
 
-export function changeListener({ listener, prop }) {
+export function changeListener({ listener, props }) {
   return options => {
     const {
       listenProps,
@@ -41,7 +42,7 @@ export function changeListener({ listener, prop }) {
       vars,
     } = changedValueVars({
       options,
-      prop,
+      props,
     })
 
     if (vars) {
@@ -83,9 +84,8 @@ export function changedMatch({
   return false
 }
 
-export function changedVars({ matcher, options }) {
+export function changedVars({ matchProps, options }) {
   const { props } = options
-  const matchProps = dot.propToArray(matcher)
   const entries = Array.entries(matchProps)
   const vars = {}
 
@@ -109,16 +109,16 @@ export function changedVars({ matcher, options }) {
   return { matchProps, vars }
 }
 
-export function changedValueVars({ options, prop }) {
+export function changedValueVars({ options, props }) {
   const { prevState } = options
-  if (!prop) {
+  if (!props.length) {
     return {
       listenPrev: prevState,
       vars: {},
     }
   }
   const { matchProps, vars } = changedVars({
-    matcher: prop,
+    matchProps: props,
     options,
   })
   if (!vars) {

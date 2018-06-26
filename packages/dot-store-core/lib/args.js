@@ -34,17 +34,22 @@ export function parseArgs(args) {
   }
 
   const needsProp = !eventMatch || !eventMatch[3]
-
+  const props = prop ? dot.propToArray(prop) : []
   const key =
     event && prop && needsProp
-      ? keyFromProp(event, prop)
+      ? keyFromProp(event, props)
       : event
 
-  return { event: eventMatch[1], key, listener, prop }
+  return {
+    event: eventMatch[1],
+    key,
+    listener,
+    prop,
+    props,
+  }
 }
 
-function keyFromProp(event, prop) {
-  const props = dot.propToArray(prop)
+function keyFromProp(event, props) {
   const isVarProp = props[0].match(varPropRegex)
 
   if (isVarProp) {
