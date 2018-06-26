@@ -3,17 +3,13 @@ const elements = {}
 
 // Iframes
 export async function createIframe(options) {
-  const { iframeId, prev, props, state, store } = options
-  const { iframes } = state
+  const { iframeId, listenValue, store } = options
 
-  const iframe = iframes[iframeId]
-  const valid = iframe && !iframe.dfp
-
-  if (!valid || props.length != 2 || prev) {
+  if (!listenValue.dfp) {
     return
   }
 
-  const { divId, url } = iframe
+  const { divId, url } = listenValue
   const loaded = `iframes.${iframeId}.loaded`
   const onLoad = () => store.set(loaded, true)
 
@@ -22,7 +18,7 @@ export async function createIframe(options) {
 
   el.frameBorder = 0
   el.height = 0
-  el.src = addDebug({ state, url })
+  el.src = addDebug({ store, url })
 
   document.getElementById(divId).appendChild(el)
   elements[divId] = el
@@ -70,8 +66,8 @@ export function iframeSize(options) {
 }
 
 // Helpers
-export function addDebug({ state, url }) {
-  if (!state.debugMode) {
+export function addDebug({ store, url }) {
+  if (!store.get("debugMode")) {
     return
   }
   const separator = url.indexOf("?") < 0 ? "?" : "&"

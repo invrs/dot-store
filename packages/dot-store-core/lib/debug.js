@@ -16,12 +16,14 @@ export function debug(store) {
     debugMode && hasWindow ? windowKeys : processKeys
 
   if (debugMode) {
-    store.on(options => {
+    const fn = options => {
       const { prop } = options
       // eslint-disable-next-line no-console
       console.log(prop + "\n ", buildObject(options, keys))
-    })
+    }
 
+    store.on(fn)
+    store.on("beforeGet", fn)
     store.time("debugMode")
   }
 }

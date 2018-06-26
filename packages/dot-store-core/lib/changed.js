@@ -62,19 +62,18 @@ export function changedMatch({
   options,
   vars,
 }) {
-  const { op, prevState, props, state, value } = options
+  const { event, op, prevState, state, value } = options
 
-  if (!prevState) {
-    const current = dot.get(state, props)
-
-    if (op === "get" || current != value) {
-      return vars
-    }
-
-    return false
+  if (op === "get") {
+    return vars
   }
 
   const current = dot.get(state, matchProps)
+
+  if (event === "before" && current != value) {
+    return vars
+  }
+
   const previous = dot.get(prevState, matchProps)
 
   if (current != previous) {

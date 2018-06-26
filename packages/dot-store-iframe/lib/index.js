@@ -16,12 +16,13 @@ import {
 
 // Composers
 export default function(store) {
-  store.on("iframes.{iframeId}", createIframe)
+  store.onceExists("iframes.{iframeId}", createIframe)
+  store.onceExists("iframes.{iframeId}", createDfpSlot)
+
   store.on("iframes.{iframeId}.height", iframeSize)
   store.on("iframes.{iframeId}.width", iframeSize)
 
   store.on("dfp.targets", updateDfpTargets)
-  store.on("iframes.{iframeId}", createDfpSlot)
   store.on("iframes.{iframeId}.refresh", refreshDfpSlot)
 
   store.on(

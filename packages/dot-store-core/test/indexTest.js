@@ -82,6 +82,7 @@ test("merge", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     listenPrev: undefined,
     listenProp: "obj.key",
     listenProps: ["obj", "key"],
@@ -114,6 +115,7 @@ test("on", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     listenPrev: { test: true },
     listenProp: undefined,
     listenProps: undefined,
@@ -168,6 +170,7 @@ test("on with child change", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     listenPrev: undefined,
     listenProp: "obj.a",
     listenProps: ["obj", "a"],
@@ -195,6 +198,7 @@ test("on with child change and prop var", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     listenPrev: undefined,
     listenProp: "obj.a",
     listenProps: ["obj", "a"],
@@ -229,13 +233,15 @@ test("on beforeUpdate", async () => {
 
   const payload = {
     changed: expect.any(Function),
-    listenPrev: undefined,
+    event: "before",
+    listenPrev: { test: true },
     listenProp: undefined,
     listenProps: undefined,
     listenValue: { test: true },
     meta: expect.any(Object),
     op: "set",
     prev: true,
+    prevState: { test: true },
     prop: "test",
     props: ["test"],
     state: { test: true },
@@ -246,12 +252,14 @@ test("on beforeUpdate", async () => {
   expect(fn1).toHaveBeenCalledWith(payload)
   expect(fn2).toHaveBeenCalledWith({
     ...payload,
+    listenPrev: true,
     listenProp: "test",
     listenProps: ["test"],
     listenValue: true,
   })
   expect(fn3).toHaveBeenCalledWith({
     ...payload,
+    listenPrev: undefined,
     listenProp: "test.hello",
     listenProps: ["test", "hello"],
     listenValue: undefined,
@@ -259,6 +267,31 @@ test("on beforeUpdate", async () => {
   expect(fn4).not.toHaveBeenCalled()
 
   expect(await store.getAsync("test")).toBe(false)
+})
+
+test("on beforeGet", async () => {
+  const fn1 = jest.fn()
+
+  store.on("beforeGet", "test", fn1)
+  await store.getAsync("test")
+
+  expect(fn1).toHaveBeenCalledWith({
+    changed: expect.any(Function),
+    event: "before",
+    listenPrev: true,
+    listenProp: "test",
+    listenProps: ["test"],
+    listenValue: true,
+    meta: expect.any(Object),
+    op: "get",
+    prev: true,
+    prevState: { test: true },
+    prop: "test",
+    props: ["test"],
+    state: { test: true },
+    store: expect.any(Object),
+    value: true,
+  })
 })
 
 test("on with prop var", async () => {
@@ -270,6 +303,7 @@ test("on with prop var", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     key: "foo",
     listenPrev: undefined,
     listenProp: "test.foo",
@@ -299,6 +333,7 @@ test("on with root prop var", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     key: "test",
     listenPrev: true,
     listenProp: "test",
@@ -331,6 +366,7 @@ test("once", async () => {
 
   expect(payload).toEqual({
     changed: expect.any(Function),
+    event: "after",
     listenPrev: true,
     listenProp: "test",
     listenProps: ["test"],
@@ -363,6 +399,7 @@ test("onceExists with promise", async () => {
 
   expect(payload).toEqual({
     changed: expect.any(Function),
+    event: "after",
     listenPrev: undefined,
     listenProp: "test2",
     listenProps: ["test2"],
@@ -382,6 +419,7 @@ test("onceExists with promise", async () => {
 
   expect(payload).toEqual({
     changed: expect.any(Function),
+    event: "after",
     listenPrev: true,
     listenProp: "test2",
     listenProps: ["test2"],
@@ -407,6 +445,7 @@ test("onceExists with listener", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     listenPrev: undefined,
     listenProp: "test2",
     listenProps: ["test2"],
@@ -447,6 +486,7 @@ test("onceExists with listener and prop var", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     id: "test2",
     listenPrev: undefined,
     listenProp: "test2",
@@ -478,6 +518,7 @@ test("onceExists with listener and child change", async () => {
 
   const payload = {
     changed: expect.any(Function),
+    event: "after",
     listenPrev: undefined,
     listenProp: "test2",
     listenProps: ["test2"],

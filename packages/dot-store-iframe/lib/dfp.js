@@ -53,13 +53,10 @@ export function buildSizeMap({ dfp, unit }) {
 }
 
 export async function createDfpSlot(options) {
-  const { iframeId, prev, props, state, store } = options
-  const { dfp, iframes } = state
+  const { listenValue: iframe, store } = options
+  const { dfp } = store.get()
 
-  const iframe = iframes[iframeId]
-  const valid = iframe && iframe.dfp
-
-  if (!valid || props.length != 2 || prev) {
+  if (!iframe.dfp) {
     return
   }
 

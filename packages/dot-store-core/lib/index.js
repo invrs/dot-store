@@ -55,6 +55,7 @@ export default class DotStore extends Emitter {
       meta,
       op,
       prev,
+      prevState: this.state,
       prop,
       props,
       store: this,
@@ -92,6 +93,7 @@ export default class DotStore extends Emitter {
     for (const e of events) {
       await this.emit(e, {
         ...payload,
+        event,
         state: this.state,
       })
     }
@@ -109,25 +111,18 @@ export default class DotStore extends Emitter {
     return [...opEvents, ...propEvents]
   }
 
-  on(event, prop, listener) {
-    ;[event, prop, listener] = parseArgs(
-      event,
-      prop,
-      listener
-    )
-
-    return super.on(
-      event,
-      changeListener({ listener, prop })
-    )
+  on(...args) {
+    const options = parseArgs(args)
+    const { key } = options
+    return super.on(key, changeListener(options))
   }
 
-  async once(event, prop) {
-    ;[event, prop] = parseArgs(event, prop)
+  async once(...args) {
+    const { event, key, prop } = parseArgs(args)
 
     return new Promise(resolve => {
-      const unsub = this.on(event, prop, options => {
-        resolve(options)
+      const unsub = this.on(key, prop, options => {
+        resolve({ event, ...options })
         unsub()
       })
 
@@ -135,14 +130,11 @@ export default class DotStore extends Emitter {
     })
   }
 
-  async onceExists(event, prop, listener) {
-    ;[event, prop, listener] = parseArgs(
-      event,
-      prop,
-      listener
-    )
+  async onceExists(...args) {
+    const { event, key, prop, listener } = parseArgs(args)
 
     const eventPayload = payload({
+      event,
       listenProp: prop,
       prop,
       store: this,
@@ -155,7 +147,7 @@ export default class DotStore extends Emitter {
         return await listener(existsPayload(eventPayload))
       }
 
-      const unsub = this.on(event, prop, async options => {
+      const unsub = this.on(key, prop, async options => {
         const {
           listenPrev,
           listenProps,
@@ -185,11 +177,11 @@ export default class DotStore extends Emitter {
       return existsPayload(eventPayload)
     }
 
-    return await this.once(event, prop)
+    return await this.once(key, prop)
   }
 
-  off(event, listener) {
-    ;[event, , listener] = parseArgs(event, listener)
-    super.off(event, listener)
+  off(...args) {
+    const { key, listener } = parseArgs(args)
+    super.off(key, listener)
   }
 }

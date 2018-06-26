@@ -6,6 +6,7 @@ import { buildChanged } from "./changed"
 
 export function payload({
   changed,
+  event,
   listenPrev,
   listenProp,
   listenProps,
@@ -53,6 +54,7 @@ export function payload({
 
   return {
     changed,
+    event,
     listenPrev,
     listenProp,
     listenProps,

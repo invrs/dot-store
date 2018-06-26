@@ -6,9 +6,9 @@ export const opEventRegex = /^(before|after)(delete|get|merge|set|toggle|update)
 import { varPropRegex } from "./changed"
 
 // Helpers
-export function parseArgs(...args) {
+export function parseArgs(args) {
   let event = "afterupdate",
-    eventMatch,
+    eventMatch = [undefined, "after"],
     listener,
     prop
 
@@ -35,14 +35,15 @@ export function parseArgs(...args) {
 
   const needsProp = !eventMatch || !eventMatch[3]
 
-  if (event && prop && needsProp) {
-    event = eventFromProp(event, prop)
-  }
+  const key =
+    event && prop && needsProp
+      ? keyFromProp(event, prop)
+      : event
 
-  return [event, prop, listener]
+  return { event: eventMatch[1], key, listener, prop }
 }
 
-function eventFromProp(event, prop) {
+function keyFromProp(event, prop) {
   const props = dot.propToArray(prop)
   const isVarProp = props[0].match(varPropRegex)
 

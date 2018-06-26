@@ -5,45 +5,52 @@ test("parseArgs", async () => {
   const prop = "foo.bar"
   const fn = () => {}
 
-  expect(parseArgs(fn)).toEqual([
-    "afterupdate",
-    undefined,
-    fn,
-  ])
+  expect(parseArgs([fn])).toEqual({
+    event: "after",
+    key: "afterupdate",
+    listener: fn,
+    prop: undefined,
+  })
 
-  expect(parseArgs(event)).toEqual([
-    "afterset",
-    undefined,
-    undefined,
-  ])
+  expect(parseArgs([event])).toEqual({
+    event: "after",
+    key: "afterset",
+    listener: undefined,
+    prop: undefined,
+  })
 
-  expect(parseArgs(event, prop)).toEqual([
-    "afterset:foo",
-    prop,
-    undefined,
-  ])
+  expect(parseArgs([event, prop])).toEqual({
+    event: "after",
+    key: "afterset:foo",
+    listener: undefined,
+    prop: "foo.bar",
+  })
 
-  expect(parseArgs(event, fn)).toEqual([
-    "afterset",
-    undefined,
-    fn,
-  ])
+  expect(parseArgs([event, fn])).toEqual({
+    event: "after",
+    key: "afterset",
+    listener: expect.any(Function),
+    prop: undefined,
+  })
 
-  expect(parseArgs(prop)).toEqual([
-    "afterupdate:foo",
-    prop,
-    undefined,
-  ])
+  expect(parseArgs([prop])).toEqual({
+    event: "after",
+    key: "afterupdate:foo",
+    listener: undefined,
+    prop: "foo.bar",
+  })
 
-  expect(parseArgs(prop, fn)).toEqual([
-    "afterupdate:foo",
-    prop,
-    fn,
-  ])
+  expect(parseArgs([prop, fn])).toEqual({
+    event: "after",
+    key: "afterupdate:foo",
+    listener: expect.any(Function),
+    prop: "foo.bar",
+  })
 
-  expect(parseArgs(event, prop, fn)).toEqual([
-    "afterset:foo",
-    prop,
-    fn,
-  ])
+  expect(parseArgs([event, prop, fn])).toEqual({
+    event: "after",
+    key: "afterset:foo",
+    listener: fn,
+    prop: "foo.bar",
+  })
 })
