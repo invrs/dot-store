@@ -79,16 +79,16 @@ Subscription listeners receive a lot of useful arguments:
 | `event`           | Event type string (`before` or `after`)                                           |
 | `listenPrev`      | Previous `listenProp` value                                                       |
 | `listenProp`      | Listener [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
-| `listenProps`     | Array of listen prop keys                                                         |
-| `listenValue`     | Listen prop value                                                                 |
+| `listenProps`     | Array of `listenProp` keys                                                        |
+| `listenValue`     | `listenProp` value                                                                |
 | `op`              | Operation string (`get`, `delete`, etc)                                           |
-| `prev`            | Previous prop value                                                               |
+| `prev`            | Previous `prop` value                                                             |
 | `prevState`       | Previous state snapshot                                                           |
 | `prop`            | Changed [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string  |
-| `props`           | Array of changed prop keys                                                        |
+| `props`           | Array of changed `prop` keys                                                      |
 | `state`           | State snapshot                                                                    |
 | `store`           | Store instance                                                                    |
-| `value`           | The passed prop value                                                             |
+| `value`           | `prop` value                                                                      |
 
 ## Operation subscriptions
 
