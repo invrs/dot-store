@@ -1,6 +1,6 @@
 {
   "name": "dot-store-iframe",
-  "version": "2.6.7",
+  "version": "2.6.13",
   "description": "Iframe controller integration for dot-store",
   "keywords": [
     "iframe",
