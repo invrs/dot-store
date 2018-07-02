@@ -1,6 +1,6 @@
 {
   "name": "dot-store-react",
-  "version": "2.6.13",
+  "version": "2.6.14",
   "description": "React integration for dot-store",
   "keywords": [
     "accessor",
