@@ -5,11 +5,11 @@ const elements = {}
 export async function createIframe(options) {
   const { iframeId, listenValue, store } = options
 
-  if (!listenValue.dfp) {
+  if (listenValue.dfp) {
     return
   }
 
-  const { divId, url } = listenValue
+  const { divId, height, url, width } = listenValue
   const loaded = `iframes.${iframeId}.loaded`
   const onLoad = () => store.set(loaded, true)
 
@@ -17,7 +17,8 @@ export async function createIframe(options) {
   el.onload = onLoad
 
   el.frameBorder = 0
-  el.height = 0
+  el.height = height ? height : 0
+  el.width = width ? width : 0
   el.src = addDebug({ store, url })
 
   document.getElementById(divId).appendChild(el)
@@ -55,6 +56,10 @@ export function iframeSize(options) {
 
   const { divId, height, width } = iframe
   const el = document.getElementById(divId).firstChild
+
+  if (!el) {
+    return
+  }
 
   if (height) {
     el.height = height

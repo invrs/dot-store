@@ -508,6 +508,16 @@ test("onceExists with listener and prop var", async () => {
   expect(fn2).not.toHaveBeenCalled()
 })
 
+test.only("onceExists with listener, prop var, and different vars", async () => {
+  const fn1 = jest.fn()
+
+  store.onceExists("{id}", fn1)
+  await store.set("test2", true)
+  await store.set("test3", true)
+
+  expect(fn1.mock.calls.length).toBe(2)
+})
+
 test("onceExists with listener and child change", async () => {
   const fn1 = jest.fn()
   const fn2 = jest.fn()

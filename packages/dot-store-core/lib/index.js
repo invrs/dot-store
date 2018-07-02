@@ -158,7 +158,6 @@ export default class DotStore extends Emitter {
         })
 
         if (vars && listenPrev === undefined) {
-          unsub()
           return await listener(
             payload({
               ...options,
