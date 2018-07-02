@@ -73,7 +73,7 @@ export function iframeSize(options) {
 // Helpers
 export function addDebug({ store, url }) {
   if (!store.get("debugMode")) {
-    return
+    return url
   }
   const separator = url.indexOf("?") < 0 ? "?" : "&"
   return url + `${separator}store_debug=1`
