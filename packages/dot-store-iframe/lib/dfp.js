@@ -1,3 +1,6 @@
+// Helpers
+import { loadA9, fetchA9 } from "./a9"
+
 // Constants
 const hasWindow = typeof window !== "undefined"
 const hasGpt =
@@ -15,6 +18,7 @@ export function attachDfp(store) {
 
   window.googletag.cmd.push(() => {
     store.set("dfp.loaded", true)
+    loadA9()
 
     window.googletag
       .pubads()
@@ -88,6 +92,10 @@ export async function createDfpSlot(options) {
     for (const key in targets) {
       slot.setTargeting(key, targets[key])
     }
+  }
+
+  if (iframe.dfp.a9) {
+    await fetchA9({ divId, path, sizes: unit.sizes })
   }
 
   if (slot) {
