@@ -56,7 +56,7 @@
       "@babel/plugin-transform-runtime"
     ]
   },
-  "main": "dist/index.js",
+  "main": "dist/analyze.js",
   "scripts": {
     "build": "babel lib --out-dir dist --source-maps",
     "prepublishOnly": "rimraf dist; npm run build",
