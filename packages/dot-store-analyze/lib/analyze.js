@@ -1,48 +1,70 @@
-import { parseModule } from "esprima"
-import glob from "glob"
-import { readFile } from "fs-extra"
 import { join } from "path"
 import { promisify } from "util"
 
+// Packages
+import { parse } from "babylon"
+import glob from "glob"
+import { readFile } from "fs-extra"
+import groupBy from "sugar/array/groupBy"
+
+// Constants
 const globAsync = promisify(glob)
 const varPropRegex = /\{([^}]+)\}/
 
-export async function analyze({ cwd = process.cwd() }) {
+// Helpers
+export async function analyze({
+  cwd = process.cwd(),
+  dirs = ["."],
+  pattern = "lib/**/*.js",
+}) {
   const ops = []
-  const paths = await globAsync("*.js", {
-    cwd,
-    matchBase: true,
-  })
 
-  for (const path of paths) {
-    const code = await readFile(join(cwd, path))
-    const structure = parseModule(code.toString(), {
-      loc: true,
+  for (const dir of dirs) {
+    const paths = await globAsync(pattern, {
+      cwd: join(cwd, dir),
     })
-    const calls = await collectStoreCalls(structure)
 
-    for (const call of calls) {
-      const op = call.callee.property.name
-      const { line } = call.callee.property.loc.start
-      const { quasis, value } = call.arguments[0]
+    for (const path of paths) {
+      const code = await readFile(join(cwd, dir, path))
+      const structure = parse(code.toString(), {
+        plugins: ["objectRestSpread"],
+        sourceType: "module",
+      })
+      const calls = await collectStoreCalls(structure)
 
-      let prop
+      for (const call of calls) {
+        const op = call.callee.property.name
+        const { line } = call.callee.property.loc.start
+        const { quasis, value } = call.arguments[0]
 
-      if (value) {
-        prop = value
-      } else {
-        prop = quasis
-          .map(({ value: { raw } }) => raw)
-          .join("*")
+        let prop
+
+        if (!value && !quasis) {
+          continue
+        }
+
+        if (value) {
+          prop = value
+        } else {
+          prop = quasis
+            .map(({ value: { raw } }) => raw)
+            .join("*")
+        }
+
+        prop = prop.replace(varPropRegex, "*")
+
+        ops.push({ cwd, dir, line, op, path, prop })
       }
-
-      prop = prop.replace(varPropRegex, "*")
-
-      ops.push({ line, op, path, prop })
     }
   }
 
-  return ops
+  const opsByProp = groupBy(ops, ({ prop }) => prop)
+
+  for (const key in opsByProp) {
+    opsByProp[key] = groupBy(opsByProp[key], ({ op }) => op)
+  }
+
+  return opsByProp
 }
 
 export async function collectStoreCalls(obj, calls = []) {
@@ -55,7 +77,9 @@ export async function collectStoreCalls(obj, calls = []) {
 
   const callee = obj.callee
   const calleeMatch =
-    callee && callee.object.name === "store"
+    callee &&
+    callee.object &&
+    callee.object.name === "store"
 
   if (calleeMatch && typeMatch) {
     calls.push(obj)
