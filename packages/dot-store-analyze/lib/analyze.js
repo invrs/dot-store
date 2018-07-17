@@ -25,16 +25,36 @@ export async function analyze({
     })
 
     for (const path of paths) {
-      const code = await readFile(join(cwd, dir, path))
-      const structure = parse(code.toString(), {
-        plugins: ["objectRestSpread"],
-        sourceType: "module",
-      })
+      const codePath = join(cwd, dir, path)
+      const code = await readFile(codePath)
+
+      let structure
+
+      try {
+        structure = parse(code.toString(), {
+          plugins: [
+            "classProperties",
+            "jsx",
+            "objectRestSpread",
+          ],
+          sourceType: "module",
+        })
+      } catch (e) {
+        console.error(`babylon failed on ${codePath}`)
+        console.error(e)
+        continue
+      }
+
       const calls = await collectStoreCalls(structure)
 
       for (const call of calls) {
         const op = call.callee.property.name
         const { line } = call.callee.property.loc.start
+
+        if (!call.arguments[0]) {
+          continue
+        }
+
         const { quasis, value } = call.arguments[0]
 
         let prop
