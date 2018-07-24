@@ -2,71 +2,72 @@
 const elements = {}
 
 // Iframes
-export async function createIframe(options) {
-  const { iframeId, listenValue, store } = options
+export function createIframe(key) {
+  return options => {
+    const { iframeId, listenValue, store } = options
 
-  if (listenValue.dfp) {
-    return
-  }
+    if (listenValue.dfp) {
+      return
+    }
 
-  const { divId, height, url, width } = listenValue
-  const loaded = `iframes.${iframeId}.loaded`
-  const onLoad = () => store.set(loaded, true)
+    const { divId, height, url, width } = listenValue
+    const loaded = `${key}.iframes.${iframeId}.loaded`
+    const onLoad = () => store.set(loaded, true)
 
-  const el = document.createElement("iframe")
-  el.onload = onLoad
+    const el = document.createElement("iframe")
+    el.onload = onLoad
 
-  el.frameBorder = 0
-  el.height = height ? height : 0
-  el.width = width ? width : 0
-  el.src = addDebug({ store, url })
+    el.frameBorder = 0
+    el.height = height ? height : 0
+    el.width = width ? width : 0
+    el.src = addDebug({ store, url })
 
-  document.getElementById(divId).appendChild(el)
-  elements[divId] = el
-}
-
-export async function deleteIframe({
-  iframeId,
-  prevState,
-}) {
-  const { iframes } = prevState
-  const iframe = iframes[iframeId]
-  const valid = iframe && !iframe.dfp
-
-  if (!valid) {
-    return
-  }
-
-  const { divId } = iframe
-  const el = document.getElementById(divId)
-
-  if (el && el.parentNode) {
-    el.parentNode.removeChild(el)
+    document.getElementById(divId).appendChild(el)
+    elements[divId] = el
   }
 }
 
-export function iframeSize(options) {
-  const { iframeId, state } = options
-  const { iframes } = state
-  const iframe = iframes[iframeId]
+export function deleteIframe(key) {
+  return ({ iframeId, prevState }) => {
+    const { iframes } = prevState[key]
+    const iframe = iframes[iframeId]
+    const valid = iframe && !iframe.dfp
 
-  if (!iframe) {
-    return
+    if (!valid) {
+      return
+    }
+
+    const { divId } = iframe
+    const el = document.getElementById(divId)
+
+    if (el && el.parentNode) {
+      el.parentNode.removeChild(el)
+    }
   }
+}
 
-  const { divId, height, width } = iframe
-  const el = document.getElementById(divId).firstChild
+export function iframeSize(key) {
+  return ({ iframeId, store }) => {
+    const iframe = store.get(`${key}.iframes.${iframeId}`)
 
-  if (!el) {
-    return
-  }
+    if (!iframe) {
+      return
+    }
 
-  if (height) {
-    el.height = height
-  }
+    const { divId, height, width } = iframe
+    const el = document.getElementById(divId).firstChild
 
-  if (width) {
-    el.width = width
+    if (!el) {
+      return
+    }
+
+    if (height) {
+      el.height = height
+    }
+
+    if (width) {
+      el.width = width
+    }
   }
 }
 

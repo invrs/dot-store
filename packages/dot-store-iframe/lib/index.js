@@ -15,29 +15,49 @@ import {
 } from "./iframes"
 
 // Composers
-export default function(store) {
-  store.onceExists("iframes.{iframeId}", createIframe)
-  store.onceExists("iframes.{iframeId}", createDfpSlot)
+export default function(key) {
+  return function(store) {
+    store.on(`${key}.dfp.targets`, updateDfpTargets(key))
 
-  store.on("iframes.{iframeId}.height", iframeSize)
-  store.on("iframes.{iframeId}.width", iframeSize)
+    store.on(
+      `${key}.iframes.{iframeId}.height`,
+      iframeSize(key)
+    )
 
-  store.on("dfp.targets", updateDfpTargets)
-  store.on("iframes.{iframeId}.refresh", refreshDfpSlot)
+    store.on(
+      `${key}.iframes.{iframeId}.width`,
+      iframeSize(key)
+    )
 
-  store.on(
-    "afterDelete",
-    "iframes.{iframeId}",
-    deleteDfpSlot
-  )
+    store.onceExists(
+      `${key}.iframes.{iframeId}`,
+      createDfpSlot(key)
+    )
 
-  store.on(
-    "afterDelete",
-    "iframes.{iframeId}",
-    deleteIframe
-  )
+    store.onceExists(
+      `${key}.iframes.{iframeId}`,
+      createIframe(key)
+    )
 
-  attachDfp(store)
+    store.on(
+      `${key}.iframes.{iframeId}.refresh`,
+      refreshDfpSlot(key)
+    )
 
-  return store
+    store.on(
+      "afterDelete",
+      `${key}.iframes.{iframeId}`,
+      deleteDfpSlot(key)
+    )
+
+    store.on(
+      "afterDelete",
+      `${key}.iframes.{iframeId}`,
+      deleteIframe(key)
+    )
+
+    attachDfp({ key, store })
+
+    return store
+  }
 }
