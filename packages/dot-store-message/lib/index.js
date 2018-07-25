@@ -22,8 +22,8 @@ export default function(key) {
         for (const id of ids) {
           const el = document.getElementById(id)
 
-          if (el && !el.firstChild) {
-            return
+          if (!el || (el && !el.firstChild)) {
+            continue
           }
 
           el.firstChild.contentWindow.postMessage(
