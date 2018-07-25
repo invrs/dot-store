@@ -59,7 +59,7 @@ export async function analyze({
           continue
         }
 
-        if (call.arguments[1]) {
+        if (call.arguments[1] && call.arguments[2]) {
           const { type } = call.arguments[1]
           if (
             type === "StringLiteral" ||

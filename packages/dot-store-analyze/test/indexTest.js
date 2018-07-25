@@ -57,6 +57,14 @@ test("analyze", async () => {
           path: "lib/index.js",
           prop: "cookies.*",
         },
+        {
+          cwd: expect.any(String),
+          dir: ".",
+          line: 17,
+          op: "set",
+          path: "lib/index.js",
+          prop: "cookies.*",
+        },
       ],
     },
   })

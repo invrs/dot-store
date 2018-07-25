@@ -14,5 +14,6 @@ export async function getCookie({ cookieKey, store }) {
       `cookies.${cookieKey}`,
       () => {}
     )
+    store.set(`cookies.${cookieKey}`, "hi")
   }
 }
