@@ -51,29 +51,28 @@ export async function analyze({
         const op = call.callee.property.name
         const { line } = call.callee.property.loc.start
 
-        if (!call.arguments[0]) {
-          continue
-        }
-
-        const { quasis, value } = call.arguments[0]
-
+        let arg = call.arguments[0]
+        let event
         let prop
 
-        if (!value && !quasis) {
+        if (!arg) {
           continue
         }
 
-        if (value) {
-          prop = value
-        } else {
-          prop = quasis
-            .map(({ value: { raw } }) => raw)
-            .join("*")
+        if (call.arguments[1]) {
+          const { type } = call.arguments[1]
+          if (
+            type === "StringLiteral" ||
+            type === "TemplateLiteral"
+          ) {
+            event = arg.value
+            arg = call.arguments[1]
+          }
         }
 
-        prop = prop.replace(varPropRegex, "*")
+        prop = getProp(arg)
 
-        ops.push({ cwd, dir, line, op, path, prop })
+        ops.push({ cwd, dir, event, line, op, path, prop })
       }
     }
   }
@@ -85,6 +84,24 @@ export async function analyze({
   }
 
   return opsByProp
+}
+
+export function getProp(arg) {
+  const { quasis, value } = arg
+
+  let prop
+
+  if (!value && !quasis) {
+    return
+  }
+
+  if (value) {
+    prop = value
+  } else {
+    prop = quasis.map(({ value: { raw } }) => raw).join("*")
+  }
+
+  return prop.replace(varPropRegex, "*")
 }
 
 export async function collectStoreCalls(obj, calls = []) {

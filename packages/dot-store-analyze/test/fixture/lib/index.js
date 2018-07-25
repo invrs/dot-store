@@ -9,5 +9,10 @@ export async function getCookie({ cookieKey, store }) {
       { value2, value3 },
       { fromCookie: true }
     )
+    store.on(
+      "beforeDelete",
+      `cookies.${cookieKey}`,
+      () => {}
+    )
   }
 }

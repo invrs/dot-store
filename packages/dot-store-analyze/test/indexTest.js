@@ -37,6 +37,17 @@ test("analyze", async () => {
           prop: "cookies.*",
         },
       ],
+      on: [
+        {
+          cwd: expect.any(String),
+          dir: ".",
+          event: "beforeDelete",
+          line: 12,
+          op: "on",
+          path: "lib/index.js",
+          prop: "cookies.*",
+        },
+      ],
       set: [
         {
           cwd: expect.any(String),
