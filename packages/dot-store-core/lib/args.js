@@ -2,7 +2,7 @@
 import dot from "@invrs/dot-prop-immutable"
 
 // Constants
-export const opEventRegex = /^(before|after)(delete|get|merge|set|toggle|update)(:?)/i
+export const opEventRegex = /^(before|after)(create|delete|get|merge|set|toggle|update)(:?)/i
 import { varPropRegex } from "./changed"
 
 // Helpers

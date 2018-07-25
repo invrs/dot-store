@@ -294,6 +294,31 @@ test("on beforeGet", async () => {
   })
 })
 
+test("on beforeCreate", async () => {
+  const fn1 = jest.fn()
+
+  store.on("beforeCreate", "test", fn1)
+  expect(await store.create("test")).toBe(true)
+
+  expect(fn1).toHaveBeenCalledWith({
+    changed: expect.any(Function),
+    event: "before",
+    listenPrev: true,
+    listenProp: "test",
+    listenProps: ["test"],
+    listenValue: true,
+    meta: expect.any(Object),
+    op: "create",
+    prev: true,
+    prevState: { test: true },
+    prop: "test",
+    props: ["test"],
+    state: { test: true },
+    store: expect.any(Object),
+    value: true,
+  })
+})
+
 test("on with prop var", async () => {
   const fn1 = jest.fn()
 
@@ -508,7 +533,7 @@ test("onceExists with listener and prop var", async () => {
   expect(fn2).not.toHaveBeenCalled()
 })
 
-test.only("onceExists with listener, prop var, and different vars", async () => {
+test("onceExists with listener, prop var, and different vars", async () => {
   const fn1 = jest.fn()
 
   store.onceExists("{id}", fn1)

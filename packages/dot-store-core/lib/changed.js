@@ -65,7 +65,7 @@ export function changedMatch({
 }) {
   const { event, op, prevState, state, value } = options
 
-  if (op === "get") {
+  if (op === "get" || op === "create") {
     return vars
   }
 
