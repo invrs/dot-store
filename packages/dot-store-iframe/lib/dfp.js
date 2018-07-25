@@ -129,8 +129,8 @@ export function deleteDfpSlot(key) {
 }
 
 export function refreshDfpSlot(key) {
-  return async ({ iframeId, state, store }) => {
-    const { iframes } = state
+  return async ({ iframeId, store }) => {
+    const iframes = store.get(`${key}.iframes`)
     const iframe = iframes[iframeId]
     const valid = iframe && iframe.dfp
 

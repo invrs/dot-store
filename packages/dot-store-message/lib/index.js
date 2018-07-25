@@ -6,11 +6,10 @@ export default function(key) {
 
     store.on(key, async options => {
       const { meta, op, prop, store, value } = options
-      const ids = store.get("dotStore.messageIds")
 
-      if (!ids) {
-        store.set("dotStore.messageIds", [])
-      }
+      const ids = Object.keys(
+        store.get("postMessage.targets") || {}
+      )
 
       if (meta.fromWindow) {
         return
@@ -18,7 +17,7 @@ export default function(key) {
 
       const message = { dotStore: true, op, prop, value }
 
-      if (ids && ids.length) {
+      if (ids.length) {
         for (const id of ids) {
           const el = document.getElementById(id)
 
