@@ -40,6 +40,41 @@ export const withStore = Component =>
     }
   }
 
+export const withStoreProvider = createStore => Component =>
+  class extends React.Component {
+    static displayName = `withStoreProvider(${
+      Component.displayName
+    })`
+
+    static async getInitialProps(context) {
+      const store = createStore()
+
+      let props = {}
+
+      if (Component.getInitialProps) {
+        props = await Component.getInitialProps({
+          ...context,
+          store,
+        })
+      }
+
+      return { ...props, storeState: store.state }
+    }
+
+    constructor(props) {
+      super(props)
+      this.store = createStore({ state: props.storeState })
+    }
+
+    render() {
+      return (
+        <StoreProvider store={this.store}>
+          <Component {...this.props} />
+        </StoreProvider>
+      )
+    }
+  }
+
 export class StoreProvider extends React.Component {
   constructor(props) {
     super(props)

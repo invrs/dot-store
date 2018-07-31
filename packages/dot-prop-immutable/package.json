@@ -81,6 +81,7 @@
     "testMatch": [
       "<rootDir>/test/**/*Test.js"
     ],
+    "testURL": "http://localhost",
     "verbose": true
   },
   "starters": [
