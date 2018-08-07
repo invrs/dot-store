@@ -1,6 +1,6 @@
 # dot-store
 
-Like Redux, but easy.
+A store and event emitter **in one** that's async, immutable, self-documenting, and highly extensible!
 
 ![pale blue dot](https://qph.fs.quoracdn.net/main-qimg-347d2c178e6bf511ee5b91e8276c79fa)
 
@@ -10,122 +10,130 @@ Like Redux, but easy.
 npm install --save dot-store
 ```
 
-## Basics
-
-Create an in-memory store:
+## Create a store instance
 
 ```js
 import Store from "dot-store"
 const store = new Store()
 ```
 
-Operate on state with ["dot props"](https://github.com/debitoor/dot-prop-immutable#readme):
+## Set values (immutable)
 
 ```js
-await store.set("users.employees", { bob: {} })
-await store.merge("users.employees.bob", { name: "Bob" })
-await store.toggle("users.employees.bob.admin")
-await store.delete("users.employees.bob")
+await store.set("users.bob.admin", true)
 ```
 
-Read state:
+## Get values
 
 ```js
-store.get("users.employees.bob")
-// or
-store.get().users.employees.bob
-// or with listeners
-await store.getAsync("users.employees.bob")
+store.get("users.bob.admin") // true
+store.get() // { users: { bob: { admin: true } } }
 ```
 
-## Prop subscriptions
+## Out-of-the-box Operations
 
-Subscribe and unsubscribe to store changes:
+| Operation | Async | Description                         |
+| :-------- | :---- | :---------------------------------- |
+| `get`     | no    | Read property                       |
+| `delete`  | yes   | Delete property                     |
+| `merge`   | yes   | Merge property with array or object |
+| `set`     | yes   | Set property                        |
+| `time`    | yes   | Set property to current timestamp   |
+| `toggle`  | yes   | Toggle boolean property             |
+
+## Asynchronous
+
+What does it mean when we say `dot-store` is async?
+
+Store operations return a promise that resolves once all subscriptions to that change finish.
+
+This makes it easy to update logic around store updates without needing to change the operation call.
+
+## Subscribe to changes
 
 ```js
-// Async listener
-const listener = async () => {}
+store.on("users.bob", async ({ changed }) => {
+  if (changed("users.bob.admin")) {
+    console.log("bob's admin status changed")
+  }
+})
+```
 
-// Listen to prop changes (afterUpdate)
-store.on("hello.world", listener)
+## Dynamic subscriptions
 
-// Disable listener
-const off = store.on("hello.world", listener)
-off()
+Use curly brace notation to perform a wildcard match on a property:
 
-// Once prop value changes (promise)
-await store.once("hello.world")
-
-// Once prop value exists (promise)
-await store.onceExists("hello.world")
-
-// Capture prop keys as variables
-store.on("users.{id}", async ({ id }) => {
-  // Listen to any user update
+```js
+store.on("users.{login}", async ({ login }) => {
+  login // "bob"
 })
 
-// Once prop value exists (w/ prop key and callback)
-store.onceExists(
-  "users.{id}",
-  async ({ id }) => {} // Listen for new users
-)
+await store.set("users.bob.admin", true)
 ```
 
-Subscription listeners receive a lot of useful arguments:
+## Out-of-the-box Subscribers
 
-| Listener argument | Description                                                                       |
-| :---------------- | :-------------------------------------------------------------------------------- |
-| `changed`         | Check if props changed function                                                   |
-| `event`           | Event type string (`before` or `after`)                                           |
-| `listenPrev`      | Previous `listenProp` value                                                       |
-| `listenProp`      | Listener [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string |
-| `listenProps`     | Array of `listenProp` keys                                                        |
-| `listenValue`     | `listenProp` value                                                                |
-| `op`              | Operation string (`get`, `delete`, etc)                                           |
-| `prev`            | Previous `prop` value                                                             |
-| `prevState`       | Previous state snapshot                                                           |
-| `prop`            | Changed [dot-prop](https://github.com/debitoor/dot-prop-immutable#readme) string  |
-| `props`           | Array of changed `prop` keys                                                      |
-| `state`           | State snapshot                                                                    |
-| `store`           | Store instance                                                                    |
-| `value`           | `prop` value                                                                      |
+| Subscriber   | Event Timing                                                |
+| :----------- | :---------------------------------------------------------- |
+| `on`         | Emit event after every property change                      |
+| `once`       | Emit event once after property change                       |
+| `onceExists` | Emit event once if property exists or after property change |
 
-## Operation subscriptions
+## Subscription arguments
 
-Subscription listeners may be asynchronous and execute sequentially before and after each operation.
+Subscriptions receive a lot of useful arguments:
 
-| Operation | Events                                                       |
-| :-------- | :----------------------------------------------------------- |
-| `get`     | `beforeGet`, `afterGet`                                      |
-| `delete`  | `beforeUpdate`, `afterUpdate`, `beforeDelete`, `afterDelete` |
-| `merge`   | `beforeUpdate`, `afterUpdate`, `beforeMerge`, `afterMerge`   |
-| `set`     | `beforeUpdate`, `afterUpdate`, `beforeSet`, `afterSet`       |
-| `toggle`  | `beforeUpdate`, `afterUpdate`, `beforeToggle`, `afterToggle` |
+| Listener argument | Description                                   |
+| :---------------- | :-------------------------------------------- |
+| `changed`         | Function to check if props changed            |
+| `event`           | Event type string (`before` or `after`)       |
+| `listenProp`      | Subscription props string                     |
+| `listenProps`     | Subscription props array                      |
+| `listenPrev`      | Subscription props value (before operation)   |
+| `listenValue`     | Subscription props value (after operation)    |
+| `op`              | Operation string (`get`, `delete`, etc)       |
+| `prop`            | Changed property (may be within `listenProp`) |
+| `props`           | Changed property array                        |
+| `value`           | Changed property value                        |
+| `prev`            | Previous changed property value               |
+| `prevState`       | Previous state snapshot                       |
+| `state`           | State snapshot                                |
+| `store`           | Store instance                                |
+
+## Custom operations
+
+After initializing the store, you can add custom operations:
 
 ```js
-// Async listener
-const listener = async () => {}
+store.op("fetch")
+```
 
-// Subscribe to `afterUpdate`
-store.on(listener)
+Then use `fetch` similarly as `set`:
 
-// Remove `afterUpdate` subscription
-const off = store.on(listener)
-off()
+```js
+store.on("fetch", "users", async function({ value }) {
+  value // { admin: "true" }
+})
 
-// Subscribe to `beforeGet`
-store.on("beforeGet", listener)
+await store.fetch("users", { admin: "true" })
+```
 
-// Unsubscribe from `beforeGet`
-const off = store.on("beforeGet", listener)
+Custom operations do not modify the store unless you do so from the subscription.
+
+## Unsubscribe
+
+```js
+const off = store.on("users.bob", async () => {})
 off()
 ```
 
 ## Extensions
 
-| Package                                                                                                 | Description                |
-| :------------------------------------------------------------------------------------------------------ | :------------------------- |
-| [`dot-store-cookie`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-cookie#readme)   | Cookie access              |
-| [`dot-store-fs`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)           | Filesystem access          |
-| [`dot-store-message`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-message#readme) | Sync via `postMessage` API |
-| [`dot-store-react`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme)     | React integration          |
+| Package                                                                                                 | Description                        |
+| :------------------------------------------------------------------------------------------------------ | :--------------------------------- |
+| [`dot-store-analyze`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-analyze#readme) | Document store operations          |
+| [`dot-store-cookie`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-cookie#readme)   | Cookie access                      |
+| [`dot-store-fs`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)           | Filesystem access                  |
+| [`dot-store-iframe`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)       | Iframe & DFP access (browser only) |
+| [`dot-store-message`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-message#readme) | Sync via `postMessage` API         |
+| [`dot-store-react`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme)     | React integration                  |
