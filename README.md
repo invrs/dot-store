@@ -1,6 +1,6 @@
 # dot-store
 
-A store and event emitter **in one** that's async, immutable, self-documenting, and highly extensible!
+Store and event emitter in one — async, immutable, self-documenting, and highly extensible!
 
 ![pale blue dot](https://qph.fs.quoracdn.net/main-qimg-347d2c178e6bf511ee5b91e8276c79fa)
 
