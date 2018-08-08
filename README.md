@@ -12,13 +12,11 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 - [Using the store](#using-the-store)
   - [Set values (immutably)](#set-values-immutably)
   - [Get values](#get-values)
-- [Store operations](#store-operations)
-  - [Asynchronous?](#asynchronous)
-  - [Custom operations (events)](#custom-operations-events)
-- [Store subscribers](#store-subscribers)
   - [Subscribe to changes](#subscribe-to-changes)
-  - [Dynamic subscriptions](#dynamic-subscriptions)
-  - [Subscription arguments](#subscription-arguments)
+- [Store operations](#store-operations)
+- [Store subscribers](#store-subscribers)
+  - [Subscription wildcards](#subscription-wildcards)
+  - [Subscription options](#subscription-options)
   - [Unsubscribe](#unsubscribe)
 - [Extensions](#extensions)
 
@@ -50,62 +48,42 @@ store.get("users.bob.admin") // true
 store.get() // { users: { bob: { admin: true } } }
 ```
 
+### Subscribe to changes
+
+```js
+store.on("users.bob", async () => {
+  console.log("bob changed")
+})
+```
+
+Listeners execute when the value at the subscription prop changes **and also when any child value changes**.
+
 ## Store operations
 
 | Operation | Async | Description                         |
 | :-------- | :---- | :---------------------------------- |
-| `get`     | no    | Read property                       |
-| `delete`  | yes   | Delete property                     |
-| `merge`   | yes   | Merge property with array or object |
-| `set`     | yes   | Set property                        |
-| `time`    | yes   | Set property to current timestamp   |
-| `toggle`  | yes   | Toggle boolean property             |
+| `get(props)`     | no    | Read property                       |
+| `delete(props)`  | yes   | Delete property                     |
+| `merge(prop, value)`   | yes   | Merge property with array or object |
+| `set(props, value)`     | yes   | Set property                        |
+| `time(props)`    | yes   | Set property to current timestamp   |
+| `toggle(props)`  | yes   | Toggle boolean property             |
 
-### Asynchronous?
-
-What does it mean when we say `dot-store` is async?
-
-Store operations return a promise that only resolves once all subscriptions finish. Since subscriptions can be asynchronous, you now have an extensible asynchronous chain. Add subscribers before or after any operation or event without changing any implementation code.
-
-### Custom operations (events)
-
-After initializing the store, you may add custom operations:
-
-```js
-store.op("fetch")
-```
-
-Now use `fetch` the same as you would the `set` operation:
-
-```js
-store.on("fetch", "users", async function({ value }) {
-  value // { admin: "true" }
-})
-
-await store.fetch("users", { admin: "true" })
-```
-
-Custom operations do not modify the store (unless you do so from the subscription).
+Async store operations only resolve once all subscription listeners finish.
 
 ## Store subscribers
 
 | Subscriber | Timing                                                |
 | :----------- | :---------------------------------------------------------- |
-| `on`         | Emits every property change                      |
-| `once`       | Emits once after a property change                       |
-| `onceExists` | Emits once after a property change or if the property already exists |
+| `on(prop, listener)`         | Emits every property change                      |
+| `once(prop, listener)`       | Emits once after a property change                       |
+| `onceExists(prop, listener)` | Emits once after a property change or if the property already exists |
 
-### Subscribe to changes
+Subscribers may also receive a third argument, `before`, to emit before the property changes.
 
-```js
-store.on("users.bob", async () => {
-  console.log("bob's changed")
-})
-```
+### Subscription wildcards
 
-### Dynamic subscriptions
-
-Use curly brace notation to wildcard match on a property:
+Properties in curly braces act as a wildcard for the subscription:
 
 ```js
 store.on("users.{login}", async ({ login }) => {
@@ -115,7 +93,7 @@ store.on("users.{login}", async ({ login }) => {
 await store.set("users.bob.admin", true)
 ```
 
-### Subscription arguments
+### Subscription options
 
 Subscriptions receive an options argument with lots of useful stuff:
 
@@ -135,6 +113,27 @@ Subscriptions receive an options argument with lots of useful stuff:
 | `prevState`       | Previous state snapshot                       |
 | `state`           | State snapshot                                |
 | `store`           | Store instance                                |
+
+The `changed` function can be used to check which child prop values changed:
+
+```js
+store.on("users.bob", async ({ changed }) => {
+  if (changed("users.bob.admin")) {
+    console.log("bob's admin status changed")
+  }
+})
+```
+
+You can also use it to extract keys from a changed prop:
+
+```js
+store.on("users.bob", async ({ changed }) => {
+  const { prop } = changed("users.bob.{prop}") || {}
+  if (prop) {
+    console.log(`bob's ${prop} status changed`)
+  }
+})
+```
 
 ### Unsubscribe
 
