@@ -76,11 +76,11 @@ Async store operations only resolve once all subscription listeners finish.
 
 | Subscriber | Timing                                                |
 | :----------- | :---------------------------------------------------------- |
-| `on(prop, listener)`         | Emits every property change                      |
-| `once(prop, listener)`       | Emits once after a property change                       |
-| `onceExists(prop, listener)` | Emits once after a property change or if the property already exists |
+| `on(event, prop, listener)`         | Emits every property change                      |
+| `once(event, prop, listener)`       | Emits once after a property change                       |
+| `onceExists(event, prop, listener)` | Emits once after a property change or if the property already exists |
 
-Subscribers may also receive a third argument, a `"before"` string, to emit before the property changes.
+When `event` is omitted (as it is in most of the examples on this page), it defaults to `afterUpdate`.
 
 ### Subscription wildcards
 
@@ -157,7 +157,7 @@ store.op("fetch")
 Use the custom operation the same as you would any other:
 
 ```js
-store.on("fetch", "users", async function({ value }) {
+store.on("afterFetch", "users", async function({ value }) {
   value // { admin: "true" }
 })
 
