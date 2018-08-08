@@ -79,7 +79,7 @@ Async store operations only resolve once all subscription listeners finish.
 | `once(prop, listener)`       | Emits once after a property change                       |
 | `onceExists(prop, listener)` | Emits once after a property change or if the property already exists |
 
-Subscribers may also receive a third argument, `before`, to emit before the property changes.
+Subscribers may also receive a third argument, a `"before"` string, to emit before the property changes.
 
 ### Subscription wildcards
 
