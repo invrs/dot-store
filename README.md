@@ -10,7 +10,7 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 
 - [Install](#install)
 - [Using the store](#using-the-store)
-  - [Set values (immutable)](#set-values-immutable)
+  - [Set values (immutably)](#set-values-immutably)
   - [Get values](#get-values)
 - [Store operations](#store-operations)
   - [Asynchronous?](#asynchronous)
@@ -37,7 +37,7 @@ import Store from "dot-store"
 const store = new Store()
 ```
 
-### Set values (immutable)
+### Set values (immutably)
 
 ```js
 await store.set("users.bob.admin", true)
@@ -91,9 +91,9 @@ Custom operations do not modify the store (unless you do so from the subscriptio
 
 | Subscriber | Timing                                                |
 | :----------- | :---------------------------------------------------------- |
-| `on`         | Emit event after every property change                      |
-| `once`       | Emit event once after property change                       |
-| `onceExists` | Emit event once after property change or if property already exists |
+| `on`         | Emits every property change                      |
+| `once`       | Emits once after a property change                       |
+| `onceExists` | Emits once after a property change or if the property already exists |
 
 ### Subscribe to changes
 
@@ -121,16 +121,16 @@ Subscriptions receive an options argument with lots of useful stuff:
 
 | Argument | Description                                   |
 | :---------------- | :-------------------------------------------- |
-| `changed`         | Function to check if props changed            |
-| `event`           | Event type string (`before` or `after`)       |
+| `changed`         | Function to check which props changed            |
+| `event`           | Event tense (`before` or `after`)       |
 | `listenProp`      | Subscription props string                     |
 | `listenProps`     | Subscription props array                      |
 | `listenPrev`      | Subscription props value (before operation)   |
 | `listenValue`     | Subscription props value (after operation)    |
 | `op`              | Operation string (`get`, `delete`, etc)       |
-| `prop`            | Changed property (may be within `listenProp`) |
-| `props`           | Changed property array                        |
-| `value`           | Changed property value                        |
+| `prop`            | Changed props |
+| `props`           | Changed props array                        |
+| `value`           | Changed props value                        |
 | `prev`            | Previous changed property value               |
 | `prevState`       | Previous state snapshot                       |
 | `state`           | State snapshot                                |
