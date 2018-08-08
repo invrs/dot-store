@@ -18,6 +18,7 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
   - [Subscription wildcards](#subscription-wildcards)
   - [Subscription options](#subscription-options)
   - [Unsubscribe](#unsubscribe)
+- [Custom operations](#custom-operations)
 - [Extensions](#extensions)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
