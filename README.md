@@ -80,7 +80,9 @@ Async store operations only resolve once all subscription listeners finish.
 | `once(event, prop, listener)`       | Emits once after a property change                       |
 | `onceExists(event, prop, listener)` | Emits once after a property change or if the property already exists |
 
-When `event` is omitted (as it is in most of the examples on this page), it defaults to `afterUpdate`.
+Typically we omit the `event` parameter, as it defaults to `afterUpdate` when not specified.
+
+The `event` parameter is sometimes used to specify a `beforeUpdate` event or to subscribe to a [custom operation](#custom-operations).
 
 ### Subscription wildcards
 
@@ -109,13 +111,13 @@ Subscriptions receive an options argument with lots of useful stuff:
 | `op`              | Operation string (`get`, `delete`, etc)       |
 | `prop`            | Changed props |
 | `props`           | Changed props array                        |
-| `value`           | Changed props value                        |
-| `prev`            | Previous changed property value               |
-| `prevState`       | Previous state snapshot                       |
-| `state`           | State snapshot                                |
+| `prev`            | Changed props value (before operation)               |
+| `value`           | Changed props value (after operation)                        |
+| `prevState`       | State (before operation)                       |
+| `state`           | State (after operation)                                |
 | `store`           | Store instance                                |
 
-The `changed` function can be used to check which child prop values changed:
+The `changed` function can be used to check if a child prop value changed:
 
 ```js
 store.on("users.bob", async ({ changed }) => {
@@ -154,7 +156,7 @@ const store = new Store()
 store.op("fetch")
 ```
 
-Use the custom operation the same as you would any other:
+Specify the custom event when you subscribe:
 
 ```js
 store.on("afterFetch", "users", async function({ value }) {
@@ -163,6 +165,8 @@ store.on("afterFetch", "users", async function({ value }) {
 
 await store.fetch("users", { admin: "true" })
 ```
+
+Custom operations do not emit the default `afterUpdate` events.
 
 ## Extensions
 
