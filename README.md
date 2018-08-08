@@ -142,6 +142,27 @@ const off = store.on("users.bob", async () => {})
 off()
 ```
 
+## Custom operations
+
+Custom operations do not modify the store. They allow you to leverage store eventing to run your own logic.
+
+After initializing the store, you may add a custom operation:
+
+```js
+const store = new Store()
+store.op("fetch")
+```
+
+Use the custom operation the same as you would any other:
+
+```js
+store.on("fetch", "users", async function({ value }) {
+  value // { admin: "true" }
+})
+
+await store.fetch("users", { admin: "true" })
+```
+
 ## Extensions
 
 | Package                                                                                                 | Description                        |
