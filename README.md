@@ -16,7 +16,7 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 - [Store subscribers](#store-subscribers)
   - [Subscription options](#subscription-options)
     - [The `changed` function](#the-changed-function)
-  - [Subscription wildcards](#subscription-wildcards)
+  - [Wildcard subscription props](#wildcard-subscription-props)
   - [Unsubscribe](#unsubscribe)
 - [Custom operations](#custom-operations)
 - [Extensions](#extensions)
@@ -89,19 +89,20 @@ The `event` parameter is sometimes used to specify a `beforeUpdate` event or to 
 Subscriptions receive an options argument with lots of useful stuff:
 
 ```js
-const store = new Store()
-store.on("users.bob", async options => {})
+store.on("users.bob", async options => {
+  // do stuff with options
+})
 await store.set("users.bob.admin", true)
 ```
 
-The `options` in the above example would contain the following values:
+The `options` in the above subscriber would contain the following values:
 
 | Argument      | Example value                         | Description                                 |
 | :------------ | :------------------------------------ | :------------------------------------------ |
 | `changed`     | `<Function>`                          | Function to check which props changed       |
-| `event`       | `after`                               | Event tense (`before` or `after`)           |
-| `op`          | `set`                                 | Operation string (`set`, `delete`, etc)     |
 | `store`       | `<DotStore>`                          | Store instance                              |
+| `event`       | `"after"`                             | Event tense (`before` or `after`)           |
+| `op`          | `"set"`                               | Operation string (`set`, `delete`, etc)     |
 | `listenProp`  | `"users.bob"`                         | Subscription props string                   |
 | `listenProps` | `["users", "bob"]`                    | Subscription props array                    |
 | `listenPrev`  | `undefined`                           | Subscription props value (before operation) |
@@ -136,7 +137,7 @@ store.on(
 await store.set("users.bob.admin", true)
 ```
 
-### Subscription wildcards
+### Wildcard subscription props
 
 Properties in curly braces act as a wildcard for the subscription:
 
