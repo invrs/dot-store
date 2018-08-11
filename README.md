@@ -15,7 +15,7 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 - [Store operations](#store-operations)
 - [Store subscribers](#store-subscribers)
   - [Subscription options](#subscription-options)
-    - [The `changed` function](#the-changed-function)
+    - [Check for changes](#check-for-changes)
   - [Wildcard subscription props](#wildcard-subscription-props)
   - [Unsubscribe](#unsubscribe)
 - [Custom operations](#custom-operations)
@@ -114,7 +114,7 @@ The `options` in the above subscriber would contain the following values:
 | `prevState`   | `{}`                                  | State (before operation)                    |
 | `state`       | `{ users: { bob: { admin: true } } }` | State (after operation)                     |
 
-#### The `changed` function
+#### Check for changes
 
 The `changed` function tests whether a prop value changed.
 
