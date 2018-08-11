@@ -80,9 +80,9 @@ Async store operations only resolve once all subscriptions resolve.
 | `once(event, prop, fn)`       | Emits once after a property value change                                |
 | `onceExists(event, prop, fn)` | Emits once after a property value change or if the value already exists |
 
-When omitted, the `event` parameter defaults to `afterUpdate`.
+When omitted, the `event` parameter defaults to `"afterUpdate"`.
 
-When specified, the `event` parameter can be `beforeUpdate` or a [custom operation](#custom-operations).
+When specified, the `event` parameter can be `"beforeUpdate"` or a [custom operation](#custom-operations).
 
 ### Subscription options
 
@@ -128,9 +128,9 @@ await store.set("users.bob.admin", true)
 
 ### Check for changes
 
-The `changed` function tests if a property value changed.
+The `changed(prop)` function tests if a property value changed.
 
-The return value of `changed` is truthy and doubles as a way to retrieve prop keys:
+The return value of `changed(prop)` is truthy and doubles as a way to retrieve prop keys:
 
 ```js
 store.on("users", async ({ changed }) => {
