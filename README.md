@@ -122,11 +122,12 @@ The return value doubles as a way to retrieve keys of the changed prop:
 
 ```js
 store.on("users", async ({ changed }) => {
+  // Changed
   changed("users.{userId}.{prop}") // { userId: "bob", prop: "admin" }
-
   changed("users.bob") // {}
   changed("users.bob.admin") // {}
 
+  // Didn't change
   changed("users.bob.role") // false
   changed("users.ted") // false
 })
