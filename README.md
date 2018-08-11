@@ -121,18 +121,15 @@ The `changed` function returns a truthy value based on whether the value at the 
 The return value doubles as a way to retrieve keys of the changed prop:
 
 ```js
-store.on(
-  "users",
-  async ({ changed, prop, listenProp, value }) => {
-    changed("users.{userId}.{prop}") // { userId: "bob", prop: "admin" }
+store.on("users", async ({ changed }) => {
+  changed("users.{userId}.{prop}") // { userId: "bob", prop: "admin" }
 
-    changed("users.bob") // {}
-    changed("users.bob.admin") // {}
+  changed("users.bob") // {}
+  changed("users.bob.admin") // {}
 
-    changed("users.bob.role") // false
-    changed("users.ted") // false
-  }
-)
+  changed("users.bob.role") // false
+  changed("users.ted") // false
+})
 
 await store.set("users.bob.admin", true)
 ```
