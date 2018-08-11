@@ -14,10 +14,9 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
   - [Subscribe to changes](#subscribe-to-changes)
 - [Store operations](#store-operations)
 - [Store subscribers](#store-subscribers)
-  - [Subscription wildcards](#subscription-wildcards)
   - [Subscription options](#subscription-options)
-    - [Example options output](#example-options-output)
     - [The `changed` function](#the-changed-function)
+  - [Subscription wildcards](#subscription-wildcards)
   - [Unsubscribe](#unsubscribe)
 - [Custom operations](#custom-operations)
 - [Extensions](#extensions)
@@ -85,63 +84,46 @@ Typically we omit the `event` parameter, as it defaults to `afterUpdate` when no
 
 The `event` parameter is sometimes used to specify a `beforeUpdate` event or to subscribe to a [custom operation](#custom-operations).
 
-### Subscription wildcards
-
-Properties in curly braces act as a wildcard for the subscription:
-
-```js
-store.on("users.{login}", async ({ login }) => {
-  login // "bob"
-})
-
-await store.set("users.bob.admin", true)
-```
-
 ### Subscription options
 
 Subscriptions receive an options argument with lots of useful stuff:
 
-| Argument      | Description                                 |
-| :------------ | :------------------------------------------ |
-| `changed`     | Function to check which props changed       |
-| `event`       | Event tense (`before` or `after`)           |
-| `op`          | Operation string (`set`, `delete`, etc)     |
-| `listenProp`  | Subscription props string                   |
-| `listenProps` | Subscription props array                    |
-| `listenPrev`  | Subscription props value (before operation) |
-| `listenValue` | Subscription props value (after operation)  |
-| `prop`        | Changed props                               |
-| `props`       | Changed props array                         |
-| `prev`        | Changed props value (before operation)      |
-| `value`       | Changed props value (after operation)       |
-| `prevState`   | State (before operation)                    |
-| `state`       | State (after operation)                     |
-| `store`       | Store instance                              |
-
-#### Example options output
-
 ```js
-store.on("users.bob", async ({ changed, store,  // <Function> // <DotStore>
-  event, op, // // "after" // "set"
-  listenProp, listenProps, listenPrev, listenValue, // // "users.bob" // ["users", "bob"] // undefined // { admin: true }
-  prev, prop, props, value, // // undefined // "users.bob.admin" // ["users", "bob", "admin"] // true
-  prevState, state }) => {}) // {} // { users: { bob: { admin: true } } }
-
+const store = new Store()
+store.on("users.bob", async options => {})
 await store.set("users.bob.admin", true)
 ```
+
+The `options` in the above example would contain the following values:
+
+| Argument      | Example value                         | Description                                 |
+| :------------ | :------------------------------------ | :------------------------------------------ |
+| `changed`     | `<Function>`                          | Function to check which props changed       |
+| `event`       | `after`                               | Event tense (`before` or `after`)           |
+| `op`          | `set`                                 | Operation string (`set`, `delete`, etc)     |
+| `store`       | `<DotStore>`                          | Store instance                              |
+| `listenProp`  | `"users.bob"`                         | Subscription props string                   |
+| `listenProps` | `["users", "bob"]`                    | Subscription props array                    |
+| `listenPrev`  | `undefined`                           | Subscription props value (before operation) |
+| `listenValue` | `{ admin: true }`                     | Subscription props value (after operation)  |
+| `prop`        | `"users.bob.admin"`                   | Changed props                               |
+| `props`       | `["users", "bob", "admin"]`           | Changed props array                         |
+| `prev`        | `undefined`                           | Changed props value (before operation)      |
+| `value`       | `true`                                | Changed props value (after operation)       |
+| `prevState`   | `{}`                                  | State (before operation)                    |
+| `state`       | `{ users: { bob: { admin: true } } }` | State (after operation)                     |
 
 #### The `changed` function
 
 The `changed` function returns a truthy value based on whether the value at the passed prop was changed.
 
-It is "truthy" because it doubles as a way to retrieve keys of the changed prop:
+The return value doubles as a way to retrieve keys of the changed prop:
 
 ```js
 store.on(
   "users",
   async ({ changed, prop, listenProp, value }) => {
-    changed("users.{userId}.{prop}")
-    // { userId: "bob", prop: "admin" }
+    changed("users.{userId}.{prop}") // { userId: "bob", prop: "admin" }
 
     changed("users.bob") // {}
     changed("users.bob.admin") // {}
@@ -150,6 +132,18 @@ store.on(
     changed("users.ted") // false
   }
 )
+
+await store.set("users.bob.admin", true)
+```
+
+### Subscription wildcards
+
+Properties in curly braces act as a wildcard for the subscription:
+
+```js
+store.on("users.{login}", async ({ login }) => {
+  login // "bob"
+})
 
 await store.set("users.bob.admin", true)
 ```
