@@ -15,8 +15,8 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 - [Store operations](#store-operations)
 - [Store subscribers](#store-subscribers)
   - [Subscription options](#subscription-options)
+  - [Wildcard props](#wildcard-props)
   - [Check for changes](#check-for-changes)
-  - [Wildcard subscription props](#wildcard-subscription-props)
   - [Unsubscribe](#unsubscribe)
 - [Custom operations](#custom-operations)
 - [Extensions](#extensions)
@@ -114,6 +114,18 @@ The `options` in the above subscriber would contain the following values:
 | `prevState`   | `{}`                                  | State (before operation)                    |
 | `state`       | `{ users: { bob: { admin: true } } }` | State (after operation)                     |
 
+### Wildcard props
+
+Prop keys in curly braces act as a wildcard:
+
+```js
+store.on("users.{userId}", async ({ userId }) => {
+  userId // "bob"
+})
+
+await store.set("users.bob.admin", true)
+```
+
 ### Check for changes
 
 The `changed` function tests if a prop value changed.
@@ -131,18 +143,6 @@ store.on("users", async ({ changed }) => {
   // ⃠ No change
   changed("users.ted.{prop}") // false
   changed("users.ted") // false
-})
-
-await store.set("users.bob.admin", true)
-```
-
-### Wildcard subscription props
-
-Properties in curly braces act as a wildcard for the subscription:
-
-```js
-store.on("users.{login}", async ({ login }) => {
-  login // "bob"
 })
 
 await store.set("users.bob.admin", true)
