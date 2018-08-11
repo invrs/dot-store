@@ -116,19 +116,20 @@ The `options` in the above subscriber would contain the following values:
 
 #### The `changed` function
 
-The `changed` function returns a truthy value based on whether the value at the passed prop was changed.
+The `changed` function tests whether a prop value changed.
 
-The return value doubles as a way to retrieve keys of the changed prop:
+The return value is truthy and doubles as a way to retrieve prop keys:
 
 ```js
 store.on("users", async ({ changed }) => {
-  // Changed
+  // ✓ Changed
   changed("users.{userId}.{prop}") // { userId: "bob", prop: "admin" }
-  changed("users.bob") // {}
   changed("users.bob.admin") // {}
+  changed("users.bob") // {}
+  changed("users") // {}
 
-  // Didn't change
-  changed("users.bob.role") // false
+  // ⃠ No change
+  changed("users.ted.{prop}") // false
   changed("users.ted") // false
 })
 
