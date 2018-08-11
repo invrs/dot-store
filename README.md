@@ -15,7 +15,7 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 - [Store operations](#store-operations)
 - [Store subscribers](#store-subscribers)
   - [Subscription options](#subscription-options)
-  - [Wildcard props](#wildcard-props)
+  - [Dynamic subscriptions](#dynamic-subscriptions)
   - [Check for changes](#check-for-changes)
   - [Unsubscribe](#unsubscribe)
 - [Custom operations](#custom-operations)
@@ -114,16 +114,17 @@ The `options` in the above subscriber would contain the following values:
 | `prevState` | `{}`                                  | State (before operation)              |
 | `state`     | `{ users: { bob: { admin: true } } }` | State (after operation)               |
 
-### Wildcard props
+### Dynamic subscriptions
 
-Property keys in curly braces act as a wildcard:
+Use curly braces around a prop key to capture its value:
 
 ```js
 store.on("users.{userId}", async ({ userId }) => {
-  userId // "bob"
+  userId // "bob", then "ted"
 })
 
 await store.set("users.bob.admin", true)
+await store.set("users.ted.admin", true)
 ```
 
 ### Check for changes
