@@ -128,9 +128,9 @@ await store.set("users.bob.admin", true)
 
 ### Check for changes
 
-The `changed(prop)` function tests if a property value changed.
+The `changed` function tests if a property value changed.
 
-The return value of `changed(prop)` is truthy and doubles as a way to retrieve prop keys:
+The return value of `changed` is truthy and doubles as a way to retrieve prop keys:
 
 ```js
 store.on("users", async ({ changed }) => {
