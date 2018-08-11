@@ -26,6 +26,7 @@
     "lint": "eslint --ignore-path .gitignore --ext=js .",
     "pretty": "prettier --write **/*.css **/*.json **/*.md",
     "publish": "lerna publish",
+    "readme": "npx doctoc --notitle README.md; npx prettier --write README.md",
     "test": "lerna run test"
   },
   "dependencies": {},
