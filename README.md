@@ -101,8 +101,8 @@ The `options` in the above subscriber would contain the following values:
 | :------------ | :------------------------------------ | :------------------------------------------ |
 | `changed`     | `<Function>`                          | Function to check which props changed       |
 | `store`       | `<DotStore>`                          | Store instance                              |
-| `event`       | `"after"`                             | Event tense           |
-| `op`          | `"set"`                               | Operation string     |
+| `event`       | `"after"`                             | Event tense                                 |
+| `op`          | `"set"`                               | Operation string                            |
 | `listenProp`  | `"users.bob"`                         | Subscription props string                   |
 | `listenProps` | `["users", "bob"]`                    | Subscription props array                    |
 | `listenPrev`  | `undefined`                           | Subscription props value (before operation) |
