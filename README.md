@@ -99,7 +99,7 @@ The `options` in the above subscriber would contain the following values:
 
 | Argument      | Example value                         | Description                                 |
 | :------------ | :------------------------------------ | :------------------------------------------ |
-| `changed`     | `<Function>`                          | Function to check which props changed       |
+| `changed`     | `<Function>`                          | Test if prop value changed                  |
 | `store`       | `<DotStore>`                          | Store instance                              |
 | `event`       | `"after"`                             | Event tense                                 |
 | `op`          | `"set"`                               | Operation string                            |
