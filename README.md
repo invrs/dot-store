@@ -57,7 +57,7 @@ store.on("users.bob", async () => {
 })
 ```
 
-Listeners execute when the value at the subscription prop changes **and also when any child value changes**.
+The subscription fires when the value at `users.bob` changes **or when any child value changes**.
 
 ## Store operations
 
@@ -70,15 +70,15 @@ Listeners execute when the value at the subscription prop changes **and also whe
 | `time(props)`        | yes   | Set property to current timestamp   |
 | `toggle(props)`      | yes   | Toggle boolean property             |
 
-Async store operations only resolve once all subscription listeners resolve.
+Async store operations only resolve once all subscriptions resolve.
 
 ## Store subscribers
 
-| Subscriber                          | Timing                                                               |
-| :---------------------------------- | :------------------------------------------------------------------- |
-| `on(event, prop, listener)`         | Emits every property change                                          |
-| `once(event, prop, listener)`       | Emits once after a property change                                   |
-| `onceExists(event, prop, listener)` | Emits once after a property change or if the property already exists |
+| Subscriber                    | Timing                                                               |
+| :---------------------------- | :------------------------------------------------------------------- |
+| `on(event, prop, fn)`         | Emits every property change                                          |
+| `once(event, prop, fn)`       | Emits once after a property change                                   |
+| `onceExists(event, prop, fn)` | Emits once after a property change or if the property already exists |
 
 Typically we omit the `event` parameter, as it defaults to `afterUpdate` when not specified.
 
@@ -97,22 +97,22 @@ await store.set("users.bob.admin", true)
 
 The `options` in the above subscriber would contain the following values:
 
-| Argument      | Example value                         | Description                                 |
-| :------------ | :------------------------------------ | :------------------------------------------ |
-| `changed`     | `<Function>`                          | Test if prop value changed                  |
-| `store`       | `<DotStore>`                          | Store instance                              |
-| `event`       | `"after"`                             | Event tense                                 |
-| `op`          | `"set"`                               | Operation string                            |
-| `listenProp`  | `"users.bob"`                         | Subscription props string                   |
-| `listenProps` | `["users", "bob"]`                    | Subscription props array                    |
-| `listenPrev`  | `undefined`                           | Subscription props value (before operation) |
-| `listenValue` | `{ admin: true }`                     | Subscription props value (after operation)  |
-| `prop`        | `"users.bob.admin"`                   | Changed props                               |
-| `props`       | `["users", "bob", "admin"]`           | Changed props array                         |
-| `prev`        | `undefined`                           | Changed props value (before operation)      |
-| `value`       | `true`                                | Changed props value (after operation)       |
-| `prevState`   | `{}`                                  | State (before operation)                    |
-| `state`       | `{ users: { bob: { admin: true } } }` | State (after operation)                     |
+| Argument    | Example value                         | Description                                 |
+| :---------- | :------------------------------------ | :------------------------------------------ |
+| `changed`   | `<Function>`                          | Test if prop value changed                  |
+| `store`     | `<DotStore>`                          | Store instance                              |
+| `event`     | `"after"`                             | Event tense                                 |
+| `op`        | `"set"`                               | Operation string                            |
+| `onProp`    | `"users.bob"`                         | Subscription props string                   |
+| `onProps`   | `["users", "bob"]`                    | Subscription props array                    |
+| `onPrev`    | `undefined`                           | Subscription props value (before operation) |
+| `onValue`   | `{ admin: true }`                     | Subscription props value (after operation)  |
+| `prop`      | `"users.bob.admin"`                   | Changed props                               |
+| `props`     | `["users", "bob", "admin"]`           | Changed props array                         |
+| `prev`      | `undefined`                           | Changed props value (before operation)      |
+| `value`     | `true`                                | Changed props value (after operation)       |
+| `prevState` | `{}`                                  | State (before operation)                    |
+| `state`     | `{ users: { bob: { admin: true } } }` | State (after operation)                     |
 
 ### Wildcard props
 
