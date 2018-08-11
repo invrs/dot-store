@@ -61,24 +61,24 @@ The subscription fires when the value at `users.bob` changes **or when any child
 
 ## Store operations
 
-| Operation            | Async | Description                         |
-| :------------------- | :---- | :---------------------------------- |
-| `get(props)`         | no    | Read property                       |
-| `delete(props)`      | yes   | Delete property                     |
-| `merge(prop, value)` | yes   | Merge property with array or object |
-| `set(props, value)`  | yes   | Set property                        |
-| `time(props)`        | yes   | Set property to current timestamp   |
-| `toggle(props)`      | yes   | Toggle boolean property             |
+| Operation            | Async | Description                               |
+| :------------------- | :---- | :---------------------------------------- |
+| `get(props)`         | no    | Read property value                       |
+| `delete(props)`      | yes   | Delete property value                     |
+| `merge(prop, value)` | yes   | Merge property value with array or object |
+| `set(props, value)`  | yes   | Set property value                        |
+| `time(props)`        | yes   | Set property value to current timestamp   |
+| `toggle(props)`      | yes   | Toggle boolean property value             |
 
 Async store operations only resolve once all subscriptions resolve.
 
 ## Store subscribers
 
-| Subscriber                    | Timing                                                               |
-| :---------------------------- | :------------------------------------------------------------------- |
-| `on(event, prop, fn)`         | Emits every property change                                          |
-| `once(event, prop, fn)`       | Emits once after a property change                                   |
-| `onceExists(event, prop, fn)` | Emits once after a property change or if the property already exists |
+| Subscriber                    | Timing                                                                  |
+| :---------------------------- | :---------------------------------------------------------------------- |
+| `on(event, prop, fn)`         | Emits every property value change                                       |
+| `once(event, prop, fn)`       | Emits once after a property value change                                |
+| `onceExists(event, prop, fn)` | Emits once after a property value change or if the value already exists |
 
 Typically we omit the `event` parameter, as it defaults to `afterUpdate` when not specified.
 
@@ -116,7 +116,7 @@ The `options` in the above subscriber would contain the following values:
 
 ### Wildcard props
 
-Prop keys in curly braces act as a wildcard:
+Property keys in curly braces act as a wildcard:
 
 ```js
 store.on("users.{userId}", async ({ userId }) => {
@@ -128,20 +128,20 @@ await store.set("users.bob.admin", true)
 
 ### Check for changes
 
-The `changed` function tests if a prop value changed.
+The `changed` function tests if a property value changed.
 
 The return value of `changed` is truthy and doubles as a way to retrieve prop keys:
 
 ```js
 store.on("users", async ({ changed }) => {
   // ✓ Changed
-  changed("users.{userId}.{prop}") // { userId: "bob", prop: "admin" }
+  changed("users.{userId}.{attr}") // { userId: "bob", attr: "admin" }
   changed("users.bob.admin") // {}
   changed("users.bob") // {}
   changed("users") // {}
 
   // ⃠ No change
-  changed("users.ted.{prop}") // false
+  changed("users.ted.{attr}") // false
   changed("users.ted") // false
 })
 
@@ -159,14 +159,14 @@ off()
 
 Custom operations do not modify the store. They allow you to leverage store eventing to run your own logic.
 
-After initializing the store, you may add a custom operation:
+After initializing the store, add a custom operation:
 
 ```js
 const store = new Store()
 store.op("fetch")
 ```
 
-Specify the custom event when you subscribe:
+Subscribe to the custom event:
 
 ```js
 store.on("afterFetch", "users", async function({ value }) {
@@ -175,8 +175,6 @@ store.on("afterFetch", "users", async function({ value }) {
 
 await store.fetch("users", { admin: "true" })
 ```
-
-Custom operations do not emit the default `afterUpdate` events.
 
 ## Extensions
 
