@@ -51,13 +51,13 @@ store.get() // { users: { bob: { admin: true } } }
 
 ### Subscribe to changes
 
+This subscription responds to any change within `users.bob`:
+
 ```js
 store.on("users.bob", async () => {
   console.log("bob changed")
 })
 ```
-
-The subscription fires when the value at `users.bob` changes **or when any child value changes**.
 
 ## Store operations
 
@@ -80,9 +80,9 @@ Async store operations only resolve once all subscriptions resolve.
 | `once(event, prop, fn)`       | Emits once after a property value change                                |
 | `onceExists(event, prop, fn)` | Emits once after a property value change or if the value already exists |
 
-Typically we omit the `event` parameter, as it defaults to `afterUpdate` when not specified.
+When omitted, the `event` parameter defaults to `afterUpdate`.
 
-The `event` parameter is sometimes used to specify a `beforeUpdate` event or to subscribe to a [custom operation](#custom-operations).
+When specified, the `event` parameter can be `beforeUpdate` or a [custom operation](#custom-operations).
 
 ### Subscription options
 
@@ -90,7 +90,7 @@ Subscriptions receive an options argument with lots of useful stuff:
 
 ```js
 store.on("users.bob", async options => {
-  // do stuff with options
+  // see example option values below
 })
 await store.set("users.bob.admin", true)
 ```
