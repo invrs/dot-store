@@ -15,7 +15,7 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 - [Store operations](#store-operations)
 - [Store subscribers](#store-subscribers)
   - [Subscription options](#subscription-options)
-    - [Check for changes](#check-for-changes)
+  - [Check for changes](#check-for-changes)
   - [Wildcard subscription props](#wildcard-subscription-props)
   - [Unsubscribe](#unsubscribe)
 - [Custom operations](#custom-operations)
@@ -70,7 +70,7 @@ Listeners execute when the value at the subscription prop changes **and also whe
 | `time(props)`        | yes   | Set property to current timestamp   |
 | `toggle(props)`      | yes   | Toggle boolean property             |
 
-Async store operations only resolve once all subscription listeners finish.
+Async store operations only resolve once all subscription listeners resolve.
 
 ## Store subscribers
 
@@ -114,11 +114,11 @@ The `options` in the above subscriber would contain the following values:
 | `prevState`   | `{}`                                  | State (before operation)                    |
 | `state`       | `{ users: { bob: { admin: true } } }` | State (after operation)                     |
 
-#### Check for changes
+### Check for changes
 
-The `changed` function tests whether a prop value changed.
+The `changed` function tests if a prop value changed.
 
-The return value is truthy and doubles as a way to retrieve prop keys:
+The return value of `changed` is truthy and doubles as a way to retrieve prop keys:
 
 ```js
 store.on("users", async ({ changed }) => {
