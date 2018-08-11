@@ -7,7 +7,6 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Install](#install)
 - [Using the store](#using-the-store)
   - [Set values (immutably)](#set-values-immutably)
@@ -17,6 +16,8 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 - [Store subscribers](#store-subscribers)
   - [Subscription wildcards](#subscription-wildcards)
   - [Subscription options](#subscription-options)
+    - [Example options output](#example-options-output)
+    - [The `changed` function](#the-changed-function)
   - [Unsubscribe](#unsubscribe)
 - [Custom operations](#custom-operations)
 - [Extensions](#extensions)
@@ -61,23 +62,23 @@ Listeners execute when the value at the subscription prop changes **and also whe
 
 ## Store operations
 
-| Operation | Async | Description                         |
-| :-------- | :---- | :---------------------------------- |
-| `get(props)`     | no    | Read property                       |
-| `delete(props)`  | yes   | Delete property                     |
-| `merge(prop, value)`   | yes   | Merge property with array or object |
-| `set(props, value)`     | yes   | Set property                        |
-| `time(props)`    | yes   | Set property to current timestamp   |
-| `toggle(props)`  | yes   | Toggle boolean property             |
+| Operation            | Async | Description                         |
+| :------------------- | :---- | :---------------------------------- |
+| `get(props)`         | no    | Read property                       |
+| `delete(props)`      | yes   | Delete property                     |
+| `merge(prop, value)` | yes   | Merge property with array or object |
+| `set(props, value)`  | yes   | Set property                        |
+| `time(props)`        | yes   | Set property to current timestamp   |
+| `toggle(props)`      | yes   | Toggle boolean property             |
 
 Async store operations only resolve once all subscription listeners finish.
 
 ## Store subscribers
 
-| Subscriber | Timing                                                |
-| :----------- | :---------------------------------------------------------- |
-| `on(event, prop, listener)`         | Emits every property change                      |
-| `once(event, prop, listener)`       | Emits once after a property change                       |
+| Subscriber                          | Timing                                                               |
+| :---------------------------------- | :------------------------------------------------------------------- |
+| `on(event, prop, listener)`         | Emits every property change                                          |
+| `once(event, prop, listener)`       | Emits once after a property change                                   |
 | `onceExists(event, prop, listener)` | Emits once after a property change or if the property already exists |
 
 Typically we omit the `event` parameter, as it defaults to `afterUpdate` when not specified.
@@ -100,42 +101,57 @@ await store.set("users.bob.admin", true)
 
 Subscriptions receive an options argument with lots of useful stuff:
 
-| Argument | Description                                   |
-| :---------------- | :-------------------------------------------- |
-| `changed`         | Function to check which props changed            |
-| `event`           | Event tense (`before` or `after`)       |
-| `listenProp`      | Subscription props string                     |
-| `listenProps`     | Subscription props array                      |
-| `listenPrev`      | Subscription props value (before operation)   |
-| `listenValue`     | Subscription props value (after operation)    |
-| `op`              | Operation string (`get`, `delete`, etc)       |
-| `prop`            | Changed props |
-| `props`           | Changed props array                        |
-| `prev`            | Changed props value (before operation)               |
-| `value`           | Changed props value (after operation)                        |
-| `prevState`       | State (before operation)                       |
-| `state`           | State (after operation)                                |
-| `store`           | Store instance                                |
+| Argument      | Description                                 |
+| :------------ | :------------------------------------------ |
+| `changed`     | Function to check which props changed       |
+| `event`       | Event tense (`before` or `after`)           |
+| `op`          | Operation string (`set`, `delete`, etc)     |
+| `listenProp`  | Subscription props string                   |
+| `listenProps` | Subscription props array                    |
+| `listenPrev`  | Subscription props value (before operation) |
+| `listenValue` | Subscription props value (after operation)  |
+| `prop`        | Changed props                               |
+| `props`       | Changed props array                         |
+| `prev`        | Changed props value (before operation)      |
+| `value`       | Changed props value (after operation)       |
+| `prevState`   | State (before operation)                    |
+| `state`       | State (after operation)                     |
+| `store`       | Store instance                              |
 
-The `changed` function can be used to check if a child prop value changed:
+#### Example options output
 
 ```js
-store.on("users.bob", async ({ changed }) => {
-  if (changed("users.bob.admin")) {
-    console.log("bob's admin status changed")
-  }
-})
+store.on("users.bob", async ({ changed, store,  // <Function> // <DotStore>
+  event, op, // // "after" // "set"
+  listenProp, listenProps, listenPrev, listenValue, // // "users.bob" // ["users", "bob"] // undefined // { admin: true }
+  prev, prop, props, value, // // undefined // "users.bob.admin" // ["users", "bob", "admin"] // true
+  prevState, state }) => {}) // {} // { users: { bob: { admin: true } } }
+
+await store.set("users.bob.admin", true)
 ```
 
-You can also use it to extract keys from a changed prop:
+#### The `changed` function
+
+The `changed` function returns a truthy value based on whether the value at the passed prop was changed.
+
+It is "truthy" because it doubles as a way to retrieve keys of the changed prop:
 
 ```js
-store.on("users.bob", async ({ changed }) => {
-  const { prop } = changed("users.bob.{prop}") || {}
-  if (prop) {
-    console.log(`bob's ${prop} status changed`)
+store.on(
+  "users",
+  async ({ changed, prop, listenProp, value }) => {
+    changed("users.{userId}.{prop}")
+    // { userId: "bob", prop: "admin" }
+
+    changed("users.bob") // {}
+    changed("users.bob.admin") // {}
+
+    changed("users.bob.role") // false
+    changed("users.ted") // false
   }
-})
+)
+
+await store.set("users.bob.admin", true)
 ```
 
 ### Unsubscribe
@@ -170,11 +186,10 @@ Custom operations do not emit the default `afterUpdate` events.
 
 ## Extensions
 
-| Package                                                                                                 | Description                        |
-| :------------------------------------------------------------------------------------------------------ | :--------------------------------- |
-| [`dot-store-analyze`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-analyze#readme) | Document store operations          |
-| [`dot-store-cookie`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-cookie#readme)   | Cookie access                      |
-| [`dot-store-fs`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)           | Filesystem access                  |
-| [`dot-store-iframe`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-iframe#readme)       | Iframe & DFP access (browser only) |
-| [`dot-store-message`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-message#readme) | Sync via `postMessage` API         |
-| [`dot-store-react`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme)     | React integration                  |
+| Package                                                                                                 | Description                |
+| :------------------------------------------------------------------------------------------------------ | :------------------------- |
+| [`dot-store-analyze`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-analyze#readme) | Document store operations  |
+| [`dot-store-cookie`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-cookie#readme)   | Cookie access              |
+| [`dot-store-fs`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-fs#readme)           | Filesystem access          |
+| [`dot-store-message`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-message#readme) | Sync via `postMessage` API |
+| [`dot-store-react`](https://github.com/invrs/dot-store/tree/master/packages/dot-store-react#readme)     | React integration          |
