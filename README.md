@@ -107,7 +107,7 @@ The `options` in the above subscriber would contain the following values:
 | `sProps`    | `["users", "bob"]`                    | Subscription props array              |
 | `sPrev`     | `undefined`                           | Subscription value (before operation) |
 | `sValue`    | `{ admin: true }`                     | Subscription value (after operation)  |
-| `prop`      | `"users.bob.admin"`                   | Changed value props stri              |
+| `prop`      | `"users.bob.admin"`                   | Changed value props string            |
 | `props`     | `["users", "bob", "admin"]`           | Changed value props array             |
 | `prev`      | `undefined`                           | Changed value (before operation)      |
 | `value`     | `true`                                | Changed value (after operation)       |
