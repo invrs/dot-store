@@ -97,22 +97,22 @@ await store.set("users.bob.admin", true)
 
 The `options` in the above subscriber would contain the following values:
 
-| Argument    | Example value                         | Description                            |
-| :---------- | :------------------------------------ | :------------------------------------- |
-| `store`     | `<DotStore>`                          | Store instance                         |
-| `changed`   | `<Function>`                          | Function to test for prop value change |
-| `event`     | `"after"`                             | Event tense                            |
-| `op`        | `"set"`                               | Operation string                       |
-| `prevState` | `{}`                                  | State (before operation)               |
-| `state`     | `{ users: { bob: { admin: true } } }` | State (after operation)                |
-| `prop`      | `"users.bob.admin"`                   | Changed value props string             |
-| `props`     | `["users", "bob", "admin"]`           | Changed value props array              |
-| `prev`      | `undefined`                           | Changed value (before operation)       |
-| `value`     | `true`                                | Changed value (after operation)        |
-| `sProp`     | `"users.bob"`                         | Subscription props string              |
-| `sProps`    | `["users", "bob"]`                    | Subscription props array               |
-| `sPrev`     | `undefined`                           | Subscription value (before operation)  |
-| `sValue`    | `{ admin: true }`                     | Subscription value (after operation)   |
+| Argument     | Example value                         | Description                            |
+| :----------- | :------------------------------------ | :------------------------------------- |
+| `store`      | `<DotStore>`                          | Store instance                         |
+| `changed`    | `<Function>`                          | Function to test for prop value change |
+| `event`      | `"after"`                             | Event tense                            |
+| `op`         | `"set"`                               | Operation string                       |
+| `prevState`  | `{}`                                  | State (before operation)               |
+| `state`      | `{ users: { bob: { admin: true } } }` | State (after operation)                |
+| `prop`       | `"users.bob.admin"`                   | Changed value props string             |
+| `props`      | `["users", "bob", "admin"]`           | Changed value props array              |
+| `prev`       | `undefined`                           | Changed value (before operation)       |
+| `value`      | `true`                                | Changed value (after operation)        |
+| `watchProp`  | `"users.bob"`                         | Subscription props string              |
+| `watchProps` | `["users", "bob"]`                    | Subscription props array               |
+| `watchPrev`  | `undefined`                           | Subscription value (before operation)  |
+| `watchValue` | `{ admin: true }`                     | Subscription value (after operation)   |
 
 ### Dynamic subscriptions
 
