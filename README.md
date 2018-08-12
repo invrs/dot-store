@@ -80,9 +80,9 @@ Async store operations only resolve once all subscriptions resolve.
 | `once(event, prop, fn)`       | Emits once after a property value change                                |
 | `onceExists(event, prop, fn)` | Emits once after a property value change or if the value already exists |
 
-When omitted, the `event` parameter defaults to `"afterUpdate"`.
+The `event` parameter can be `"beforeUpdate"`, `"afterUpdate"`, or a [custom operation](#custom-operations).
 
-When specified, the `event` parameter can be `"beforeUpdate"` or a [custom operation](#custom-operations).
+When omitted, the `event` parameter defaults to `"afterUpdate"`.
 
 ### Subscription options
 
@@ -103,11 +103,11 @@ The `options` in the above subscriber would contain the following values:
 | `store`     | `<DotStore>`                          | Store instance                        |
 | `event`     | `"after"`                             | Event tense                           |
 | `op`        | `"set"`                               | Operation string                      |
-| `onProp`    | `"users.bob"`                         | Subscription value props string       |
-| `onProps`   | `["users", "bob"]`                    | Subscription value props array        |
-| `onPrev`    | `undefined`                           | Subscription value (before operation) |
-| `onValue`   | `{ admin: true }`                     | Subscription value (after operation)  |
-| `prop`      | `"users.bob.admin"`                   | Changed value props                   |
+| `sProp`     | `"users.bob"`                         | Subscription props string             |
+| `sProps`    | `["users", "bob"]`                    | Subscription props array              |
+| `sPrev`     | `undefined`                           | Subscription value (before operation) |
+| `sValue`    | `{ admin: true }`                     | Subscription value (after operation)  |
+| `prop`      | `"users.bob.admin"`                   | Changed value props stri              |
 | `props`     | `["users", "bob", "admin"]`           | Changed value props array             |
 | `prev`      | `undefined`                           | Changed value (before operation)      |
 | `value`     | `true`                                | Changed value (after operation)       |
