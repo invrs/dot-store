@@ -36,6 +36,8 @@ import Store from "dot-store"
 const store = new Store()
 ```
 
+Pass an object to the `Store` constructor to set a default state.
+
 ### Set values (immutably)
 
 ```js
