@@ -74,11 +74,11 @@ store.on("users.bob", async () => {
 
 Store operation calls only resolve after all of its subscribers resolve.
 
-| Subscriber                    | Timing                                                                       |
-| :---------------------------- | :--------------------------------------------------------------------------- |
-| `on(event, prop, fn)`         | Subscribe to prop value change                                               |
-| `once(event, prop, fn)`       | Subscribe to a single prop value change                                      |
-| `onceExists(event, prop, fn)` | Subscribe to a single prop value change and immediately emit if value exists |
+| Subscriber                     | Timing                                                                       |
+| :----------------------------- | :--------------------------------------------------------------------------- |
+| `on(event, props, fn)`         | Subscribe to prop value change                                               |
+| `once(event, props, fn)`       | Subscribe to a single prop value change                                      |
+| `onceExists(event, props, fn)` | Subscribe to a single prop value change and immediately emit if value exists |
 
 The `event` parameter can be `"beforeUpdate"`, `"afterUpdate"`, or a [custom operation](#custom-operations).
 
