@@ -14,6 +14,7 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
   - [Subscribe to changes](#subscribe-to-changes)
 - [Store operations](#store-operations)
 - [Store subscribers](#store-subscribers)
+  - [Order of operation](#order-of-operation)
   - [Subscriber options](#subscriber-options)
   - [Dynamic subscribers](#dynamic-subscribers)
   - [Check if prop value changed](#check-if-prop-value-changed)
@@ -74,7 +75,7 @@ store.on("users.bob", async () => {
 
 ## Store subscribers
 
-Store operation calls only resolve after all of its subscribers resolve.
+Subscriber functions like `store.on(event, props, fn)` allow you to subscribe to any change within the prop location.
 
 | Subscriber                     | Timing                                                                       |
 | :----------------------------- | :--------------------------------------------------------------------------- |
@@ -82,9 +83,19 @@ Store operation calls only resolve after all of its subscribers resolve.
 | `once(event, props, fn)`       | Subscribe to a single prop value change                                      |
 | `onceExists(event, props, fn)` | Subscribe to a single prop value change and immediately emit if value exists |
 
-The `event` parameter can be `"beforeUpdate"`, `"afterUpdate"`, or a [custom operation](#custom-operations).
+The `event` string consists of a preposition (`before` or `after`), plus an operation. For example, a valid `event` string would be `beforeSet` or `afterDelete`.
 
-When omitted, the `event` parameter defaults to `"afterUpdate"`.
+The `after` preposition is used by default when it is not specified. You may also use `update` in place of the operation to subscribe to all updates.
+
+When omitted entirely, the `event` parameter defaults to `"afterUpdate"`.
+
+### Order of operation
+
+1. Call operation function (e.g. `store.set(props, value)`)
+2. Execute all `before` subscribers and wait for them to resolve
+3. Perform operation on store
+4. Execute all `after` subscribers and wait for them to resolve
+5. Operation function resolves
 
 ### Subscriber options
 
