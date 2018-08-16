@@ -1,6 +1,6 @@
 {
   "name": "dot-store",
-  "version": "2.6.25",
+  "version": "3.0.0",
   "description": "Like Redux, but easy",
   "keywords": [
     "accessor",
@@ -30,12 +30,13 @@
   },
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.42",
-    "@invrs/dot-prop-immutable": "^2.6.25",
+    "@invrs/dot-prop-immutable": "^3.0.0",
     "rimraf": "2"
   },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.42",
     "@babel/core": "7.0.0-beta.42",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.42",
     "@babel/plugin-proposal-object-rest-spread": "7.0.0-beta.42",
     "@babel/plugin-transform-runtime": "7.0.0-beta.42",
     "@babel/preset-env": "7.0.0-beta.42",
@@ -43,8 +44,7 @@
     "emittery": "^0.3.0",
     "fxtr": "1",
     "jest": "23.4.2",
-    "rimraf": "^2.6.2",
-    "@babel/plugin-proposal-class-properties": "7.0.0-beta.42"
+    "rimraf": "^2.6.2"
   },
   "babel": {
     "presets": [

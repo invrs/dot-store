@@ -10,7 +10,7 @@
     "jest-scripts",
     "watchman-babel"
   ],
-  "version": "2.6.25",
+  "version": "3.0.0",
   "description": "",
   "keywords": [
     ""
