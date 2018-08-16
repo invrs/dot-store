@@ -36,15 +36,17 @@ test("props", async () => {
     </Layout>
   )
 
-  expect(props.changes).toBeInstanceOf(Array)
+  expect(props.changeTestFns).toBeInstanceOf(Array)
   expect(props.store).toBeInstanceOf(Store)
 
-  expect(props.changes).toEqual([])
+  expect(props.changeTestFns).toEqual([])
   expect(props.store.state).toEqual({ counter: 0 })
 
   await props.store.set("counter", 1)
 
-  expect(props.changes).toEqual(["counter"])
+  expect(props.changeTestFns).toEqual([
+    expect.any(Function),
+  ])
   expect(props.store.state).toEqual({ counter: 1 })
 
   mount(
@@ -53,7 +55,7 @@ test("props", async () => {
     </Layout>
   )
 
-  expect(props.changes).toEqual([])
+  expect(props.changeTestFns).toEqual([])
   expect(props.store.state).toEqual({ counter: 0 })
 })
 
@@ -63,8 +65,8 @@ test("changed", async () => {
 
   const Component = withStore(
     class extends React.Component {
-      shouldComponentUpdate({ changed }) {
-        return changed("counter", "counter2")
+      shouldComponentUpdate({ changeTest }) {
+        return changeTest("counter", "counter2")
       }
 
       render() {

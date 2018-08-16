@@ -10,10 +10,10 @@ export const withStore = Component =>
       }
     }
 
-    changed(fns) {
+    changeTest(changeTestFns) {
       return (...matchers) =>
-        fns.reduce((memo, changed) => {
-          let out = changed(...matchers)
+        changeTestFns.reduce((memo, changeTest) => {
+          let out = changeTest(...matchers)
 
           if (out) {
             return { ...(memo || {}), ...out }
@@ -26,11 +26,11 @@ export const withStore = Component =>
     render() {
       return (
         <Consumer>
-          {([changes, changeFns, store]) => (
+          {([changeTestFns, store]) => (
             <Component
               {...this.props}
-              changes={changes}
-              changed={this.changed(changeFns)}
+              changeTestFns={changeTestFns}
+              changeTest={this.changeTest(changeTestFns)}
               state={store.state}
               store={store}
             />
@@ -78,15 +78,15 @@ export const withStoreProvider = createStore => Component =>
 export class StoreProvider extends React.Component {
   constructor(props) {
     super(props)
-    this.changes = []
-    this.changeFns = []
+    this.changeTestFns = []
     this.store = props.store
     this.onUpdate = this.onUpdate.bind(this)
   }
 
-  onUpdate({ changed, prop }) {
-    this.changes = this.changes.concat([prop])
-    this.changeFns = this.changeFns.concat([changed])
+  onUpdate({ change }) {
+    this.changeTestFns = this.changeTestFns.concat([
+      change.test,
+    ])
     this.forceUpdate()
   }
 
@@ -99,14 +99,11 @@ export class StoreProvider extends React.Component {
   }
 
   render() {
-    const changes = this.changes.concat([])
-    const changeFns = this.changeFns.concat([])
-
-    this.changes = []
-    this.changeFns = []
+    const changeTestFns = this.changeTestFns.concat([])
+    this.changeTestFns = []
 
     return (
-      <Provider value={[changes, changeFns, this.store]}>
+      <Provider value={[changeTestFns, this.store]}>
         {this.props.children}
       </Provider>
     )

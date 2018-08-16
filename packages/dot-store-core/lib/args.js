@@ -2,15 +2,15 @@
 import dot from "@invrs/dot-prop-immutable"
 
 // Constants
-export const opEventRegex = /^(before|after)(create|delete|get|merge|set|toggle|update)(:?)/i
+export const opEventRegex = /^(before|after)?(\w+)(:\w+)?/i
 import { varPropRegex } from "./changed"
 
 // Helpers
-export function parseArgs(args) {
+export function parseArgs({ args, ops }) {
   let event = "afterupdate",
-    eventMatch = [undefined, "after"],
-    listener,
-    prop
+    fn,
+    prep = "after",
+    props
 
   for (const arg of args) {
     const type = typeof arg
@@ -18,16 +18,16 @@ export function parseArgs(args) {
     if (type === "string") {
       const match = arg.match(opEventRegex)
 
-      if (match) {
-        eventMatch = match
-        event = arg
+      if (matchOp({ match, ops })) {
+        prep = match[1] || prep
+        event = prep + match[2] + (match[3] || "")
       } else {
-        prop = arg
+        props = arg
       }
     } else if (type === "function") {
-      listener = arg
+      fn = arg
     } else if (type === "object") {
-      prop = arg
+      props = arg
     }
   }
 
@@ -35,22 +35,38 @@ export function parseArgs(args) {
     event = event.toLowerCase()
   }
 
-  const needsProp = !eventMatch || !eventMatch[3]
-  const props = prop ? dot.propToArray(prop) : []
-  const key =
-    event && prop && needsProp
-      ? keyFromProp(event, props)
-      : event
+  const propKeys = props ? dot.propToArray(props) : []
+  const key = keyFromProp(event, propKeys)
 
   return {
-    event: eventMatch[1],
-    key,
-    listener,
-    props,
+    change: {
+      propKeys,
+      props,
+    },
+    event: {
+      key,
+      prep,
+    },
+    subscriber: {
+      fn,
+    },
   }
 }
 
+function matchOp({ match, ops }) {
+  if (!match) {
+    return
+  }
+
+  const op = match[2].toLowerCase()
+  return ops.indexOf(op) > -1 || op === "update"
+}
+
 function keyFromProp(event, props) {
+  if (!props[0] || event.indexOf(":") > -1) {
+    return event
+  }
+
   const isVarProp = props[0].match(varPropRegex)
 
   if (isVarProp) {

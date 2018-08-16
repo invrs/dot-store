@@ -8,10 +8,10 @@ test("fsWrite", () => {
     "/tmp/text.txt",
   ]
 
-  let prop = "fizz.hello"
+  let props = "fizz.hello"
   let root = "/tmp"
 
-  let out = pathFromProp({ paths, prop, root })
+  let out = pathFromProp({ paths, props, root })
 
   expect(out).toEqual({
     path: "/tmp/fizz.json",

@@ -1,6 +1,11 @@
 const hasWindow = typeof window !== "undefined"
 const hasProcess = typeof process !== "undefined"
-const processKeys = ["op", "value", "prev", "meta"]
+const processKeys = [
+  "change",
+  "event",
+  "meta",
+  "subscriber",
+]
 const windowKeys = [...processKeys, "state", "prevState"]
 
 const debugMode =
@@ -17,13 +22,14 @@ export function debug(store) {
 
   if (debugMode) {
     const fn = options => {
-      const { prop } = options
+      const {
+        change: { props },
+      } = options
       // eslint-disable-next-line no-console
-      console.log(prop + "\n ", buildObject(options, keys))
+      console.log(props + "\n ", buildObject(options, keys))
     }
 
     store.on(fn)
-    store.on("beforeGet", fn)
     store.time("debugMode")
   }
 }

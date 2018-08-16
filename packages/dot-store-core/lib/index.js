@@ -6,15 +6,14 @@ import Emitter from "./emitter"
 import { parseArgs } from "./args"
 import { changeListener, changedValueVars } from "./changed"
 import { debug } from "./debug"
+import { ops } from "./ops"
 import { existsPayload, payload } from "./payload"
-
-// Constants
-export const ops = ["delete", "merge", "set", "toggle"]
 
 // Classes
 export default class DotStore extends Emitter {
   constructor(state = {}) {
     super()
+    this.ops = ops
     this.state = state
 
     for (let op of ops) {
@@ -24,47 +23,50 @@ export default class DotStore extends Emitter {
     debug(this)
   }
 
-  get(prop) {
-    if (prop) {
-      return dot.get(this.state, prop)
+  get(props) {
+    if (props) {
+      return dot.get(this.state, props)
     } else {
       return this.state
     }
   }
 
   op(op) {
+    this.ops = this.ops.concat([op])
     this[op] = this.operateWrapper(op)
   }
 
-  time(prop) {
-    return this.set(prop, new Date().getTime())
+  time(props) {
+    return this.set(props, new Date().getTime())
   }
 
   operateWrapper(op) {
-    return async (prop, value, meta = {}) =>
-      await this.operate({ meta, op, prop, value })
+    return async (props, value, meta = {}) =>
+      await this.operate({ meta, op, props, value })
   }
 
-  async operate({ meta, op, prop, value }) {
-    const props = dot.propToArray(prop)
-    const prev = this.get(prop)
+  async operate({ meta, op, props, value }) {
+    const propKeys = dot.propToArray(props)
+    const prevValue = this.get(props)
 
     const beforePayload = payload({
-      changed: true,
+      change: {
+        prevValue,
+        propKeys,
+        props,
+        test: true,
+        value,
+      },
+      event: { op },
       meta,
-      op,
-      prev,
       prevState: this.state,
-      prop,
-      props,
       store: this,
-      value,
     })
 
     await this.emitOp("before", beforePayload)
 
     const dotOp = ops.indexOf(op) > -1 ? op : "get"
-    const state = dot[dotOp](this.state, prop, value)
+    const state = dot[dotOp](this.state, props, value)
     const prevState = this.state
 
     if (dotOp !== "get") {
@@ -72,8 +74,10 @@ export default class DotStore extends Emitter {
     }
 
     const afterPayload = payload({
-      ...beforePayload,
-      changed: true,
+      change: {
+        test: true,
+      },
+      options: beforePayload,
       prevState,
       state,
     })
@@ -87,100 +91,120 @@ export default class DotStore extends Emitter {
     }
   }
 
-  async emitOp(event, payload) {
-    const events = this.events(event, payload)
+  async emitOp(prep, options) {
+    const events = this.events(prep, options)
 
     for (const e of events) {
-      await this.emit(e, {
-        ...payload,
-        event,
-        state: this.state,
-      })
+      await this.emit(
+        e,
+        payload({
+          event: {
+            prep,
+          },
+          options,
+          state: this.state,
+        })
+      )
     }
   }
 
-  events(event, { op, props }) {
-    const opEvents = [`${event}${op}`]
+  events(prep, { change, event }) {
+    const opEvents = [`${prep}${event.op}`]
 
-    if (op != "get") {
-      opEvents.push(`${event}update`)
+    if (ops.indexOf(event.op) > -1) {
+      opEvents.push(`${prep}update`)
     }
 
-    const propEvents = opEvents.map(e => `${e}:${props[0]}`)
+    const propEvents = opEvents.map(
+      e => `${e}:${change.propKeys[0]}`
+    )
 
     return [...opEvents, ...propEvents]
   }
 
   on(...args) {
-    const options = parseArgs(args)
-    const { key } = options
-    return super.on(key, changeListener(options))
+    const options = parseArgs({ args, ops: this.ops })
+    const { event } = options
+    return super.on(event.key, changeListener(options))
   }
 
   async once(...args) {
-    const { event, key, props } = parseArgs(args)
+    const { change, event } = parseArgs({
+      args,
+      ops: this.ops,
+    })
 
     return new Promise(resolve => {
-      const unsub = this.on(key, props, options => {
-        resolve({ event, ...options })
-        unsub()
-      })
+      const unsub = this.on(
+        event.key,
+        change.props,
+        options => {
+          resolve(options)
+          unsub()
+        }
+      )
 
       return unsub
     })
   }
 
   async onceExists(...args) {
-    const { event, key, props, listener } = parseArgs(args)
-
-    const eventPayload = payload({
-      event,
-      listenProps: props,
-      props,
-      store: this,
+    const { change, event, subscriber } = parseArgs({
+      args,
+      ops: this.ops,
     })
 
-    const { value } = eventPayload
+    const fn = subscriber.fn
 
-    if (listener) {
-      if (value) {
-        return await listener(existsPayload(eventPayload))
+    const eventPayload = payload({
+      change,
+      event,
+      store: this,
+      subscriber,
+    })
+
+    if (fn) {
+      if (eventPayload.change.value) {
+        return await fn(existsPayload(eventPayload))
       }
 
-      const unsub = this.on(key, props, async options => {
-        const {
-          listenPrev,
-          listenProps,
-          vars,
-        } = changedValueVars({
-          options,
-          props,
-        })
+      const unsub = this.on(
+        event.key,
+        change.props,
+        async options => {
+          const { subscriber, vars } = changedValueVars({
+            options,
+            propKeys: change.propKeys,
+          })
 
-        if (vars && listenPrev === undefined) {
-          return await listener(
-            payload({
-              ...options,
-              listenPrev,
-              listenProps,
-              vars,
-            })
-          )
+          if (vars && subscriber.prevValue === undefined) {
+            return await fn(
+              payload({
+                options,
+                subscriber,
+                vars,
+              })
+            )
+          }
         }
-      })
+      )
 
       return unsub
     }
 
-    if (value) {
+    if (eventPayload.change.value) {
       return existsPayload(eventPayload)
     }
 
-    return await this.once(key, props)
+    return await this.once(event.key, change.props)
   }
 
   off(...args) {
-    const { key, listener } = parseArgs(args)
-    super.off(key, listener)
+    const { event, subscriber } = parseArgs({
+      args,
+      ops: this.ops,
+    })
+
+    super.off(event.key, subscriber.fn)
   }
 }

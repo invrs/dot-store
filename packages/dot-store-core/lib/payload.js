@@ -5,87 +5,100 @@ import dot from "@invrs/dot-prop-immutable"
 import { buildChanged } from "./changed"
 
 export function payload({
-  changed,
-  event,
-  listenPrev,
-  listenProp,
-  listenProps,
-  listenValue,
+  change = {},
+  event = {},
   meta = {},
-  op,
-  prev,
-  prevState,
-  prop,
-  props,
-  store,
+  options = {},
+  prevState = options.prevState,
+  store = options.store,
+  subscriber = {},
   vars = {},
-  value = store.get(props),
-  state = store.state,
+  state = options.state,
 }) {
-  if (changed === true) {
-    changed = buildChanged({
-      op,
+  const groups = { change, event, meta, subscriber }
+
+  for (const option in groups) {
+    if (options[option]) {
+      groups[option] = {
+        ...options[option],
+        ...groups[option],
+      }
+    }
+  }
+
+  ;({ change, event, meta, subscriber } = groups)
+
+  if (typeof state === "undefined") {
+    state = store.state
+  }
+
+  if (typeof change.props === "undefined") {
+    change.props = change.propKeys.join(".")
+  }
+
+  if (typeof change.propKeys === "undefined") {
+    change.propKeys = dot.propToArray(change.props)
+  }
+
+  if (typeof change.value === "undefined") {
+    change.value = store.get(change.propKeys)
+  }
+
+  if (typeof change.test !== "function") {
+    change.test = buildChanged({
+      change,
+      event,
+      mode: change.test,
       prevState,
-      props,
       state,
-      value,
     })
   }
 
-  if (!props) {
-    props = dot.propToArray(prop)
-  }
-
-  if (!prop) {
-    prop = props.join(".")
-  }
-
-  if (listenProp || listenProps) {
-    if (!listenProp) {
-      listenProp = listenProps.join(".")
+  if (subscriber.props || subscriber.propKeys) {
+    if (!subscriber.props) {
+      subscriber.props = subscriber.propKeys.join(".")
     }
 
-    if (!listenProps) {
-      listenProps = dot.propToArray(listenProp)
+    if (!subscriber.propKeys) {
+      subscriber.propKeys = dot.propToArray(
+        subscriber.props
+      )
     }
 
-    if (!listenPrev && prevState) {
-      listenPrev = dot.get(prevState, listenProps)
+    if (!subscriber.prevValue && prevState) {
+      subscriber.prevValue = dot.get(
+        prevState,
+        subscriber.propKeys
+      )
     }
 
-    listenValue = store.get(listenProps)
+    subscriber.value = store.get(subscriber.propKeys)
   }
 
-  if (!listenProp) {
-    listenValue = state
+  if (!subscriber.props) {
+    subscriber.value = state
   }
 
   return {
-    changed,
+    change,
     event,
-    listenPrev,
-    listenProp,
-    listenProps,
-    listenValue,
     meta,
-    op,
-    prev,
     prevState,
-    prop,
-    props,
     state,
     store,
-    value,
+    subscriber,
     ...vars,
   }
 }
 
 export function existsPayload(options) {
-  const { store, value } = options
+  const { change, store } = options
   return payload({
-    ...options,
-    changed: () => true,
-    prev: value,
+    change: {
+      prevValue: change.value,
+      test: "vars",
+    },
+    options,
     prevState: store.state,
   })
 }

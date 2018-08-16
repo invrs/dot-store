@@ -7,7 +7,11 @@ import { lock } from "proper-lockfile"
 import { writeDir, writeFile } from "./fs"
 import { nearestPath, pathIsDir, pathToQuery } from "./path"
 
-export async function lockedFsWrite({ prop, root, store }) {
+export async function lockedFsWrite({
+  props,
+  root,
+  store,
+}) {
   await ensureDir(root)
 
   let release = await lock(root, { retries: 1000 })
@@ -16,7 +20,7 @@ export async function lockedFsWrite({ prop, root, store }) {
   try {
     let { pathProp, path } = pathFromProp({
       paths,
-      prop,
+      props,
       root,
     })
 
@@ -35,22 +39,22 @@ export async function lockedFsWrite({ prop, root, store }) {
   }
 }
 
-export function pathFromProp({ paths, prop, root }) {
+export function pathFromProp({ paths, props, root }) {
   let regex = /\/[^/]+$/
   let path, pathProp
 
-  if (Array.isArray(prop)) {
-    prop = prop.join("/")
+  if (Array.isArray(props)) {
+    props = props.join("/")
   } else {
-    prop = prop.split(/\./).join("/")
+    props = props.split(/\./).join("/")
   }
 
   do {
-    path = nearestPath({ path: join(root, prop), paths })
-    if (!prop.match(regex)) {
+    path = nearestPath({ path: join(root, props), paths })
+    if (!props.match(regex)) {
       break
     }
-    prop = prop.replace(regex, "")
+    props = props.replace(regex, "")
   } while (!path)
 
   if (path) {

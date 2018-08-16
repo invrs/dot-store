@@ -10,8 +10,8 @@ export default async function(store, options) {
     await lockedFsRead({ pattern, root, store })
   })
 
-  store.on("afterUpdate", async ({ prop }) => {
-    await lockedFsWrite({ prop, root, store })
+  store.on("afterUpdate", async ({ change: { props } }) => {
+    await lockedFsWrite({ props, root, store })
   })
 
   return store

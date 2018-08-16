@@ -25,7 +25,7 @@ function getListeners(instance, eventName) {
   return events.get(eventName)
 }
 
-class Emittery {
+class Emitter {
   constructor() {
     anyMap.set(this, new Set())
     eventsMap.set(this, new Map())
@@ -148,10 +148,10 @@ class Emittery {
 }
 
 // Subclass used to encourage TS users to type their events.
-Emittery.Typed = class extends Emittery {}
-Object.defineProperty(Emittery.Typed, "Typed", {
+Emitter.Typed = class extends Emitter {}
+Object.defineProperty(Emitter.Typed, "Typed", {
   enumerable: false,
   value: undefined,
 })
 
-module.exports = Emittery
+module.exports = Emitter

@@ -5,14 +5,15 @@ import dot from "@invrs/dot-prop-immutable"
 import { payload } from "./payload"
 
 // Constants
+import { ops } from "./ops"
 export const varPropRegex = /\{([^}]+)\}/
 
 // Helpers
 export function buildChanged(options) {
   return (...args) =>
-    args.reduce((memo, prop) => {
-      const props = dot.propToArray(prop)
-      const out = changed({ options, props })
+    args.reduce((memo, props) => {
+      const propKeys = dot.propToArray(props)
+      const out = changed({ options, propKeys })
 
       if (out) {
         return { ...(memo || {}), ...out }
@@ -22,10 +23,10 @@ export function buildChanged(options) {
     }, false)
 }
 
-export function changed({ options, props }) {
+export function changed({ options, propKeys }) {
   const { matchProps, vars } = changedVars({
     options,
-    props,
+    propKeys,
   })
   if (vars) {
     return changedMatch({ matchProps, options, vars })
@@ -34,23 +35,21 @@ export function changed({ options, props }) {
   }
 }
 
-export function changeListener({ listener, props }) {
+export function changeListener({
+  change,
+  subscriber: { fn },
+}) {
   return options => {
-    const {
-      listenProps,
-      listenPrev,
-      vars,
-    } = changedValueVars({
+    const { subscriber, vars } = changedValueVars({
       options,
-      props,
+      propKeys: change.propKeys,
     })
 
     if (vars) {
-      return listener(
+      return fn(
         payload({
-          ...options,
-          listenPrev,
-          listenProps,
+          options,
+          subscriber,
           vars,
         })
       )
@@ -63,15 +62,15 @@ export function changedMatch({
   options,
   vars,
 }) {
-  const { event, op, prevState, state, value } = options
+  const { change, event, mode, prevState, state } = options
 
-  if (op === "get" || op === "create") {
+  if (ops.indexOf(event.op) < 0 || mode === "vars") {
     return vars
   }
 
   const current = dot.get(state, matchProps)
 
-  if (event === "before" && current != value) {
+  if (event.prep === "before" && current != change.value) {
     return vars
   }
 
@@ -84,49 +83,57 @@ export function changedMatch({
   return false
 }
 
-export function changedVars({ props, options }) {
-  const matchProps = props.slice()
+export function changedVars({ propKeys, options }) {
+  const matchProps = propKeys.slice()
   const entries = Array.entries(matchProps)
   const vars = {}
 
   for (const [index, matchProp] of entries) {
-    const prop = options.props[index]
+    const key = options.change.propKeys[index]
     const varProp = matchProp.match(varPropRegex)
 
-    const mismatch = !varProp && prop && prop != matchProp
-    const needProp = varProp && !prop
+    const mismatch = !varProp && key && key != matchProp
+    const needProp = varProp && !key
 
     if (mismatch || needProp) {
       return { vars: false }
     }
 
     if (varProp) {
-      vars[varProp[1]] = prop
-      matchProps[index] = prop
+      vars[varProp[1]] = key
+      matchProps[index] = key
     }
   }
 
   return { matchProps, vars }
 }
 
-export function changedValueVars({ options, props }) {
+export function changedValueVars({ options, propKeys }) {
   const { prevState } = options
-  if (!props.length) {
+
+  if (!propKeys.length) {
     return {
-      listenPrev: prevState,
+      subscriber: {
+        prevValue: prevState,
+      },
       vars: {},
     }
   }
+
   const { matchProps, vars } = changedVars({
     options,
-    props,
+    propKeys,
   })
+
   if (!vars) {
     return { vars }
   }
+
   return {
-    listenPrev: dot.get(prevState, matchProps),
-    listenProps: matchProps,
+    subscriber: {
+      prevValue: dot.get(prevState, matchProps),
+      propKeys: matchProps,
+    },
     vars: changedMatch({ matchProps, options, vars }),
   }
 }
