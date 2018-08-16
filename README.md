@@ -116,7 +116,7 @@ await store.set("users.bob.admin", true)
 | `event.prep`           | `"after"`                      | Event preposition       |
 | `event.op`             | `"set"`                        | Event operation         |
 | `prevState`            | `{}`                           | Pre-op state            |
-| `state`                | `{users: {bob: {admin:true}}}` | Current state           |
+| `state`                | `{users: {bob: {admin: true}}}` | Current state           |
 | `store`                | `<DotStore>`                   | Store instance          |
 | `subscriber.props`     | `"users.bob"`                  | Subscriber props        |
 | `subscriber.propKeys`  | `["users", "bob"]`             | Subscriber prop keys    |
