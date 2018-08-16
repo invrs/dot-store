@@ -120,10 +120,10 @@ await store.set("users.bob.admin", true)
 | `prevState`            | `{}`                            | Pre-op state            |
 | `state`                | `{users: {bob: {admin: true}}}` | Current state           |
 | `store`                | `<DotStore>`                    | Store instance          |
+| `subscriber.prevValue` | `undefined`                     | Pre-op subscriber value |
 | `subscriber.props`     | `"users.bob"`                   | Subscriber props        |
 | `subscriber.propKeys`  | `["users", "bob"]`              | Subscriber prop keys    |
 | `subscriber.value`     | `{admin: true}`                 | Subscriber value        |
-| `subscriber.prevValue` | `undefined`                     | Pre-op subscriber value |
 
 ### Dynamic subscribers
 
