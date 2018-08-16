@@ -40,7 +40,10 @@ export function payload({
     change.propKeys = dot.propToArray(change.props)
   }
 
-  if (typeof change.value === "undefined") {
+  if (
+    typeof change.value === "undefined" &&
+    event.prep !== "before"
+  ) {
     change.value = store.get(change.propKeys)
   }
 

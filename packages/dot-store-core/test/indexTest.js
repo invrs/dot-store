@@ -234,6 +234,54 @@ test("on with child change and prop var", async () => {
   expect(fn1).toHaveBeenCalledWith(payload)
 })
 
+test("on beforeDelete", async () => {
+  const fn1 = jest.fn()
+  const fn2 = jest.fn()
+  const fn3 = jest.fn()
+  const fn4 = jest.fn()
+
+  store.on("beforeDelete", fn1)
+  store.on("beforeDelete", "test", fn2)
+  store.on("beforeDelete", "test.hello", fn3)
+  store.on("beforeDelete", "blah", fn4)
+
+  await store.delete("test")
+
+  const payload = {
+    change: {
+      prevValue: true,
+      propKeys: ["test"],
+      props: "test",
+      test: expect.any(Function),
+      value: undefined,
+    },
+    event: { op: "delete", prep: "before" },
+    meta: expect.any(Object),
+    prevState: { test: true },
+    state: { test: true },
+    store: expect.any(Object),
+    subscriber: {
+      prevValue: { test: true },
+      value: { test: true },
+    },
+  }
+
+  expect(fn1).toHaveBeenCalledWith(payload)
+  expect(fn2).toHaveBeenCalledWith({
+    ...payload,
+    subscriber: {
+      prevValue: true,
+      propKeys: ["test"],
+      props: "test",
+      value: true,
+    },
+  })
+  expect(fn3).not.toHaveBeenCalled()
+  expect(fn4).not.toHaveBeenCalled()
+
+  expect(store.get("test")).toBe(undefined)
+})
+
 test("on beforeUpdate", async () => {
   const fn1 = jest.fn()
   const fn2 = jest.fn()

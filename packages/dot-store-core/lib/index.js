@@ -61,7 +61,7 @@ export default class DotStore extends Emitter {
         test: true,
         value,
       },
-      event: { op },
+      event: { op, prep: "before" },
       meta,
       prevState: this.state,
       store: this,
@@ -81,6 +81,7 @@ export default class DotStore extends Emitter {
       change: {
         test: true,
       },
+      event: { prep: "after" },
       options: beforePayload,
       prevState,
       state,
@@ -102,9 +103,6 @@ export default class DotStore extends Emitter {
       await this.emit(
         e,
         payload({
-          event: {
-            prep,
-          },
           options,
           state: this.state,
         })
