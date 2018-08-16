@@ -16,7 +16,7 @@ Easy to use store and event emitter — async, immutable, self-documenting, high
 - [Store subscribers](#store-subscribers)
   - [Subscriber options](#subscriber-options)
   - [Dynamic subscribers](#dynamic-subscribers)
-  - [Check for changes](#check-for-changes)
+  - [Check if prop value changed](#check-if-prop-value-changed)
   - [Unsubscribe](#unsubscribe)
 - [Custom operations](#custom-operations)
 - [Extensions](#extensions)
@@ -89,30 +89,38 @@ When omitted, the `event` parameter defaults to `"afterUpdate"`.
 Subscribers receive an options argument with lots of useful stuff:
 
 ```js
-store.on("users.bob", async options => {
-  // see example option values below
-})
+store.on(
+  "users.bob",
+  async ({
+    change,
+    event,
+    prevState,
+    state,
+    store,
+    subscriber,
+  }) => {
+    // see example values below
+  }
+)
 await store.set("users.bob.admin", true)
 ```
 
-The `options` in the above subscriber would contain the following values:
-
 | Argument               | Example value                         | Description               |
 | :--------------------- | :------------------------------------ | :------------------------ |
-| `changed.props`        | `"users.bob.admin"`                   | Changed value props       |
-| `changed.propKeys`     | `["users", "bob", "admin"]`           | Changed value prop keys   |
-| `changed.value`        | `true`                                | Changed value             |
-| `changed.prevValue`    | `undefined`                           | Previous changed value    |
+| `change.props`         | `"users.bob.admin"`                   | Change value props        |
+| `change.propKeys`      | `["users", "bob", "admin"]`           | Change value prop keys    |
+| `change.value`         | `true`                                | Change value              |
+| `change.prevValue`     | `undefined`                           | Previous change value     |
+| `change.test(props)`   | `<Function>`                          | Change test function      |
+| `event.prep`           | `"after"`                             | Event preposition         |
+| `event.op`             | `"set"`                               | Event operation           |
+| `prevState`            | `{}`                                  | Previous state            |
+| `state`                | `{ users: { bob: { admin: true } } }` | Current state             |
+| `store`                | `<DotStore>`                          | Store instance            |
 | `subscriber.props`     | `"users.bob"`                         | Subscriber props          |
 | `subscriber.propKeys`  | `["users", "bob"]`                    | Subscriber props array    |
 | `subscriber.prevValue` | `undefined`                           | Previous subscriber value |
 | `subscriber.value`     | `{ admin: true }`                     | Subscriber value          |
-| `eventTiming`          | `"after"`                             | Event timing              |
-| `op`                   | `"set"`                               | Operation string          |
-| `prevState`            | `{}`                                  | Previous state            |
-| `state`                | `{ users: { bob: { admin: true } } }` | Current state             |
-| `store`                | `<DotStore>`                          | Store instance            |
-| `valueChanged(props)`  | `<Function>`                          | Prop value change test    |
 
 ### Dynamic subscribers
 
@@ -127,23 +135,23 @@ await store.set("users.bob.admin", true)
 await store.set("users.ted.admin", true)
 ```
 
-### Check for changes
+### Check if prop value changed
 
-The `valueChanged` function tests if a prop value changed.
+The `change.test(props)` function tests if a prop value changed.
 
-The return value of `valueChanged` is truthy and doubles as a way to retrieve prop keys:
+The return value is truthy and doubles as a way to retrieve prop keys:
 
 ```js
-store.on("users", async ({ valueChanged }) => {
+store.on("users", async ({ change }) => {
   // ✓ Value did change
-  valueChanged("users.{userId}.{attr}") // { userId: "bob", attr: "admin" }
-  valueChanged("users.bob.admin") // {}
-  valueChanged("users.bob") // {}
-  valueChanged("users") // {}
+  change.test("users.{userId}.{attr}") // { userId: "bob", attr: "admin" }
+  change.test("users.bob.admin") // {}
+  change.test("users.bob") // {}
+  change.test("users") // {}
 
   // ⃠ Value didn't change
-  valueChanged("users.ted.{attr}") // false
-  valueChanged("users.ted") // false
+  change.test("users.ted.{attr}") // false
+  change.test("users.ted") // false
 })
 
 await store.set("users.bob.admin", true)
@@ -173,7 +181,6 @@ Subscribe to the custom event:
 store.on("afterFetch", "users", async function({ value }) {
   value // { admin: "true" }
 })
-
 await store.fetch("users", { admin: "true" })
 ```
 
