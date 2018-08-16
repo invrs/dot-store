@@ -102,6 +102,7 @@ store.on(
     // see example values below
   }
 )
+
 await store.set("users.bob.admin", true)
 ```
 
@@ -181,6 +182,7 @@ Subscribe to the custom event:
 store.on("afterFetch", "users", async function({ value }) {
   value // { admin: "true" }
 })
+
 await store.fetch("users", { admin: "true" })
 ```
 
