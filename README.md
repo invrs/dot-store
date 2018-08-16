@@ -46,7 +46,7 @@ await store.set("users.bob.admin", true)
 
 ```js
 store.get("users.bob.admin") // true
-store.get() // { users: { bob: { admin: true } } }
+store.get() // {users: {bob: {admin: true}}}
 ```
 
 ### Subscribe to changes
