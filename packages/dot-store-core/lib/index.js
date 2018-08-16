@@ -9,20 +9,13 @@ import { debug } from "./debug"
 import { existsPayload, payload } from "./payload"
 
 // Constants
-export const ops = [
-  "create",
-  "delete",
-  "merge",
-  "set",
-  "toggle",
-]
+export const ops = ["delete", "merge", "set", "toggle"]
 
 // Classes
 export default class DotStore extends Emitter {
   constructor(state = {}) {
     super()
     this.state = state
-    this["getAsync"] = this.operateWrapper("get")
 
     for (let op of ops) {
       this[op] = this.operateWrapper(op)
@@ -39,8 +32,8 @@ export default class DotStore extends Emitter {
     }
   }
 
-  getSync(prop) {
-    return this.get(prop)
+  op(op) {
+    this[op] = this.operateWrapper(op)
   }
 
   time(prop) {
@@ -70,11 +63,11 @@ export default class DotStore extends Emitter {
 
     await this.emitOp("before", beforePayload)
 
-    const dotOp = op === "create" ? "get" : op
+    const dotOp = ops.indexOf(op) > -1 ? op : "get"
     const state = dot[dotOp](this.state, prop, value)
     const prevState = this.state
 
-    if (dotOp != "get") {
+    if (dotOp !== "get") {
       this.state = state
     }
 
@@ -87,7 +80,7 @@ export default class DotStore extends Emitter {
 
     await this.emitOp("after", afterPayload)
 
-    if (dotOp == "get") {
+    if (dotOp === "get") {
       return state
     } else {
       return this.state

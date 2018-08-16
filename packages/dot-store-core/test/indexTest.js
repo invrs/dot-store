@@ -1,14 +1,14 @@
-import GetSet from "../dist"
+import DotStore from "../dist"
 
 let store
 
 beforeEach(() => {
-  store = new GetSet({ test: true })
+  store = new DotStore({ test: true })
 })
 
 test("get", async () => {
   expect(store.get("test")).toBe(true)
-  expect(await store.getAsync("test")).toBe(true)
+  expect(store.get("test")).toBe(true)
 })
 
 test("changed", async () => {
@@ -99,7 +99,7 @@ test("merge", async () => {
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
-  expect(await store.getAsync("obj.key")).toBe(true)
+  expect(store.get("obj.key")).toBe(true)
 })
 
 test("on", async () => {
@@ -145,7 +145,7 @@ test("on", async () => {
     value: false,
   })
 
-  expect(await store.getAsync("test")).toBe(false)
+  expect(store.get("test")).toBe(false)
 })
 
 test("on with mismatch", async () => {
@@ -266,39 +266,15 @@ test("on beforeUpdate", async () => {
   })
   expect(fn4).not.toHaveBeenCalled()
 
-  expect(await store.getAsync("test")).toBe(false)
+  expect(store.get("test")).toBe(false)
 })
 
-test("on beforeGet", async () => {
+test("on custom op", async () => {
   const fn1 = jest.fn()
 
-  store.on("beforeGet", "test", fn1)
-  await store.getAsync("test")
-
-  expect(fn1).toHaveBeenCalledWith({
-    changed: expect.any(Function),
-    event: "before",
-    listenPrev: true,
-    listenProp: "test",
-    listenProps: ["test"],
-    listenValue: true,
-    meta: expect.any(Object),
-    op: "get",
-    prev: true,
-    prevState: { test: true },
-    prop: "test",
-    props: ["test"],
-    state: { test: true },
-    store: expect.any(Object),
-    value: true,
-  })
-})
-
-test("on beforeCreate", async () => {
-  const fn1 = jest.fn()
-
+  store.op("create")
   store.on("beforeCreate", "test", fn1)
-  expect(await store.create("test")).toBe(true)
+  await store.create("test")
 
   expect(fn1).toHaveBeenCalledWith({
     changed: expect.any(Function),
@@ -346,7 +322,7 @@ test("on with prop var", async () => {
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
-  expect(await store.getAsync("test.foo")).toBe(false)
+  expect(store.get("test.foo")).toBe(false)
 })
 
 test("on with root prop var", async () => {
@@ -376,7 +352,7 @@ test("on with root prop var", async () => {
   }
 
   expect(fn1).toHaveBeenCalledWith(payload)
-  expect(await store.getAsync("test")).toBe(false)
+  expect(store.get("test")).toBe(false)
 })
 
 test("once", async () => {
