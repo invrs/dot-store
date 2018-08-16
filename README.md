@@ -61,24 +61,24 @@ store.on("users.bob", async () => {
 
 ## Store operations
 
-| Operation            | Async | Description                               |
-| :------------------- | :---- | :---------------------------------------- |
-| `get(props)`         | no    | Read property value                       |
-| `delete(props)`      | yes   | Delete property value                     |
-| `merge(prop, value)` | yes   | Merge property value with array or object |
-| `set(props, value)`  | yes   | Set property value                        |
-| `time(props)`        | yes   | Set property value to current timestamp   |
-| `toggle(props)`      | yes   | Toggle boolean property value             |
-
-Async store operations only resolve once all subscribers resolve.
+| Operation             | Async | Description                           |
+| :-------------------- | :---- | :------------------------------------ |
+| `get(props)`          | no    | Read prop value                       |
+| `delete(props)`       | yes   | Delete prop value                     |
+| `merge(props, value)` | yes   | Merge prop value with array or object |
+| `set(props, value)`   | yes   | Set prop value                        |
+| `time(props)`         | yes   | Set prop value to current timestamp   |
+| `toggle(props)`       | yes   | Toggle boolean prop value             |
 
 ## Store subscribers
 
-| Subscriber                    | Timing                                                                  |
-| :---------------------------- | :---------------------------------------------------------------------- |
-| `on(event, prop, fn)`         | Emits every property value change                                       |
-| `once(event, prop, fn)`       | Emits once after a property value change                                |
-| `onceExists(event, prop, fn)` | Emits once after a property value change or if the value already exists |
+Store operation calls only resolve after all of its subscribers resolve.
+
+| Subscriber                    | Timing                                                                       |
+| :---------------------------- | :--------------------------------------------------------------------------- |
+| `on(event, prop, fn)`         | Subscribe to prop value change                                               |
+| `once(event, prop, fn)`       | Subscribe to a single prop value change                                      |
+| `onceExists(event, prop, fn)` | Subscribe to a single prop value change and immediately emit if value exists |
 
 The `event` parameter can be `"beforeUpdate"`, `"afterUpdate"`, or a [custom operation](#custom-operations).
 
@@ -129,7 +129,7 @@ await store.set("users.ted.admin", true)
 
 ### Check for changes
 
-The `valueChanged` function tests if a property value changed.
+The `valueChanged` function tests if a prop value changed.
 
 The return value of `valueChanged` is truthy and doubles as a way to retrieve prop keys:
 
