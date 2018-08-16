@@ -5,7 +5,7 @@ export default function(key) {
     }
 
     store.on(key, async options => {
-      const { meta, op, prop, store, value } = options
+      const { change, event, meta, store } = options
 
       const ids = Object.keys(
         store.get("postMessage.targets") || {}
@@ -15,7 +15,12 @@ export default function(key) {
         return
       }
 
-      const message = { dotStore: true, op, prop, value }
+      const message = {
+        dotStore: true,
+        op: event.op,
+        props: change.props,
+        value: change.value,
+      }
 
       if (ids.length) {
         for (const id of ids) {
@@ -41,9 +46,9 @@ export default function(key) {
         if (origin == window.location.origin) {
           return
         }
-        const { dotStore, op, prop, value } = data
+        const { dotStore, op, props, value } = data
         if (dotStore) {
-          store[op](prop, value, { fromWindow: true })
+          store[op](props, value, { fromWindow: true })
         }
       },
       false

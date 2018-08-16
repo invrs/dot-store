@@ -10,9 +10,9 @@ export const withStore = Component =>
       }
     }
 
-    changeTest(changeTestFns) {
+    changeTest(changeTests) {
       return (...matchers) =>
-        changeTestFns.reduce((memo, changeTest) => {
+        changeTests.reduce((memo, changeTest) => {
           let out = changeTest(...matchers)
 
           if (out) {
@@ -26,11 +26,11 @@ export const withStore = Component =>
     render() {
       return (
         <Consumer>
-          {([changeTestFns, store]) => (
+          {([changeTests, store]) => (
             <Component
               {...this.props}
-              changeTestFns={changeTestFns}
-              changeTest={this.changeTest(changeTestFns)}
+              changeTests={changeTests}
+              changeTest={this.changeTest(changeTests)}
               state={store.state}
               store={store}
             />
@@ -78,13 +78,13 @@ export const withStoreProvider = createStore => Component =>
 export class StoreProvider extends React.Component {
   constructor(props) {
     super(props)
-    this.changeTestFns = []
+    this.changeTests = []
     this.store = props.store
     this.onUpdate = this.onUpdate.bind(this)
   }
 
   onUpdate({ change }) {
-    this.changeTestFns = this.changeTestFns.concat([
+    this.changeTests = this.changeTests.concat([
       change.test,
     ])
     this.forceUpdate()
@@ -99,11 +99,11 @@ export class StoreProvider extends React.Component {
   }
 
   render() {
-    const changeTestFns = this.changeTestFns.concat([])
-    this.changeTestFns = []
+    const changeTests = this.changeTests.concat([])
+    this.changeTests = []
 
     return (
-      <Provider value={[changeTestFns, this.store]}>
+      <Provider value={[changeTests, this.store]}>
         {this.props.children}
       </Provider>
     )

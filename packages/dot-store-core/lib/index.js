@@ -31,9 +31,13 @@ export default class DotStore extends Emitter {
     }
   }
 
-  op(op) {
-    this.ops = this.ops.concat([op])
-    this[op] = this.operateWrapper(op)
+  op(...newOps) {
+    for (const op of newOps) {
+      if (ops.indexOf(op) < 0) {
+        this.ops = this.ops.concat([op])
+        this[op] = this.operateWrapper(op)
+      }
+    }
   }
 
   time(props) {

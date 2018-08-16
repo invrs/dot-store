@@ -3,13 +3,18 @@ import Cookies from "js-cookie"
 
 // Composers
 export default function(store) {
-  store.on("beforeGet", "cookies.{cookieKey}", getCookie)
+  store.op("fetch")
+  store.on(
+    "beforeFetch",
+    "cookies.{cookieKey}",
+    fetchCookie
+  )
   store.on("cookies.{cookieKey}", updateCookie)
   return store
 }
 
 // Helpers
-async function getCookie({ cookieKey, store }) {
+async function fetchCookie({ cookieKey, store }) {
   const value = store.get(`cookies.${cookieKey}`)
 
   if (!value) {
@@ -26,7 +31,7 @@ async function updateCookie({ cookieKey, meta, store }) {
     return
   }
 
-  await getCookie({ cookieKey, store })
+  await fetchCookie({ cookieKey, store })
 
   Cookies.set(cookieKey, store.get(`cookies.${cookieKey}`))
 }

@@ -59,17 +59,23 @@ export function buildSizeMap({ dfp, unit }) {
 
 export function createDfpSlot(key) {
   return async options => {
-    const { listenValue: iframe, store } = options
+    const { subscriber, store } = options
     const dfp = store.get(`${key}.dfp`)
 
-    if (!iframe.dfp) {
+    if (!subscriber.value.dfp) {
       return
     }
 
     await store.onceExists(`${key}.dfp.loaded`)
 
-    const { divId } = iframe
-    const { oop, path, targets, unitId } = iframe.dfp
+    const { divId } = subscriber.value
+    const {
+      oop,
+      path,
+      targets,
+      unitId,
+    } = subscriber.value.dfp
+
     const unit = dfp.units[unitId]
 
     let slot
@@ -80,7 +86,7 @@ export function createDfpSlot(key) {
         divId
       )
     } else {
-      let sizeMap = buildSizeMap({ dfp, iframe, unit })
+      let sizeMap = buildSizeMap({ dfp, unit })
 
       slot = window.googletag.defineSlot(
         path,
@@ -99,7 +105,7 @@ export function createDfpSlot(key) {
       }
     }
 
-    if (slot && iframe.dfp.a9) {
+    if (slot && subscriber.value.dfp.a9) {
       await fetchA9({ divId, path, sizes: unit.sizes })
     }
 

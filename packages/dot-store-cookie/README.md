@@ -10,14 +10,17 @@ Cookie integration for [dot-store](https://github.com/invrs/dot-store).
 npm install --save dot-store-cookie
 ```
 
-## Usage
-
-### Create the store
+## Create the store
 
 ```js
 import DotStore from "dot-store"
 import withCookie from "dot-store-cookie"
 
-const store = new DotStore()
-export default withCookie(store)
+const store = withCookie(new DotStore())
+```
+
+## Fetch cookies
+
+```js
+await store.fetch("cookies.mycookie")
 ```

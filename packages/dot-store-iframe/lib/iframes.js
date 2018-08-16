@@ -4,13 +4,13 @@ const elements = {}
 // Iframes
 export function createIframe(key) {
   return options => {
-    const { iframeId, listenValue, store } = options
+    const { iframeId, subscriber, store } = options
 
-    if (listenValue.dfp) {
+    if (subscriber.value.dfp) {
       return
     }
 
-    const { divId, height, url, width } = listenValue
+    const { divId, height, url, width } = subscriber.value
     const loaded = `${key}.iframes.${iframeId}.loaded`
     const onLoad = () => store.set(loaded, true)
 

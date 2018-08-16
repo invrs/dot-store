@@ -36,17 +36,15 @@ test("props", async () => {
     </Layout>
   )
 
-  expect(props.changeTestFns).toBeInstanceOf(Array)
+  expect(props.changeTests).toBeInstanceOf(Array)
   expect(props.store).toBeInstanceOf(Store)
 
-  expect(props.changeTestFns).toEqual([])
+  expect(props.changeTests).toEqual([])
   expect(props.store.state).toEqual({ counter: 0 })
 
   await props.store.set("counter", 1)
 
-  expect(props.changeTestFns).toEqual([
-    expect.any(Function),
-  ])
+  expect(props.changeTests).toEqual([expect.any(Function)])
   expect(props.store.state).toEqual({ counter: 1 })
 
   mount(
@@ -55,7 +53,7 @@ test("props", async () => {
     </Layout>
   )
 
-  expect(props.changeTestFns).toEqual([])
+  expect(props.changeTests).toEqual([])
   expect(props.store.state).toEqual({ counter: 0 })
 })
 
