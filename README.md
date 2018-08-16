@@ -179,7 +179,7 @@ store.op("fetch")
 Subscribe to the custom event:
 
 ```js
-store.on("afterFetch", "users", async function({ value }) {
+store.on("fetch", "users", async function({ value }) {
   value // { admin: "true" }
 })
 

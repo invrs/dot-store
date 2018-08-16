@@ -273,12 +273,12 @@ test("on custom op", async () => {
   const fn1 = jest.fn()
 
   store.op("create")
-  store.on("beforeCreate", "test", fn1)
+  store.on("create", "test", fn1)
   await store.create("test")
 
   expect(fn1).toHaveBeenCalledWith({
     changed: expect.any(Function),
-    event: "before",
+    event: "after",
     listenPrev: true,
     listenProp: "test",
     listenProps: ["test"],
