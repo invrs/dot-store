@@ -200,13 +200,4 @@ export default class DotStore extends Emitter {
 
     return await this.once(event.key, change.props)
   }
-
-  off(...args) {
-    const { event, subscriber } = parseArgs({
-      args,
-      ops: this.ops,
-    })
-
-    super.off(event.key, subscriber.fn)
-  }
 }
