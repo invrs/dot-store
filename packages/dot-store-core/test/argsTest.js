@@ -7,53 +7,46 @@ test("parseArgs", async () => {
   const fn = () => {}
 
   expect(parseArgs({ args: [fn], ops })).toEqual({
-    event: "after",
-    key: "afterupdate",
-    listener: fn,
-    props: [],
+    change: { propKeys: [], props: undefined },
+    event: { key: "afterupdate", prep: "after" },
+    subscriber: { fn: fn },
   })
 
   expect(parseArgs({ args: [event], ops })).toEqual({
-    event: "after",
-    key: "afterset",
-    listener: undefined,
-    props: [],
+    change: { propKeys: [], props: undefined },
+    event: { key: "afterset", prep: "after" },
+    subscriber: { fn: undefined },
   })
 
   expect(parseArgs({ args: [event, prop], ops })).toEqual({
-    event: "after",
-    key: "afterset:foo",
-    listener: undefined,
-    props: ["foo", "bar"],
+    change: { propKeys: ["foo", "bar"], props: "foo.bar" },
+    event: { key: "afterset:foo", prep: "after" },
+    subscriber: { fn: undefined },
   })
 
   expect(parseArgs({ args: [event, fn], ops })).toEqual({
-    event: "after",
-    key: "afterset",
-    listener: expect.any(Function),
-    props: [],
+    change: { propKeys: [], props: undefined },
+    event: { key: "afterset", prep: "after" },
+    subscriber: { fn: fn },
   })
 
   expect(parseArgs({ args: [prop], ops })).toEqual({
-    event: "after",
-    key: "afterupdate:foo",
-    listener: undefined,
-    props: ["foo", "bar"],
+    change: { propKeys: ["foo", "bar"], props: "foo.bar" },
+    event: { key: "afterupdate:foo", prep: "after" },
+    subscriber: { fn: undefined },
   })
 
   expect(parseArgs({ args: [prop, fn], ops })).toEqual({
-    event: "after",
-    key: "afterupdate:foo",
-    listener: expect.any(Function),
-    props: ["foo", "bar"],
+    change: { propKeys: ["foo", "bar"], props: "foo.bar" },
+    event: { key: "afterupdate:foo", prep: "after" },
+    subscriber: { fn: fn },
   })
 
   expect(
     parseArgs({ args: [event, prop, fn], ops })
   ).toEqual({
-    event: "after",
-    key: "afterset:foo",
-    listener: fn,
-    props: ["foo", "bar"],
+    change: { propKeys: ["foo", "bar"], props: "foo.bar" },
+    event: { key: "afterset:foo", prep: "after" },
+    subscriber: { fn: fn },
   })
 })
