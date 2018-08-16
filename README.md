@@ -105,22 +105,22 @@ store.on(
 await store.set("users.bob.admin", true)
 ```
 
-| Argument               | Example value                         | Description                |
-| :--------------------- | :------------------------------------ | :------------------------- |
-| `change.props`         | `"users.bob.admin"`                   | Change props               |
-| `change.propKeys`      | `["users", "bob", "admin"]`           | Change prop keys           |
-| `change.value`         | `true`                                | Change value               |
-| `change.prevValue`     | `undefined`                           | Previous change value      |
-| `change.test(props)`   | `<Function>`                          | Changed prop test function |
-| `event.prep`           | `"after"`                             | Event preposition          |
-| `event.op`             | `"set"`                               | Event operation            |
-| `prevState`            | `{}`                                  | Previous state             |
-| `state`                | `{ users: { bob: { admin: true } } }` | Current state              |
-| `store`                | `<DotStore>`                          | Store instance             |
-| `subscriber.props`     | `"users.bob"`                         | Subscriber props           |
-| `subscriber.propKeys`  | `["users", "bob"]`                    | Subscriber prop keys       |
-| `subscriber.prevValue` | `undefined`                           | Previous subscriber value  |
-| `subscriber.value`     | `{ admin: true }`                     | Subscriber value           |
+| Argument               | Example value                         | Description             |
+| :--------------------- | :------------------------------------ | :---------------------- |
+| `change.prevValue`     | `undefined`                           | Pre-op change value     |
+| `change.props`         | `"users.bob.admin"`                   | Change props            |
+| `change.propKeys`      | `["users", "bob", "admin"]`           | Change prop keys        |
+| `change.test(props)`   | `<Function>`                          | Test for prop change    |
+| `change.value`         | `true`                                | Change value            |
+| `event.prep`           | `"after"`                             | Event preposition       |
+| `event.op`             | `"set"`                               | Event operation         |
+| `prevState`            | `{}`                                  | Previous state          |
+| `state`                | `{ users: { bob: { admin: true } } }` | Current state           |
+| `store`                | `<DotStore>`                          | Store instance          |
+| `subscriber.props`     | `"users.bob"`                         | Subscriber props        |
+| `subscriber.propKeys`  | `["users", "bob"]`                    | Subscriber prop keys    |
+| `subscriber.value`     | `{ admin: true }`                     | Subscriber value        |
+| `subscriber.prevValue` | `undefined`                           | Pre-op subscriber value |
 
 ### Dynamic subscribers
 
