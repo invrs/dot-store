@@ -61,12 +61,13 @@ export const withStoreProvider = createStore => Component =>
       return { ...props, storeState: store.state }
     }
 
-    constructor(props) {
-      super(props)
-      this.store = createStore({ state: props.storeState })
-    }
-
     render() {
+      const { storeState } = this.props
+
+      if (storeState) {
+        this.store = createStore({ state: storeState })
+      }
+
       return (
         <StoreProvider store={this.store}>
           <Component {...this.props} />
@@ -79,7 +80,6 @@ export class StoreProvider extends React.Component {
   constructor(props) {
     super(props)
     this.changeTests = []
-    this.store = props.store
     this.onUpdate = this.onUpdate.bind(this)
   }
 
@@ -91,7 +91,7 @@ export class StoreProvider extends React.Component {
   }
 
   componentDidMount() {
-    this.off = this.store.on(this.onUpdate)
+    this.off = this.props.store.on(this.onUpdate)
   }
 
   componentWillUnmount() {
@@ -99,11 +99,13 @@ export class StoreProvider extends React.Component {
   }
 
   render() {
+    const { store } = this.props
+
     const changeTests = this.changeTests.concat([])
     this.changeTests = []
 
     return (
-      <Provider value={[changeTests, this.store]}>
+      <Provider value={[changeTests, store]}>
         {this.props.children}
       </Provider>
     )
